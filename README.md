@@ -86,6 +86,81 @@ CareerWizard AI is an end-to-end AI-powered career development platform that hel
 
 ---
 
+## Installation
+
+Follow these steps to set up **CareerWizard AI** locally.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/CareerWizard-AI.git
+cd CareerWizard-AI
+2. Backend Setup (FastAPI)
+Navigate to the backend folder:
+
+
+cd backend
+Create and activate a virtual environment (recommended):
+
+
+python -m venv venv
+# On Windows
+venv\Scripts\activate
+# On macOS/Linux
+source venv/bin/activate
+Install dependencies:
+
+
+pip install -r requirements.txt
+Run the FastAPI server:
+
+
+uvicorn main:app --reload
+The backend server will start at: http://127.0.0.1:8000
+
+3. Frontend Setup (React / Next.js)
+Navigate to the frontend folder:
+
+cd ../frontend
+Install dependencies:
+
+
+npm install
+Start the development server:
+
+
+npm run dev
+The frontend will be available at: http://localhost:3000/5173
+
+4. Environment Variables
+Make sure to set the required environment variables for API keys, database connections, or AI services. You can create a .env file in both backend and frontend if needed.
+
+Example .env for backend:
+
+
+DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/jobrecdb
+GEMINI_API_KEY="your api key"
+
+
+5. Optional: Database Setup
+If using MongoDB or PostgreSQL, make sure the database is running.
+
+Update DATABASE_URL in .env accordingly.
+
+Run any migrations or seed scripts if available.
+
+6. Test the Installation
+Open your browser at http://localhost:3000 to see the frontend.
+
+Test API endpoints at http://127.0.0.1:8000/docs.
+
+Now your CareerWizard AI should be running locally! 🚀
+
+---
+
+If you want, I can also **update your existing README.md** with this installation section in a way that looks **integrated and professional** with your current features and project description.  
+
+Do you want me to do that?
 
 ## 📧 Support
 
