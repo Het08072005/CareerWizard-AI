@@ -116,7 +116,7 @@ const tabs = [
   // BriefcaseIcon for job/career matching
   { name: "Job Match", path: "/overview/job-match", icon: BriefcaseIcon }, 
   // TrendingUpIcon to visually represent the need for improvement/filling a gap
-  { name: "Skills Gap", path: "/overview/skills-gap", icon: TrendingUpIcon }, 
+  { name: "Learning Paths", path: "/overview/skills-gap", icon: TrendingUpIcon }, 
   // RocketIcon for planning/launching career
   { name: "Career Roadmap", path: "/overview/career-roadmap", icon: RocketIcon }, 
   // MessageSquareIcon for communication/interview

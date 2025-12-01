@@ -22,9 +22,10 @@ CareerWizard AI is an end-to-end AI-powered career development platform that hel
   - Experience alignment  
   - Keyword overlap  
 
-### **3. Skill Gap Analysis**
-- Displays in-demand skills based on industry standards.
-- Provides skill-gap recommendations and learning steps.
+### **3. Roadmaps & Learning Paths**
+- Explore expertly crafted **career roadmaps** for the most in-demand roles (e.g., Full Stack, AI/ML).
+- Receive personalized **skill-gap analysis** and step-by-step learning recommendations tailored to industry standards.
+- Get organized learning resources and milestones to effectively **launch your career growth.**
 
 ### **4. AI-Powered Roadmap Generator (Phase-Wise)**
 - Automatically creates a structured learning path:
