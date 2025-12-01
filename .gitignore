@@ -11,9 +11,10 @@ backend/.venv/
 backend/venv/
 backend/*.sqlite3
 backend/*.db
-backend/delete
-backend/demo
-backend/demo1
+backend/delete.py
+backend/demo.py
+backend/demo1.py
+backend/uploads/
 # Logs
 *.log
 logs/
