@@ -12,7 +12,7 @@ const MASTER_ROADMAP = {
   fullStack: {
     key: "fullStack",
     title: "Full Stack Engineer",
-    icon: "⧉",
+    icon: "⧉",  
     salary: "$95k - $150k",
     demand: "Very High",
     path: "Master both frontend and backend development",

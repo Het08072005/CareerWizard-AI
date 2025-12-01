@@ -1,4 +1,4 @@
-# app/models/user_profile.py
+
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from app.db.database import Base

@@ -1,4 +1,3 @@
-# app/services/roadmap_service.py
 import os
 import json
 from dotenv import load_dotenv
@@ -13,9 +12,9 @@ genai.configure(api_key=api_key)
 MODEL_NAME = "models/gemini-2.5-flash"
 
 
-# -----------------------------
+
 # Fallback Roadmap (if AI fails)
-# -----------------------------
+
 def _get_fallback_roadmap(domain: str, months: int) -> RoadmapResponse:
     """Return a simple default roadmap if AI fails."""
     default_months = []
@@ -45,9 +44,9 @@ def _get_fallback_roadmap(domain: str, months: int) -> RoadmapResponse:
     return RoadmapResponse(domain=domain, months=default_months)
 
 
-# -----------------------------
+
 # Main Roadmap Generator
-# -----------------------------
+
 async def generate_roadmap_ai(domain: str, months: int) -> RoadmapResponse:
     """
     Generate a professional AI-based roadmap using Gemini API.

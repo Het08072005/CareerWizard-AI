@@ -1,4 +1,4 @@
-// src/components/ThemeToggle.jsx
+
 import React, { useEffect, useState } from "react";
 
 const THEME_KEY = "skillgap_theme";
@@ -22,12 +22,7 @@ const ThemeToggle = () => {
   }, [dark]);
 
   return (
-    // <button
-    //   onClick={() => setDark((d) => !d)}
-    //   className="px-4 py-2 rounded-full  text-sm"
-    // >
-    //   {dark ? "Light Mode" : "Dark Mode"}
-    // </button>
+
     ""
   );
 };

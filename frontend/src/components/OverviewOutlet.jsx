@@ -75,24 +75,13 @@ const OverviewOutlet = () => {
 
             {/* --- 2. The 4 Grid Cards --- */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* <StatCard icon="📄" value="82%" title="ATS Score" subtitle="Resume optimization" iconBgClass="bg-blue-100 text-blue-600" /> */}
-                {/* <StatCard icon="💼" value="12" title="Matched Jobs" subtitle="Based on your profile" iconBgClass="bg-purple-100 text-purple-600" /> */}
-                {/* <StatCard icon="🎯" value="5" title="Skills to Learn" subtitle="Close the gap" iconBgClass="bg-indigo-100 text-indigo-600" /> */}
-                {/* <StatCard icon="✅" value="0" title="Mock Interviews" subtitle="Completed sessions" iconBgClass="bg-green-100 text-green-600" /> */}
+               
             </div>
             
             {/* --- 3. Quick Actions & Career Tips (Two-Column Layout) --- */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
-                {/* --- Quick Actions Card --- */}
-                {/* <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h3>
-                    <div className="divide-y divide-gray-100">
-                        <QuickActionItem  text="Analyze Resume" IconComponent={DocumentIcon} inactiveColor="text-gray-400" />
-                        <QuickActionItem text="Start Interview Preperation" IconComponent={ExpandIcon} inactiveColor="text-gray-400" />
-                        <QuickActionItem text="Find Jobs" IconComponent={BriefcaseIcon} inactiveColor="text-gray-400" />
-                    </div>
-                </div> */}
+                
                 <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
   <h3 className="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h3>
 

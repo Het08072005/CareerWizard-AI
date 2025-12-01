@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { signup as signupService } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // ← import context
+import { AuthContext } from "../context/AuthContext"; 
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -9,7 +9,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // ← get login function from context
+  const { login } = useContext(AuthContext); 
 
   const handleSignup = async () => {
     try {
@@ -20,7 +20,7 @@ export default function Signup() {
 
       setMsg(res.data.message);
 
-      navigate("/"); // navigate to dashboard/home
+      navigate("/"); 
     } catch (err) {
       setMsg(err.response?.data?.error || "Signup failed");
     }

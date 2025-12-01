@@ -1,4 +1,4 @@
-# app/services/job_service.py
+
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict
 from app.models.job import Job, Skill

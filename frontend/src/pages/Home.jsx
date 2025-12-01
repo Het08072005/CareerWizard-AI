@@ -29,8 +29,7 @@ export default function Home() {
    const { isLoggedIn } = useContext(AuthContext); // get login state
   return (
     <div className="min-h-screen  bg-gray-50 flex flex-col">
-      {/* Note: Navbar would typically be rendered outside this component, e.g., in App.js */}
-
+      
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center grow text-center px-6 py-20 bg-gradient-to-r from-gray-50 to-gray-100  ">
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">

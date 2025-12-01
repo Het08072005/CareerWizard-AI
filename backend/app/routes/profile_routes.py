@@ -1,4 +1,4 @@
-# app/routes/profile.py
+
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from app.models.user_profile import UserProfile
@@ -11,7 +11,7 @@ from fastapi import Path
 router = APIRouter(prefix="/profile", tags=["Profile"])
 
 
-# ---------------------- GET PROFILE ----------------------
+# GET PROFILE
 @router.get("/", response_model=ProfileResponse)
 def get_profile(current_user=Depends(get_current_user), db: Session = Depends(get_db)):
 
@@ -45,7 +45,7 @@ def get_profile(current_user=Depends(get_current_user), db: Session = Depends(ge
 
 
 
-# ---------------------- UPDATE PROFILE ----------------------
+#  UPDATE PROFILE 
 @router.put("/")
 def update_profile(
     location: str = None,
@@ -115,7 +115,7 @@ def update_profile(
 
 
 
-# ---------------------- AI Improve Text ----------------------
+#  AI Improve Text 
 @router.post("/ai")
 async def ai_generate(text: str, category: str):
     """

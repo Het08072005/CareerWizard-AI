@@ -1,4 +1,4 @@
-# app/models/resume.py
+
 from sqlalchemy import Column, Integer, String, Text, JSON
 from app.db.database import Base
 

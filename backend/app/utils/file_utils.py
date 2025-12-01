@@ -1,4 +1,3 @@
-# utils/file_utils.py
 import io
 from PyPDF2 import PdfReader
 import docx
