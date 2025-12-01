@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* global.css or component CSS */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+
+.shimmer-text {
+  font-weight: 800;
+  font-size: 1.6rem;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 20%,
+    #cccccc 40%,
+    #ffffff 60%,
+    #ffffff 100%
+  );
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmerSlide 2s linear infinite;
+}
+
+@keyframes shimmerSlide {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+
+.gradient-move {
+  font-weight: 900;
+  font-size: 1.7rem;
+  background: linear-gradient(
+    to left,
+    #ff8ce3,
+    #9d7bff,
+    #7de2ff,
+    #ffa1d3
+  );
+  background-size: 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: moveGradient 3s linear infinite;
+}
+
+@keyframes moveGradient {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+
+.careerwizard-font {
+  font-family: "Delius", cursive;   /* Ya koi aur font jo aap chahen */
+  font-weight: 400;
+}
