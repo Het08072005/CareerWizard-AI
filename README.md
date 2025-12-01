@@ -1,6 +1,19 @@
-# CareerWizard AI
+### CareerWizard AI
 
-CareerWizard AI is an AI-powered career development platform that helps users improve resumes, analyze ATS compatibility, identify skill gaps, create learning roadmaps, match with relevant jobs, and prepare for interviews. Its unique interview system offers 800+ domain-wise questions with AI-guided explanations, showing how to answer effectively using the STAR method.
+CareerWizard AI is an AI-powered career development platform designed to help users **enhance their career journey** through smart automation and personalized guidance. The platform offers:
+
+- **AI-Powered Job Matching:** Receive job recommendations where the AI predicts **60%+ compatibility** based on your resume and profile. Only jobs that match your skillset and experience are highlighted.
+- **Resume Improvement & ATS Analysis:** Optimize your resume to pass Applicant Tracking Systems and improve visibility to recruiters.
+- **Skills Gap Identification:** Discover missing skills and get actionable recommendations for upskilling.
+- **Learning Roadmaps:** Personalized plans to help you acquire the skills needed for your target roles.
+
+- **Interview Preparation:** Access **800+ domain-specific questions** with AI-guided explanations, teaching you how to answer effectively using the **STAR method**.
+- **Career Roadmap & Progress Tracking:** Visualize your career growth, set milestones, and track achievements.
+
+> **Example:** In the Job Match section, CareerWizard AI shows only jobs where your profile meets **60% or higher match criteria**, making your job search efficient and focused.
+
+This AI-driven approach ensures users get **actionable insights** at every step, from building resumes to landing interviews and advancing their careers.
+
 ---
 
 ## 🚀 Features
@@ -71,8 +84,8 @@ CareerWizard AI is an AI-powered career development platform that helps users im
 - **Frontend:** React / Next.js  
 - **Backend:** FastAPI / Python  
 - **AI Layer:** LLM-based AI generation  
-- **Database:** MongoDB / PostgreSQL  
-- **Hosting:** Vercel / AWS / Render  
+- **Database:**  PostgreSQL  
+<!-- - **Hosting:** Vercel / AWS / Render   -->
 
 ---
 
