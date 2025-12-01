@@ -1,7 +1,6 @@
 # CareerWizard AI
 
-CareerWizard AI is an end-to-end AI-powered career development platform that helps users improve their resumes, analyze ATS compatibility, identify skill gaps, generate structured learning roadmaps, match with relevant jobs, and prepare for interviews with AI explanations.
-
+CareerWizard AI is an AI-powered career development platform that helps users improve resumes, analyze ATS compatibility, identify skill gaps, create learning roadmaps, match with relevant jobs, and prepare for interviews. Its unique interview system offers 800+ domain-wise questions with AI-guided explanations, showing how to answer effectively using the STAR method.
 ---
 
 ## 🚀 Features
