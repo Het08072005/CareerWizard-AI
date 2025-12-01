@@ -86,6 +86,14 @@ CareerWizard AI is an end-to-end AI-powered career development platform that hel
 
 ---
 
+## 📧 Support
+
+For support or questions: **het80630@gmail.com**
+
+---
+
+### ⭐ If you like this project, consider giving it a star!
+
 ## Installation
 
 Follow these steps to set up **CareerWizard AI** locally.
@@ -162,10 +170,5 @@ If you want, I can also **update your existing README.md** with this installatio
 
 Do you want me to do that?
 
-## 📧 Support
-
-For support or questions: **het80630@gmail.com**
 
 ---
-
-### ⭐ If you like this project, consider giving it a star!
