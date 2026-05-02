@@ -1,5 +1,6 @@
 
-from sqlalchemy import Column, Integer, String, Text, JSON
+from sqlalchemy import Column, Integer, String, Text, JSON, ForeignKey
+from sqlalchemy.orm import relationship
 from app.db.database import Base
 
 class ResumeAnalysis(Base):
@@ -13,3 +14,6 @@ class ResumeAnalysis(Base):
     improvements = Column(JSON, nullable=True)
     # optionally store parsed_skills if you parse them
     parsed_skills = Column(JSON, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    
+    user = relationship("User")

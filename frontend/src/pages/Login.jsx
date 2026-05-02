@@ -1,84 +1,100 @@
 import { useState, useContext } from "react";
 import { login as loginService } from "../services/authService";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // ← import context
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { ChevronRightIcon } from "../components/ui/Icons";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // ← get login function from context
+  const { login } = useContext(AuthContext);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMsg("");
     try {
       const res = await loginService(email, password);
-
-      // Update context & localStorage
       login(res.data.token, { id: res.data.user_id, name: res.data.name });
-
-      setMsg(res.data.message);
-
-      navigate("/"); // navigate to dashboard/home
+      navigate("/");
     } catch (err) {
-      setMsg(err.response?.data?.error || "Login failed"); 
+      setMsg(err.response?.data?.detail || err.response?.data?.error || "Credentials rejected.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
-      <div className="flex mb-6">
-        <button className="flex-1 flex items-center justify-center py-2 px-4 mr-2 bg-violet-600 text-white font-semibold rounded-lg shadow-md hover:bg-violet-700 transition duration-300">
-          Login
-        </button>
-        <button
-          onClick={() => navigate("/signup")}
-          className="flex-1 flex items-center justify-center py-2 px-4 ml-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition duration-300 border border-gray-200"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Sign Up
-        </button>
+    <div className="min-h-screen bg-black text-slate-200 flex items-center justify-center p-6 pt-32 relative overflow-hidden font-sans">
+      <div className="nebula-bg"></div>
+
+      <div className="w-full max-w-[400px] relative z-10 animate-reveal-up">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-white tracking-tight font-display mb-2 uppercase">System Login</h2>
+          <p className="text-slate-500 font-medium text-xs tracking-wide">Enter credentials to proceed.</p>
+        </div>
+
+        {/* Form Card */}
+        <div className="glass-card p-10 md:p-12 rounded-3xl relative overflow-hidden transition-all duration-500 hover:border-white/20">
+          <div className="shimmer-sweep opacity-30"></div>
+
+          <form className="space-y-8 relative z-10" onSubmit={handleLogin}>
+            <div className="space-y-2">
+              <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Secure Email</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full input-glass px-6 py-4 rounded-xl text-white font-medium focus:outline-none placeholder-slate-800 text-sm transition-all"
+                placeholder="identity@wizard.system"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Access Key</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full input-glass px-6 py-4 rounded-xl text-white font-medium focus:outline-none placeholder-slate-800 text-sm transition-all"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {msg && (
+              <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-[10px] font-bold flex items-center animate-shake">
+                <div className="w-1 h-1 rounded-full bg-rose-500 mr-2 animate-pulse"></div>
+                {msg}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full btn-action py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center group"
+            >
+              {isLoading ? (
+                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <span className="flex items-center">
+                  Login <ChevronRightIcon className="ml-2 w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Footer Link */}
+        <p className="text-center mt-8 text-[11px] text-slate-500 font-medium tracking-wide">
+          New operative? <Link to="/signup" className="text-white font-bold hover:text-cyan-400 transition-colors">Initialize Account</Link>
+        </p>
       </div>
-
-      <label htmlFor="email-input" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-      <input
-        id="email-input"
-        type="email"
-        placeholder="you@example.com"
-        className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-violet-500 focus:border-violet-500 placeholder-gray-400"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <label htmlFor="password-input" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-      <input
-        id="password-input"
-        type="password"
-        placeholder="••••••••"
-        className="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:ring-violet-500 focus:border-violet-500 placeholder-gray-400"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <button
-        onClick={handleLogin}
-        className="w-full bg-violet-600 text-white p-3 rounded-lg font-semibold hover:bg-violet-700 transition duration-300 shadow-md"
-      >
-        Confirm Login
-      </button>
-
-      {msg && <p className="mt-4 text-red-500 text-sm text-center">{msg}</p>}
     </div>
   );
 }

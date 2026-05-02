@@ -1,158 +1,153 @@
-// components/OverviewOutlet.jsx
-
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import api from "../api/axiosClient";
+import { motion } from "framer-motion";
+import {
+    DocumentIcon,
+    BriefcaseIcon,
+    UserCheckIcon,
+    ArrowRightIcon,
+    TrendingUpIcon,
+    SparklesIcon,
+    MapIcon,
+    ChatIcon
+} from "./ui/Icons";
 
-// --- Reusable Components for Clarity ---
+const FadeUp = ({ children, delay = 0 }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+        {children}
+    </motion.div>
+);
 
-// 1. Stat Card Component
-const StatCard = ({ icon, value, title, subtitle, iconBgClass }) => {
-    return (
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col space-y-3 hover:shadow-lg transition duration-300">
-            {/* Icon Area */}
-            <div className={`w-12 h-12 flex items-center justify-center rounded-lg text-2xl ${iconBgClass}`}>
-                {icon}
+const ProtocolCard = ({ title, desc, IconComponent, onClick, delay }) => (
+    <FadeUp delay={delay}>
+        <div
+            onClick={onClick}
+            className="group relative glass-card p-5 rounded-[1.2rem] bg-[#0A0A0A] border border-white/5 hover:border-cyan-400/30 transition-all duration-700 cursor-pointer overflow-hidden flex flex-col items-start h-full"
+        >
+            <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+
+            <div className="flex items-center gap-4 mb-3 w-full">
+                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 group-hover:text-cyan-400 transition-all duration-500 group-hover:scale-105">
+                    <IconComponent className="w-4.5 h-4.5" />
+                </div>
+                <h4 className="text-[16px] font-bold text-white group-hover:text-cyan-400 transition-colors duration-500">{title}</h4>
             </div>
-            {/* Main Value */}
-            <p className="text-4xl font-bold text-gray-900 pt-2">{value}</p>
-            {/* Title */}
-            <p className="text-lg text-gray-700 font-semibold">{title}</p>
-            {/* Subtitle */}
-            <p className="text-sm text-gray-500">{subtitle}</p>
+
+            <p className="text-[14px] text-slate-500 leading-relaxed group-hover:text-slate-300 transition-colors duration-500 line-clamp-2">{desc}</p>
         </div>
-    );
-}
-
-// 2. Quick Action Item Component
-const QuickActionItem = ({ text, IconComponent, inactiveColor }) => (
-    <div className="flex justify-between items-center p-4 rounded-lg cursor-pointer hover:bg-gray-50 transition duration-150 border-b last:border-b-0 border-gray-100">
-        <span className="text-gray-700">{text}</span>
-        <IconComponent className={`h-5 w-5 ${inactiveColor}`} />
-    </div>
+    </FadeUp>
 );
 
-// 3. Career Tip Component
-const CareerTip = ({ tip, bgColorClass, tipColorClass }) => (
-    <div className={`p-3 rounded-lg text-sm ${bgColorClass} mb-3`}>
-        <span className={`font-semibold ${tipColorClass}`}>Tip:</span> {tip}
-    </div>
-);
-
-// --- Main OverviewOutlet Component ---
 const OverviewOutlet = () => {
-    
-    const navigate = useNavigate();   
-    // Icon Definitions (using simple SVG paths for Quick Actions, matching the image look)
-    const DocumentIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>);
-    const ExpandIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 12V3h9M3 12h9M12 21v-9h9M12 12h9" /></svg>);
-    const BriefcaseIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>);
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
 
     return (
-        <div className="space-y-8">
-            
-            {/* --- 1. The Purple Banner (Ready to advance your career?) --- */}
-            <div className=" from-custom-purple bg-purple-600 text-white p-8 rounded-xl shadow-xl relative overflow-hidden">
-                <div className="absolute right-5 top-1/2 transform -translate-y-1/2 opacity-20 text-white">
-                    <svg className="w-20 h-20 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 18c-3.32-1.34-6-4.52-6-9V6.3l6-2.67 6 2.67V10c0 4.48-2.68 7.66-6 9z"/>
-                    </svg>
+        <div className="space-y-5 p-6 pb-8">
+
+            {/* OPTIMIZED COMPACT HERO AREA */}
+            <section className="relative p-6 md:p-8 px-10 rounded-[1.5rem] bg-[#0A0A0A] border border-white/5 overflow-hidden">
+                <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-400/[0.015] blur-[150px] -z-10" />
+
+                <div className="max-w-4xl">
+                    <FadeUp>
+                        <h1 className="text-4xl md:text-5xl font-bold text-white leading-none tracking-tight">
+                            Welcome back,
+                            <span className="brand-gradient ml-4 font-bold">{user?.name || 'het'}</span>
+                        </h1>
+                        <p className="text-slate-500 text-[10px] font-medium mt-5 italic opacity-40 flex items-center gap-2">
+                            <span className="w-5 h-[1px] bg-white/10" />
+                            Neural Trajectories Synchronized • Protocol Operational
+                        </p>
+                    </FadeUp>
+
+                    <FadeUp delay={0.2}>
+                        <div className="flex items-center gap-7 mt-5">
+                            <button
+                                onClick={() => navigate("/overview/job-match")}
+                                className="px-8 py-3.5 rounded-xl bg-white text-black text-[14px] font-bold hover:bg-cyan-400 transition-all active:scale-95 shadow-xl"
+                            >
+                                Find Job
+                            </button>
+                        </div>
+                    </FadeUp>
                 </div>
-                <h2 className="text-2xl font-bold mb-1">Ready to advance your career?</h2>
-                <p className="text-gray-200 mb-6">Get personalized job recommendations and improve your interview skills with AI</p>
-                
-                <div className="flex space-x-4">
-                    <button
-                    className="bg-white text-purple-700 font-semibold hover:bg-gray-100 py-2 px-6 rounded-lg transition shadow-md"
-                    onClick={() => navigate("/profile")}
-                    >
-                    Enhance profile
-                    </button>
-                    <button onClick={() => navigate("/overview/job-match")} className="bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg hover:bg-purple-800 hover:text-custom-purple transition">
-                        Explore Jobs
-                    </button>
-                </div>
-            </div>
+            </section>
 
-            {/* --- 2. The 4 Grid Cards --- */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-               
-            </div>
-            
-            {/* --- 3. Quick Actions & Career Tips (Two-Column Layout) --- */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                
-                <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-  <h3 className="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h3>
+            {/* SYNCHRONIZED COMPACT GRID */}
+            <div className="flex flex-col lg:flex-row gap-5 items-stretch pt-0">
 
-  <div className="divide-y divide-gray-100">
-
-    {/* 1: Analyze Resume */}
-    <button 
-      onClick={() => navigate("/overview/resume-analysis")} 
-      className="w-full text-left"
-    >
-      <QuickActionItem text="Analyze Resume" IconComponent={DocumentIcon} />
-    </button>
-
-    {/* 2: Start Interview Preparation */}
-    <button 
-      onClick={() => navigate("/overview/interview-prep")}
-      className="w-full text-left"
-    >
-      <QuickActionItem text="Start Interview Preparation" IconComponent={ExpandIcon} />
-    </button>
-
-    {/* 3: Find Jobs */}
-    <button 
-      onClick={() => navigate("/overview/job-match")}
-      className="w-full text-left"
-    >
-      <QuickActionItem text="Find Jobs" IconComponent={BriefcaseIcon} />
-    </button>
-
-  </div>
-</div>
-
-
-                {/* --- Career Tips Card --- */}
-                <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-800">Career Tips</h3>
-                    <div className="space-y-3">
-                        <CareerTip 
-                            tip="Keep your resume under 2 pages for better ATS scores" 
-                            bgColorClass="bg-blue-50" 
-                            tipColorClass="text-blue-600" 
+                {/* PROTOCOL GRID */}
+                <div className="flex-1 lg:max-w-[66.666%] flex flex-col">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
+                        <ProtocolCard
+                            title="ATS Matching"
+                            desc="Neural optimization of artifacts for maximum protocol compatibility."
+                            IconComponent={DocumentIcon}
+                            onClick={() => navigate("/overview/resume-analysis")}
+                            delay={0.3}
                         />
-                        <CareerTip 
-                            tip="Practice behavioral questions for better interview performance" 
-                            bgColorClass="bg-purple-50" 
-                            tipColorClass="text-purple-600" 
+                        <ProtocolCard
+                            title="Interview Prep"
+                            desc="Real-time AI simulations with diagnostics and STAR masterclass."
+                            IconComponent={ChatIcon}
+                            onClick={() => navigate("/overview/interview-prep")}
+                            delay={0.4}
                         />
-                        <CareerTip 
-                            tip="Update your skills regularly to match industry trends" 
-                            bgColorClass="bg-indigo-50" 
-                            tipColorClass="text-indigo-600" 
+                        <ProtocolCard
+                            title="Job Finding"
+                            desc="Index worldwide nodes and isolate matching opportunities."
+                            IconComponent={BriefcaseIcon}
+                            onClick={() => navigate("/overview/job-match")}
+                            delay={0.5}
+                        />
+                        <ProtocolCard
+                            title="Structured Roadmap"
+                            desc="Tactical guide to bridge gaps and reach target professional roles."
+                            IconComponent={MapIcon}
+                            onClick={() => navigate("/overview/skills-gap")}
+                            delay={0.6}
                         />
                     </div>
                 </div>
-                
+
+                {/* VOLATILITY INTEL */}
+                <div className="flex-1 lg:max-w-[33.333%] flex flex-col">
+                    <div className="flex-1 p-5 rounded-[1.2rem] bg-[#0A0A0A] border border-white/5 flex flex-col group overflow-hidden relative shadow-lg">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent" />
+
+                        <div className="flex justify-between items-center mb-6">
+                            <h5 className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Volatility Index</h5>
+                            <SparklesIcon className="w-3.5 h-3.5 text-cyan-400/20 group-hover:text-cyan-400 transition-colors" />
+                        </div>
+
+                        <div className="space-y-3.5 flex-1">
+                            {[
+                                { r: 'Systems Eng.', v: '+14%', p: 'High' },
+                                { r: 'AI Specialist', v: '+38%', p: 'Critical' },
+                                { r: 'Analytics Lead', v: '+11%', p: 'Stable' },
+                            ].map((item, id) => (
+                                <div key={id} className="flex items-center justify-between p-4 rounded-xl bg-white/[0.01] border border-white/5 hover:border-cyan-400/20 transition-all duration-300">
+                                    <div className="flex flex-col gap-0.5">
+                                        <p className="text-[14px] font-semibold text-white tracking-tight group-hover:text-cyan-400 transition-colors">{item.r}</p>
+                                        <span className="text-[11px] font-medium text-slate-600 uppercase tracking-widest">{item.p}</span>
+                                    </div>
+                                    <span className="text-[16px] font-bold text-cyan-400">{item.v}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            
         </div>
     );
 };
 
 export default OverviewOutlet;
-
-
-
-
-
-
-
-
-
-
-
-

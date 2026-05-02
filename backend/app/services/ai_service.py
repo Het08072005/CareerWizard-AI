@@ -8,7 +8,7 @@ from app.utils.file_utils import extract_text_from_pdf, extract_text_from_docx
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
 async def improve_text(text: str, category: str):
     """
@@ -95,39 +95,25 @@ Evaluate the resume with the same rigor used in real interviews and automated sc
 
 Your analysis must consider:
 - Keyword relevance to industry standards and target roles
-- Technical and soft skills visibility
+- Technical and soft skills visibility (EXTRACT AS MANY TECHNICAL SKILLS AS POSSIBLE)
 - Achievement quantification, impact, and metrics
 - Resume structure, formatting, clarity, and ATS friendliness
 - Employment consistency and role relevance
-- Missing competencies or skills that weaken the candidate’s profile
-- Modern hiring expectations for competitive applicants
-- Suggestions for projects, certifications, or experiences to strengthen the profile
 
 Return the evaluation ONLY in the following JSON format:
 {{
-    "ats_score": "<number>",
+    "ats_score": <number>,
+    "skills": ["skill1", "skill2", "skill3", "skill4", "skill5", ...],
     "strengths": ["point1", "point2", "point3", "point4"],
-    "improvements": [
-        "point1 - clearly mention what to fix, what skills to add, what projects or experiences to include",
-        "point2 - clearly mention what to fix, what skills to add, what projects or experiences to include",
-        "point3 - clearly mention what to fix, what skills to add, what projects or experiences to include",
-        "point4 - clearly mention what to fix, what skills to add, what projects or experiences to include"
-    ]
+    "improvements": ["point1", "point2", "point3", "point4"]
 }}
 
-Rules:
-- Each strength must be ONE line only.
-- Each improvement must be ONE line only and actionable.
-- Improvements must clearly mention:
-    1. What to fix or improve
-    2. Missing skills or competencies relevant to the target role
-    3. Projects, certifications, or experiences to add that align with the candidate’s skills
-- Do not add any explanation outside the JSON.
+Note: Return at least 10-15 skills if available in the text.
 
 Now analyze the resume below:
 
 RESUME:
-{content_to_send[:2000]}
+{content_to_send[:8000]}
 """
 
 

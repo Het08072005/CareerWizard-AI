@@ -7,6 +7,8 @@ from app.services.interview_service import create_interview_question, list_quest
 from app.schemas.interview_schema import InterviewCreate, InterviewResponse
 from fastapi import Body
 from app.services.interview_service import generate_ai_explanation
+from app.core.auth import get_current_user
+from app.models.activity import UserActivity
 
 router = APIRouter(prefix="/interview", tags=["interview"])
 
@@ -21,8 +23,18 @@ def add_question(
 def get_questions(
     role: Optional[str] = None,
     category: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
+    # Log activity
+    activity = UserActivity(
+        user_id=current_user.id,
+        activity_type="interview_prep",
+        details=f"Fetched {category or 'all'} questions for role {role or 'any'}"
+    )
+    db.add(activity)
+    db.commit()
+    
     return list_questions(db, role, category)
 
 

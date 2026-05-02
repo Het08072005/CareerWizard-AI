@@ -9,5 +9,7 @@ class User(Base):
     name = Column(String)
     email = Column(String, unique=True, index=True)
     password = Column(String)
+    role = Column(String, nullable=True)
 
     profile = relationship("UserProfile", back_populates="user", uselist=False)
+    activities = relationship("UserActivity", back_populates="user", cascade="all, delete-orphan")

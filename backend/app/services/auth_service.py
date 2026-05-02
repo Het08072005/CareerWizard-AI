@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from app.models.user import User
 from app.core.security import hash_password, verify_password, create_access_token
 
-def signup_service(db: Session, name: str, email: str, password: str):
+def signup_service(db: Session, name: str, email: str, password: str, role: str = None):
     user = db.query(User).filter(User.email == email).first()
     if user:
-        return {"error": "Email already exists"}
+        raise HTTPException(status_code=400, detail="Email already exists")
 
-    new_user = User(name=name, email=email, password=hash_password(password))
+    new_user = User(name=name, email=email, password=hash_password(password), role=role)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -23,10 +24,10 @@ def signup_service(db: Session, name: str, email: str, password: str):
 def login_service(db: Session, email: str, password: str):
     user = db.query(User).filter(User.email == email).first()
     if not user:
-        return {"error": "User not found"}
+        raise HTTPException(status_code=404, detail="User not found")
 
     if not verify_password(password, user.password):
-        return {"error": "Invalid password"}
+        raise HTTPException(status_code=401, detail="Invalid password")
 
     token = create_access_token({"user_id": user.id})
     return {

@@ -1,10 +1,12 @@
 
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from app.models.user_profile import UserProfile
 from app.schemas.profile_schema import ProfileResponse
 from app.core.auth import get_current_user, get_db
 from app.services.ai_service import improve_text
+from app.models.activity import UserActivity
 import json, os, uuid
 from fastapi import Path
 
@@ -96,7 +98,16 @@ def update_profile(
         
 
     db.commit()
-    db.refresh(profile)  # Refresh updated values from DB
+    db.refresh(profile)
+
+    # Log activity
+    activity = UserActivity(
+        user_id=current_user.id,
+        activity_type="profile_update",
+        details="Updated profile information" + (" with resume upload" if resume else "")
+    )
+    db.add(activity)
+    db.commit()
 
     return {
         "message": "Profile updated successfully",
@@ -117,7 +128,12 @@ def update_profile(
 
 #  AI Improve Text 
 @router.post("/ai")
-async def ai_generate(text: str, category: str):
+async def ai_generate(
+    text: str, 
+    category: str,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     category must be one of:
     - bio
@@ -128,6 +144,16 @@ async def ai_generate(text: str, category: str):
         raise HTTPException(status_code=400, detail="Invalid category (bio, experience, skills only)")
 
     improved = await improve_text(text, category)
+    
+    # Log activity
+    activity = UserActivity(
+        user_id=current_user.id,
+        activity_type="ai_enhance",
+        details=f"Enhanced {category} using AI"
+    )
+    db.add(activity)
+    db.commit()
+
     return {"category": category, "improved": improved}
 
 

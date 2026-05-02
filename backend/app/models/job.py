@@ -1,6 +1,6 @@
-
-from sqlalchemy import Column, Integer, String, Text, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Table, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from app.db.database import Base
 
 # Association table between jobs and skills
@@ -22,6 +22,10 @@ class Job(Base):
     type = Column(String(50))  # Full-time, Part-time, Contract, Remote
     description = Column(Text)
     posted = Column(String(50))  # e.g. "3 days ago"
+    apply_link = Column(String(500))
+    is_api = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 
     required_skills = relationship("Skill", secondary=job_skill_table, back_populates="jobs")
 

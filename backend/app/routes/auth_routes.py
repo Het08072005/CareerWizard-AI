@@ -6,17 +6,12 @@ from app.services.auth_service import signup_service, login_service
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-def db():
-    d = SessionLocal()
-    try:
-        yield d
-    finally:
-        d.close()
+from app.core.auth import get_db
 
 @router.post("/signup")
-def signup(req: SignupRequest, db: Session = Depends(db)):
-    return signup_service(db, req.name, req.email, req.password)
+def signup(req: SignupRequest, db: Session = Depends(get_db)):
+    return signup_service(db, req.name, req.email, req.password, req.role)
 
 @router.post("/login")
-def login(req: LoginRequest, db: Session = Depends(db)):
+def login(req: LoginRequest, db: Session = Depends(get_db)):
     return login_service(db, req.email, req.password)

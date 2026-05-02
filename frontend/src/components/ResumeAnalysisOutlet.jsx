@@ -1,136 +1,76 @@
 import React, { useState, useRef, useEffect } from "react";
 import api from "../api/axiosClient";
+import { CheckIcon, ExclamationCircleIcon } from "./ui/Icons";
+import { motion, AnimatePresence } from "framer-motion";
 
-// --- Reusable Feedback Item ---
-const FeedbackItem = ({ text, type }) => {
+const FeedbackItem = ({ text, type, index }) => {
   const isStrength = type === "strength";
-  const iconClass = isStrength ? "text-green-500" : "text-orange-500";
+  const bgClass = isStrength ? "bg-cyan-500/[0.03]" : "bg-rose-500/[0.03]";
+  const iconColor = isStrength ? "text-cyan-400" : "text-rose-400";
+  const borderColor = isStrength ? "border-cyan-500/10" : "border-rose-500/10";
+  const iconBg = isStrength ? "bg-cyan-500/10" : "bg-rose-500/10";
+  
+  const formatText = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
 
   return (
-    <li className="flex items-start text-gray-700 mb-2">
-      <span className="mr-2 mt-1 flex">
-        {isStrength ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-4 w-4 ${iconClass} fill-current`}
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 13.586l7.293-7.293a1 1 0 011.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-4 w-4 ${iconClass} fill-current`}
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M8.257 3.328A1 1 0 019 3h2a1 1 0 01.743.328l6 6a1 1 0 01.077 1.346l-8.5 8.5a1 1 0 01-1.346.077l-6-6a1 1 0 01-.077-1.346l6-6zM10 7a1 1 0 011 1v4a1 1 0 11-2 0V8a1 1 0 011-1zm0 8a1 1 0 100-2 1 1 0 000 2z"
-              clipRule="evenodd"
-            />
-          </svg>
-        )}
-      </span>
-      <span>{text}</span>
-    </li>
+    <motion.li
+      initial={{ opacity: 0, x: isStrength ? -20 : 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      className={`flex items-start p-4 mb-3 rounded-2xl border ${borderColor} ${bgClass} backdrop-blur-xl group hover:bg-white/[0.02] hover:border-white/20 transition-all duration-500 relative overflow-hidden shadow-lg`}
+    >
+      {/* PREMIUM ACCENT LINE */}
+      <div className={`absolute left-0 top-0 bottom-0 w-[3px] ${isStrength ? 'bg-cyan-500/40' : 'bg-rose-500/40'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+      
+      <div className={`shrink-0 w-7 h-7 rounded-xl flex items-center justify-center mr-4 mt-0.5 ${iconBg} ${iconColor} border ${borderColor} group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(0,242,255,0.2)] transition-all duration-500`}>
+        {isStrength ? <CheckIcon size={12} strokeWidth={2.5} /> : <ExclamationCircleIcon size={12} strokeWidth={2.5} />}
+      </div>
+      <span className="text-slate-300 group-hover:text-white transition-colors leading-relaxed text-[14px] font-medium py-0.5">{formatText(text)}</span>
+    </motion.li>
   );
 };
 
-// --- Result View Component ---
 const ResultView = ({ result }) => {
-  const { ats_score, strengths, improvements } = result;
-  const scoreColor = "bg-purple-400";
+  const { strengths, improvements } = result;
 
   return (
-    <div className="space-y-8 mt-10">
-      {/* ATS Score */}
-      <div className="border-b pb-4 border-gray-100">
-        <div className="flex justify-between items-center mb-2">
-          <h4 className="text-lg font-semibold text-gray-800">ATS Score</h4>
-          <div className="flex items-center text-purple-400 font-bold text-2xl">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 10l7-7m0 0l7 7m-7-7v18"
-              />
-            </svg>
-            {ats_score}%
-          </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 pb-12">
+      {/* STRENGTHS */}
+      <div className="bg-[#080808]/40 backdrop-blur-3xl p-6 rounded-[1.5rem] border border-white/5 relative group transition-all duration-700 shadow-2xl overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+        
+        <div className="flex items-center gap-4 mb-6 border-b border-white/5 pb-4">
+          <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_#06b6d4]" />
+          <h5 className="text-[16px] font-bold text-white tracking-tight">Key Strengths</h5>
         </div>
-        <div className="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className={`${scoreColor} h-full transition-all duration-700`}
-            style={{ width: `${ats_score}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-gray-500 mt-2">
-          {ats_score >= 80
-            ? "Excellent! Your resume is optimized."
-            : "Good, but there's room for improvement."}
-        </p>
+        <ul className="space-y-1">
+          {strengths.map((text, index) => (
+            <FeedbackItem key={index} index={index} text={text} type="strength" />
+          ))}
+        </ul>
       </div>
 
-      {/* Strengths & Improvements */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Strengths */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h5 className="text-lg font-semibold mb-4 flex items-center text-green-600">
-            <span className="mr-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 fill-current"
-                viewBox="0 0 24 24"
-              >
-                <path d="M9 16.2l-3.5-3.5a.996.996 0 011.41-1.41L9 13.39l6.09-6.09a.996.996 0 111.41 1.41l-6.75 6.75a.996.996 0 01-1.41 0z" />
-              </svg>
-            </span>
-            Strengths
-          </h5>
-          <ul>
-            {strengths.map((text, index) => (
-              <FeedbackItem key={index} text={text} type="strength" />
-            ))}
-          </ul>
+      {/* IMPROVEMENTS */}
+      <div className="bg-[#080808]/40 backdrop-blur-3xl p-6 rounded-[1.5rem] border border-white/5 relative group transition-all duration-700 shadow-2xl overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-rose-500/20 to-transparent" />
+        
+        <div className="flex items-center gap-4 mb-6 border-b border-white/5 pb-4">
+          <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse shadow-[0_0_10px_#f43f5e]" />
+          <h5 className="text-[16px] font-bold text-white tracking-tight">Areas for Improvement</h5>
         </div>
-
-        {/* Improvements */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h5 className="text-lg font-semibold mb-4 flex items-center text-orange-600">
-            <span className="mr-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 fill-current"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-              </svg>
-            </span>
-            Improvements Needed
-          </h5>
-          <ul>
-            {improvements.map((text, index) => (
-              <FeedbackItem key={index} text={text} type="improvement" />
-            ))}
-          </ul>
-        </div>
+        <ul className="space-y-1">
+          {improvements.map((text, index) => (
+            <FeedbackItem key={index} index={index} text={text} type="improvement" />
+          ))}
+        </ul>
       </div>
     </div>
   );
 };
 
-// --- Main Component ---
 const ResumeAnalysisOutlet = () => {
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -140,222 +80,161 @@ const ResumeAnalysisOutlet = () => {
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [pastedText, setPastedText] = useState("");
+  const [isHovering, setIsHovering] = useState(false);
 
-  // Load saved result, pasted text, and file from localStorage
   useEffect(() => {
     const savedResult = localStorage.getItem("resumeResult");
     const savedText = localStorage.getItem("resumeText");
     const savedFile = localStorage.getItem("resumeFile");
 
-    if (savedResult) {
-      setResult(JSON.parse(savedResult));
-      setShowResults(true);
-    }
-
+    if (savedResult) { setResult(JSON.parse(savedResult)); setShowResults(true); }
     if (savedText) setPastedText(savedText);
-
     if (savedFile) {
-      const { name, type, data } = JSON.parse(savedFile);
-      const blob = b64toBlob(data, type);
-      const file = new File([blob], name, { type });
-      setSelectedFile(file);
+      try {
+        const { name, type, data } = JSON.parse(savedFile);
+        const file = new File([new Blob([atob(data)], { type })], name, { type });
+        setSelectedFile(file);
+      } catch (e) { localStorage.removeItem("resumeFile"); }
     }
   }, []);
-
-  // Helper: Convert Base64 to Blob
-  const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
-      byteArrays.push(new Uint8Array(byteNumbers));
-    }
-    return new Blob(byteArrays, { type: contentType });
-  };
 
   const handleUploadClick = () => fileInputRef.current.click();
 
   const handleFileChange = (e) => {
-    // --- START: Added logic to clear results on new file selection ---
-    setResult(null);
-    setShowResults(false);
-    localStorage.removeItem("resumeResult");
-    // --- END: Added logic to clear results on new file selection ---
-
+    setResult(null); setShowResults(false);
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file);
-      setPastedText("");
-      // Save file in localStorage as Base64
+      setSelectedFile(file); setPastedText("");
       const reader = new FileReader();
       reader.onload = () => {
-        const base64Data = reader.result.split(",")[1];
-        localStorage.setItem(
-          "resumeFile",
-          JSON.stringify({ name: file.name, type: file.type, data: base64Data })
-        );
+        localStorage.setItem("resumeFile", JSON.stringify({ name: file.name, type: file.type, data: reader.result.split(",")[1] }));
       };
       reader.readAsDataURL(file);
-    } else {
-      setSelectedFile(null);
-      localStorage.removeItem("resumeFile");
     }
   };
 
-  const handleTextChange = (e) => {
-    // --- START: Added logic to clear results on text change ---
-    setResult(null);
-    setShowResults(false);
-    localStorage.removeItem("resumeResult");
-    // --- END: Added logic to clear results on text change ---
-    
-    setPastedText(e.target.value);
-    localStorage.setItem("resumeText", e.target.value);
-    if (e.target.value.length > 0) {
-      setSelectedFile(null);
-      fileInputRef.current.value = null;
-      localStorage.removeItem("resumeFile");
-    }
+  const handleDrop = (e) => {
+    e.preventDefault(); setIsHovering(false);
+    const file = e.dataTransfer.files[0];
+    if (file && (file.type === "application/pdf" || file.name.endsWith('.doc') || file.name.endsWith('.docx'))) {
+      setSelectedFile(file); setPastedText("");
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem("resumeFile", JSON.stringify({ name: file.name, type: file.type, data: reader.result.split(",")[1] }));
+      };
+      reader.readAsDataURL(file);
+    } else { setError("INVALID_FILE_PROTOCOL"); }
   };
 
   const isAnalyzeEnabled = selectedFile || pastedText.length > 0;
 
-  const handleAnalyzeClick = async () => {
-    if (!isAnalyzeEnabled) return;
-    setLoading(true);
-    setError("");
-    setShowResults(false);
-
+  const analyzeResume = async () => {
+    setLoading(true); setError(""); setShowResults(false);
     try {
       const formData = new FormData();
       if (selectedFile) formData.append("file", selectedFile);
       if (pastedText) formData.append("text", pastedText);
-
-      const response = await api.post("/resume/analyze", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setResult(response.data);
-      setShowResults(true);
+      const response = await api.post("/resume/analyze", formData, { headers: { "Content-Type": "multipart/form-data" } });
+      setResult(response.data); setShowResults(true);
       localStorage.setItem("resumeResult", JSON.stringify(response.data));
-    } catch (err) {
-      console.error(err);
-      setError("Failed to analyze resume. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { setError("SYSTEM_STREAM_INTERRUPTED"); } finally { setLoading(false); }
   };
 
   const handleClear = () => {
-    setResult(null);
-    setShowResults(false);
-    setSelectedFile(null);
-    setPastedText("");
-    fileInputRef.current.value = null;
-    localStorage.removeItem("resumeResult");
-    localStorage.removeItem("resumeText");
-    localStorage.removeItem("resumeFile");
+    setResult(null); setShowResults(false); setSelectedFile(null); setPastedText("");
+    localStorage.removeItem("resumeResult"); localStorage.removeItem("resumeText"); localStorage.removeItem("resumeFile");
+    setError("");
   };
-
   return (
-    <div className="p-4">
-      <h3 className="text-xl font-semibold mb-2 text-gray-800">
-        Resume ATS Analysis
-      </h3>
-      <p className="text-gray-600 mb-8">
-        Upload your resume or paste the text to get an AI-powered ATS score and
-        detailed feedback.
-      </p>
+    <div className="w-full text-slate-200 min-h-screen relative overflow-hidden font-sans bg-[#050505] p-5 md:px-10 pt-3 pb-8">
+      {/* ARCHITECTURAL BACKGROUND ELEMENTS */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Upload */}
-        <div>
-          <label className="block text-base font-medium text-gray-700 mb-3">
-            Upload Resume (PDF/DOC)
-          </label>
-          <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer hover:border-purple-400 hover:bg-purple-50 flex flex-col justify-center items-center min-h-[250px]"
-            onClick={handleUploadClick}
-          >
-            {selectedFile ? (
-              <div className="text-purple-400 font-semibold text-lg">
-                ✅ {selectedFile.name} loaded
-                <p className="text-sm text-gray-500 mt-1">Click to change file</p>
-              </div>
-            ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10 text-gray-400 mb-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+      <div className="max-w-[1400px] mx-auto relative z-10">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/5 pb-6 relative">
+          <div className="flex flex-col gap-2 group">
+            <h3 className="text-4xl font-bold text-white tracking-tight leading-none cursor-default">
+              Resume Analysis
+            </h3>
+          </div>
+
+          {result && showResults && (
+            <div className="relative group scale-90 md:scale-100 origin-right transition-transform duration-700">
+              <div className="relative w-24 h-24 flex items-center justify-center">
+                {/* HIGH-PRECISION TELEMETRY RING (C = 2 * PI * R) */}
+                <svg className="absolute inset-0 w-full h-full -rotate-90">
+                  <circle cx="50%" cy="50%" r="42%" className="text-white/5 stroke-current" strokeWidth="2.5" fill="none" />
+                  <motion.circle
+                    initial={{ strokeDashoffset: 264 }}
+                    animate={{ strokeDashoffset: 264 - (264 * result.ats_score) / 100 }}
+                    transition={{ duration: 2, ease: "circOut" }}
+                    cx="50%" cy="50%" r="42%"
+                    className={`${result.ats_score >= 60 ? 'text-emerald-400' : 'text-rose-400'} stroke-current drop-shadow-[0_0_12px_current]`}
+                    strokeWidth="2.5" fill="none"
+                    strokeDasharray="264" strokeLinecap="round"
                   />
                 </svg>
-                <p className="text-gray-700 font-medium">Click to upload</p>
-                <p className="text-sm text-gray-500">PDF, DOC up to 10MB</p>
-              </>
+
+                {/* INTERNAL SCORE DATA */}
+                <div className="flex flex-col items-center justify-center z-10">
+                  <div className="flex items-baseline gap-0.5 mt-1">
+                    <span className={`text-2xl font-black tracking-tighter ${result.ats_score >= 60 ? 'text-emerald-400' : 'text-rose-400'}`}>{result.ats_score}</span>
+                    <span className="text-[10px] text-white/20 font-black tracking-widest leading-none">/100</span>
+                  </div>
+                  <span className={`text-[10px] font-bold tracking-[0.2em] uppercase mt-0.5 ${result.ats_score >= 60 ? 'text-emerald-500/60' : 'text-rose-500/60'}`}>ATS</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <motion.div
+            whileHover={{ y: -1 }}
+            className={`h-14 border border-white/5 bg-[#080808] rounded-xl px-6 flex justify-between items-center cursor-pointer transition-all duration-700 relative overflow-hidden group/box hover:border-cyan-500/30 shadow-2xl ${isHovering ? 'border-cyan-400 bg-cyan-400/[0.02]' : ''}`}
+            onClick={handleUploadClick} onDrop={handleDrop} onDragOver={(e) => { e.preventDefault(); setIsHovering(true); }} onDragLeave={() => setIsHovering(false)}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.03] to-transparent opacity-0 group-hover/box:opacity-100 transition-opacity duration-700" />
+            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-cyan-500/0 group-hover/box:bg-cyan-500/20 transition-all duration-700" />
+
+            {selectedFile ? (
+              <span className="text-white font-semibold text-[14px] z-10 truncate">{selectedFile.name}</span>
+            ) : (
+              <span className="text-slate-600 group-hover/box:text-slate-300 font-medium text-[13px] transition-colors duration-700">Upload Resume (PDF/DOCX)</span>
             )}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-              accept=".pdf,.doc,.docx"
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".pdf,.doc,.docx" />
+          </motion.div>
+
+          <motion.div whileHover={{ y: -2 }} className="relative w-full rounded-xl shadow-2xl group">
+            <textarea
+              className="w-full p-4 bg-[#080808] backdrop-blur-3xl border border-white/5 rounded-xl focus:border-cyan-500/30 resize-none placeholder-slate-800 text-slate-300 font-medium text-[13px] transition-all duration-700 outline-none h-14 focus:h-24"
+              placeholder="Or paste resume text here..."
+              value={pastedText} onChange={(e) => setPastedText(e.target.value)}
             />
-          </div>
+          </motion.div>
         </div>
 
-        {/* Paste */}
-        <div>
-          <label className="block text-base font-medium text-gray-700 mb-3">
-            Or Paste Resume Text
-          </label>
-          <textarea
-            className="w-full p-4 border border-gray-300 rounded-lg focus:ring-purple-400 focus:border-purple-400 resize-none placeholder-gray-400 text-gray-800"
-            rows={10}
-            placeholder="Paste your resume content here..."
-            style={{ minHeight: "250px" }}
-            value={pastedText}
-            onChange={handleTextChange}
-          ></textarea>
+        <div className="flex items-center gap-6 mb-8">
+          <motion.button
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.98 }}
+            className={`h-11 rounded-lg transition-all duration-700 font-bold text-[14px] px-10 flex items-center justify-center gap-5 shadow-2xl ${isAnalyzeEnabled ? "bg-white text-black hover:bg-emerald-400" : "bg-white/[0.02] border border-white/5 text-slate-800 cursor-not-allowed"}`}
+            onClick={analyzeResume} disabled={!isAnalyzeEnabled || loading}
+          >
+            {loading ? "Analyzing..." : "Analyze Resume"}
+          </motion.button>
         </div>
+
+        <AnimatePresence>
+          {loading && <div className="h-48 rounded-[2rem] border border-white/5 bg-[#080808] animate-pulse" />}
+          {!loading && showResults && result && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              <ResultView result={result} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Buttons */}
-      <div className="mt-8 pt-4 border-t border-gray-100 flex flex-col lg:flex-row lg:items-center gap-4">
-        <button
-          className={`bg-purple-600 text-white font-semibold py-3 px-8 rounded-lg transition duration-200 shadow-md ${
-            isAnalyzeEnabled
-              ? "hover:bg-purple-500"
-              : "opacity-60 cursor-not-allowed"
-          }`}
-          onClick={handleAnalyzeClick}
-          disabled={!isAnalyzeEnabled || loading}
-        >
-          {loading ? "Analyzing..." : "Analyze Resume"}
-        </button>
-
-        <button
-          className="bg-gray-300 text-gray-700 font-semibold py-3 px-8 rounded-lg transition duration-200 shadow-md hover:bg-gray-400"
-          onClick={handleClear}
-        >
-          Clear
-        </button>
-
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-      </div>
-
-      {/* Results */}
-      {showResults && result && <ResultView result={result} />}
     </div>
   );
 };

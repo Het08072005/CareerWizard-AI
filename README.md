@@ -4,7 +4,7 @@ CareerWizard AI is an AI-powered career development platform designed to help us
 
 - **AI-Powered Job Matching:** Receive job recommendations where the AI predicts **60%+ compatibility** based on your resume and profile. Only jobs that match your skillset and experience are highlighted.
 - **Resume Improvement & ATS Analysis:** Optimize your resume to pass Applicant Tracking Systems and improve visibility to recruiters.
-- **Skills Gap Identification:** Discover missing skills and get actionable recommendations for upskilling.
+- **Skills Gap Identification:** Discover missing skills and get actionable koirecommendations for upskilling.
 - **Learning Roadmaps:** Personalized plans to help you acquire the skills needed for your target roles.
 
 - **Interview Preparation:** Access **800+ domain-specific questions** with AI-guided explanations, teaching you how to answer effectively using the **STAR method**.

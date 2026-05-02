@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ARRAY
+from sqlalchemy import Column, Integer, String, Text, JSON
 from app.db.database import Base
 
 class InterviewQuestion(Base):
@@ -13,7 +13,7 @@ class InterviewQuestion(Base):
     title = Column(Text, nullable=False)                # Question title
     difficulty = Column(String(20), nullable=False)     # easy/medium/hard
 
-    tags = Column(ARRAY(String), nullable=True)         # ['JavaScript','Async']
+    tags = Column(JSON, nullable=True)         # ['JavaScript','Async']
 
     answer_explanation = Column(Text, nullable=False)
     answer_code = Column(Text, nullable=True)

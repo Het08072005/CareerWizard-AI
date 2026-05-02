@@ -39,7 +39,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-      
+
 
         <Route
           path="/profile"
@@ -76,7 +76,7 @@ export default function App() {
           <Route path="interview-prep" element={<InterviewPrepOutlet />} />
         </Route>
 
-       
+
 
       </Routes>
     </div>

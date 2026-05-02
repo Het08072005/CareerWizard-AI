@@ -8,3 +8,5 @@ google-generativeai
 python-jose
 PyPDF2
 python-docx
+python-multipart
+requests

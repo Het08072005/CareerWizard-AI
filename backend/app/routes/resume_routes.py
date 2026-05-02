@@ -4,6 +4,8 @@ from app.schemas.resume_schema import ResumeAnalysisResponse
 from app.db.database import SessionLocal
 from app.services.ai_service import analyze_resume_with_ai
 from app.models.resume import ResumeAnalysis
+from app.models.activity import UserActivity
+from app.core.auth import get_current_user
 
 router = APIRouter(prefix="/resume", tags=["resume"])
 
@@ -18,6 +20,7 @@ def get_db():
 async def analyze_resume(
     file: UploadFile = File(None),
     text: str = Form(None),
+    current_user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     if not file and not text:
@@ -32,9 +35,19 @@ async def analyze_resume(
         text_content=text,
         ats_score=result["ats_score"],
         strengths=result["strengths"],
-        improvements=result["improvements"]
+        improvements=result["improvements"],
+        user_id=current_user.id
     )
     db.add(db_resume)
+    
+    # Log activity
+    activity = UserActivity(
+        user_id=current_user.id,
+        activity_type="resume_analysis",
+        details=f"Analyzed {file.filename if file else 'text input'}"
+    )
+    db.add(activity)
+    
     db.commit()
     db.refresh(db_resume)
 

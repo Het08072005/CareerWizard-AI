@@ -26,3 +26,8 @@ logs/
 # OS files
 .DS_Store
 Thumbs.db
+
+
+
+
+uvicorn app.main:app --reload
