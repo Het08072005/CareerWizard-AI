@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { XIcon, AdjustmentsHorizontalIcon, SearchIcon } from './ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import JobFilterModal from './JobFilterModal';
+import { ThemeContext } from '../context/ThemeContext';
 
 const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilterOpen }) => {
+  const { isDark } = useContext(ThemeContext);
 
   const activeFilterCount = 
     filters.skills.length + 
@@ -25,52 +26,64 @@ const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilte
 
   return (
     <div className="space-y-4">
-      <div className="bg-[#080808] border border-white/5 p-4 md:p-6 rounded-2xl relative overflow-hidden group shadow-2xl">
+      <div className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] p-4 md:p-6 rounded-2xl relative overflow-hidden group shadow-md">
         <div className="absolute top-0 left-0 w-full h-[1px] bg-white/5" />
         
-      <div className="flex flex-col md:flex-row gap-4 items-center relative z-10">
-        {/* Main Search Bar */}
-        <div className="flex-1 w-full relative">
-          <SearchIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-cyan-500 transition-colors" />
-          <input
-            type="text"
-            placeholder="Search roles or companies..."
-            className="w-full h-10 bg-white/[0.02] border border-white/5 rounded-xl pl-11 pr-4 focus:border-cyan-500/30 outline-none transition-all duration-700 font-medium text-white placeholder-slate-700 text-[14px]"
-            value={filters.search}
-            onChange={(e) => onFilterChange('search', e.target.value)}
-          />
-          {filters.search && (
-            <button 
-              onClick={() => onFilterChange('search', '')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-white transition-colors"
-            >
-              <XIcon size={14} />
-            </button>
+        <div className="flex flex-col md:flex-row gap-4 items-center relative z-10">
+          {/* Main Search Bar */}
+          <div className="flex-1 w-full relative">
+            <SearchIcon size={16} className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${
+              isDark ? 'text-slate-600 group-focus-within:text-cyan-500' : 'text-slate-400 group-focus-within:text-emerald-500'
+            }`} />
+            <input
+              type="text"
+              placeholder="Search roles or companies..."
+              className={`w-full h-10 rounded-xl pl-11 pr-4 outline-none transition-all duration-700 font-medium text-[14px] border ${
+                isDark 
+                  ? 'bg-white/[0.02] border-white/5 focus:border-cyan-500/30 text-white placeholder-slate-700' 
+                  : 'bg-white border-slate-200 focus:border-emerald-500/30 text-slate-800 placeholder-slate-400'
+              }`}
+              value={filters.search}
+              onChange={(e) => onFilterChange('search', e.target.value)}
+            />
+            {filters.search && (
+              <button 
+                onClick={() => onFilterChange('search', '')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-800 dark:hover:text-white transition-colors"
+              >
+                <XIcon size={14} />
+              </button>
+            )}
+          </div>
+
+          {/* Advanced Filter Button */}
+          <button 
+            onClick={() => onFilterOpen()}
+            className={`h-10 px-5 rounded-xl border transition-all duration-500 flex items-center gap-2 font-bold text-[13px] relative overflow-hidden group/btn ${
+              activeFilterCount > 0 
+                ? isDark ? 'bg-cyan-500 text-black border-cyan-500' : 'bg-[#16a34a] text-white border-[#16a34a]' 
+                : isDark 
+                  ? 'bg-white/[0.02] border-white/5 text-slate-400 hover:border-white/20 hover:text-white' 
+                  : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-950'
+            }`}
+          >
+            <AdjustmentsHorizontalIcon size={16} className={activeFilterCount > 0 ? 'animate-pulse' : ''} />
+            <span>Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="bg-black/20 px-1.5 py-0.5 rounded-full text-[9px] ml-0.5">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+
+          {/* Resume Slot */}
+          {resumeSlot && (
+            <div className="w-full md:w-[240px] h-10 shrink-0">
+              {resumeSlot}
+            </div>
           )}
         </div>
-
-        {/* Advanced Filter Button */}
-        <button 
-          onClick={() => onFilterOpen()}
-          className={`h-10 px-5 rounded-xl border transition-all duration-500 flex items-center gap-2 font-bold text-[13px] relative overflow-hidden group/btn ${activeFilterCount > 0 ? 'bg-cyan-500 text-black border-cyan-500' : 'bg-white/[0.02] border-white/5 text-slate-400 hover:border-white/20 hover:text-white'}`}
-        >
-          <AdjustmentsHorizontalIcon size={16} className={activeFilterCount > 0 ? 'animate-pulse' : ''} />
-          <span>Filters</span>
-          {activeFilterCount > 0 && (
-            <span className="bg-black/20 px-1.5 py-0.5 rounded-full text-[9px] ml-0.5">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
-
-        {/* Resume Slot */}
-        {resumeSlot && (
-          <div className="w-full md:w-[240px] h-10 shrink-0">
-            {resumeSlot}
-          </div>
-        )}
       </div>
-    </div>
 
       {/* Active Filter Chips */}
       <AnimatePresence>
@@ -82,16 +95,16 @@ const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilte
             className="flex flex-wrap gap-2 px-2"
           >
             {filters.skills.map(skill => (
-              <FilterChip key={skill} label={skill} onRemove={() => removeFilter('skills', skill)} color="cyan" />
+              <FilterChip key={skill} label={skill} onRemove={() => removeFilter('skills', skill)} color={isDark ? "cyan" : "emerald"} />
             ))}
             {filters.company.map(c => (
-              <FilterChip key={c} label={c} onRemove={() => removeFilter('company', c)} color="indigo" />
+              <FilterChip key={c} label={c} onRemove={() => removeFilter('company', c)} color={isDark ? "indigo" : "blue"} />
             ))}
             {filters.location.map(l => (
-              <FilterChip key={l} label={l} onRemove={() => removeFilter('location', l)} color="purple" />
+              <FilterChip key={l} label={l} onRemove={() => removeFilter('location', l)} color={isDark ? "purple" : "blue"} />
             ))}
             {filters.role && filters.role.map(r => (
-              <FilterChip key={r} label={r} onRemove={() => removeFilter('role', r)} color="blue" />
+              <FilterChip key={r} label={r} onRemove={() => removeFilter('role', r)} color={isDark ? "blue" : "indigo"} />
             ))}
             {filters.salaryMin > 0 && (
               <FilterChip label={`$${filters.salaryMin}K+`} onRemove={() => removeFilter('salaryMin')} color="emerald" />
@@ -111,9 +124,9 @@ const FilterChip = ({ label, onRemove, color }) => {
     cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
     indigo: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
     purple: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-    emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    blue: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    emerald: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+    amber: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+    blue: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
   };
 
   return (
@@ -121,10 +134,10 @@ const FilterChip = ({ label, onRemove, color }) => {
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.8, opacity: 0 }}
-      className={`px-3 py-1 rounded-full border ${colors[color]} flex items-center gap-2 text-[11px] font-bold tracking-tight shadow-lg`}
+      className={`px-3 py-1 rounded-full border ${colors[color]} flex items-center gap-2 text-[11px] font-bold tracking-tight shadow-sm`}
     >
       <span>{label}</span>
-      <button onClick={onRemove} className="hover:text-white transition-colors">
+      <button onClick={onRemove} className="hover:text-black dark:hover:text-white transition-colors">
         <XIcon size={12} />
       </button>
     </motion.div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100..900&family=Syne:wght@400..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100..900&family=Syne:wght@400..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Rubik:wght@500&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -7,8 +7,16 @@
   --font-secondary: 'Inter', sans-serif;
   --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-numeric: 'Rubik', sans-serif;
 
-  --bg-main: #020202;
+  /* Default Dark Mode variables */
+  --bg-main: #050505;
+  --bg-sidebar: #0a0a0a;
+  --bg-card: rgba(255, 255, 255, 0.02);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+
   --accent-cyan: #00f2ff;
   --accent-fuchsia: #ff007a;
   --accent-indigo: #6366f1;
@@ -17,25 +25,78 @@
   --glass-border: rgba(255, 255, 255, 0.08);
 }
 
-.dashboard-theme {
-  font-family: 'Inter', sans-serif !important;
-  --font-primary: 'Inter', sans-serif;
-  --font-sans: 'Inter', sans-serif;
-  letter-spacing: -0.01em;
-  font-size: 16px;
+/* Light Mode Theme matching career.html exactly */
+html.light {
+  --bg-main: #f0eeea;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --border-color: #e0ddd5;
+  --text-main: #1a1916;
+  --text-muted: #8a877e;
+
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.08);
 }
 
-.dashboard-theme * {
-  font-family: 'Inter', sans-serif !important;
+/* Centralized standardized Brand Logo - Original High-Tech Style */
+.cw-brand-logo {
+  font-family: var(--font-primary) !important;
+  font-weight: 300 !important; /* light weight */
+  font-size: 22px !important;
+  letter-spacing: -0.05em !important; /* tight tracking */
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  user-select: none;
 }
 
+.cw-brand-logo .accent {
+  font-weight: 600 !important; /* semibold */
+  letter-spacing: -0.02em !important;
+  margin-left: 1px;
+}
+
+/* Color in Light Mode */
+html.light .cw-brand-logo {
+  color: #1e293b !important; /* slate-800 */
+}
+html.light .cw-brand-logo .accent {
+  color: #16a34a !important; /* emerald-600 */
+}
+
+/* Color in Dark Mode or default (Original layout style) */
+html.dark .cw-brand-logo,
+.cw-brand-logo {
+  color: #94a3b8 !important; /* slate-400 */
+}
+html.dark .cw-brand-logo .accent,
+.cw-brand-logo .accent {
+  color: #ffffff !important; /* white */
+}
+
+/* Base resets depending on theme */
 body {
   font-family: var(--font-primary);
   background-color: var(--bg-main);
-  color: #f8fafc;
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Global numeric font helper */
+.num-font,
+.stat-value,
+.score-chip,
+.badge,
+.status-badge,
+.progress-value,
+.day-node,
+.ring-number {
+  font-family: var(--font-numeric) !important;
+  font-weight: 500 !important;
+}
+
 
 @theme {
   --font-serif: var(--font-serif);

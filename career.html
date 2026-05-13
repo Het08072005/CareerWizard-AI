@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerWizard AI — Internship Portal v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:#f0eeea;color:#1a1916;min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea,select{font-family:inherit;}
+a{text-decoration:none;color:inherit;}
+ul,ol{list-style:none;}
+
+:root{
+  --white:#ffffff;--bg:#f0eeea;--bg2:#e8e6e0;--surface:#ffffff;
+  --border:#e0ddd5;--border2:#ccc9be;--text:#1a1916;--text2:#48453e;
+  --muted:#8a877e;--muted2:#b8b5ac;
+  --green:#166534;--green-mid:#16a34a;--green-light:#dcfce7;--green-bg:#f0fdf4;
+  --amber:#92400e;--amber-mid:#d97706;--amber-light:#fef3c7;--amber-bg:#fffbeb;
+  --blue:#1e3a8a;--blue-mid:#2563eb;--blue-light:#dbeafe;--blue-bg:#eff6ff;
+  --purple:#4c1d95;--purple-mid:#7c3aed;--purple-light:#ede9fe;--purple-bg:#f5f3ff;
+  --red:#991b1b;--red-mid:#dc2626;--red-light:#fee2e2;--red-bg:#fef2f2;
+  --radius-sm:6px;--radius-md:10px;--radius-lg:14px;--radius-xl:20px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05),0 1px 3px rgba(0,0,0,.07);
+  --shadow:0 2px 8px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.05);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.09),0 2px 6px rgba(0,0,0,.05);
+  --transition:all .18s ease;
+}
+
+/* ── LAYOUT ── */
+.app-shell{display:flex;min-height:100vh;}
+.sidebar{width:240px;min-width:240px;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:22px 20px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:17px;color:var(--text);letter-spacing:-.4px;}
+.logo-text .logo-accent{color:var(--green-mid);}
+.logo-badge{display:inline-flex;align-items:center;margin-top:6px;padding:2px 9px;background:var(--green-light);border:1px solid #86efac;border-radius:100px;font-size:10px;font-family:'DM Mono',monospace;color:var(--green);letter-spacing:.4px;font-weight:500;}
+.sidebar-nav{padding:16px 12px;flex:1;overflow-y:auto;}
+.nav-section-label{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:1.2px;font-weight:500;padding:0 8px;margin:14px 0 5px;font-family:'DM Mono',monospace;}
+.nav-section-label:first-child{margin-top:0;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-md);font-size:13.5px;font-weight:500;color:var(--text2);cursor:pointer;transition:var(--transition);margin-bottom:2px;border:1px solid transparent;}
+.nav-item i{width:18px;text-align:center;font-size:14px;flex-shrink:0;}
+.nav-item:hover{background:var(--bg);color:var(--text);}
+.nav-item.active{background:var(--green-bg);color:var(--green);border-color:#bbf7d0;}
+.sidebar-bottom{padding:14px 12px;border-top:1px solid var(--border);flex-shrink:0;}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px 11px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);}
+.user-card:hover{background:var(--bg2);}
+.user-avatar{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#166534,#16a34a);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:14px;color:#fff;flex-shrink:0;}
+.user-name{font-size:13px;font-weight:600;color:var(--text);}
+.user-plan{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;}
+.role-badge{font-size:9px;font-family:'DM Mono',monospace;padding:1px 6px;border-radius:100px;background:var(--purple-light);color:var(--purple);border:1px solid var(--purple-light);margin-top:2px;display:inline-block;}
+
+.main-area{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.topbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:90;flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.breadcrumb{font-size:12.5px;color:var(--muted);font-family:'DM Mono',monospace;}
+.breadcrumb span{color:var(--text);font-weight:500;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.status-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;font-size:11.5px;font-weight:500;font-family:'DM Mono',monospace;border:1px solid;}
+.status-green{background:var(--green-bg);color:var(--green);border-color:#86efac;}
+.status-amber{background:var(--amber-bg);color:var(--amber);border-color:#fcd34d;}
+.status-purple{background:var(--purple-bg);color:var(--purple);border-color:#c4b5fd;}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.75);}}
+.icon-btn{width:36px;height:36px;border-radius:var(--radius-md);background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:15px;transition:var(--transition);position:relative;}
+.icon-btn:hover{background:var(--bg2);color:var(--text2);}
+.notif-red{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--red-mid);border:1.5px solid var(--white);}
+.content-area{flex:1;overflow-y:auto;padding:26px 28px 40px;}
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow-sm);}
+.card+.card{margin-top:16px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-title{font-family:'Fraunces',serif;font-weight:600;font-size:15px;color:var(--text);display:flex;align-items:center;gap:7px;}
+.card-title i{font-size:15px;color:var(--muted);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:var(--radius-md);font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid;transition:var(--transition);white-space:nowrap;line-height:1;}
+.btn-primary{background:#16a34a;color:#fff;border-color:#16a34a;}
+.btn-primary:hover{background:#166534;border-color:#166534;transform:translateY(-1px);box-shadow:0 4px 12px rgba(22,163,74,.25);}
+.btn-secondary{background:var(--white);color:var(--text2);border-color:var(--border);}
+.btn-secondary:hover{background:var(--bg);}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border);}
+.btn-ghost:hover{background:var(--bg);}
+.btn-green-outline{background:transparent;color:var(--green);border-color:#86efac;}
+.btn-green-outline:hover{background:var(--green-light);}
+.btn-purple{background:var(--purple-mid);color:#fff;border-color:var(--purple-mid);}
+.btn-purple:hover{background:var(--purple);border-color:var(--purple);}
+.btn-red{background:var(--red-mid);color:#fff;border-color:var(--red-mid);}
+.btn-red:hover{background:var(--red);border-color:var(--red);}
+.btn-sm{padding:6px 11px;font-size:12px;gap:4px;}
+.btn-lg{padding:12px 22px;font-size:14px;border-radius:var(--radius-lg);}
+.btn-full{width:100%;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:500;font-family:'DM Mono',monospace;border:1px solid;line-height:1.4;}
+.badge-green{background:var(--green-light);color:var(--green);border-color:#86efac;}
+.badge-amber{background:var(--amber-light);color:var(--amber);border-color:#fcd34d;}
+.badge-blue{background:var(--blue-light);color:var(--blue);border-color:#93c5fd;}
+.badge-purple{background:var(--purple-light);color:var(--purple);border-color:#c4b5fd;}
+.badge-red{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+.badge-gray{background:var(--bg);color:var(--muted);border-color:var(--border);}
+.tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:var(--radius-sm);font-size:11px;font-weight:500;font-family:'DM Mono',monospace;background:var(--bg);color:var(--text2);border:1px solid var(--border);}
+
+/* ── GRIDS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.grid-plan{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+
+/* ── STAT TILES ── */
+.stat-tile{background:var(--bg);border-radius:var(--radius-md);padding:15px 16px;display:flex;align-items:flex-start;gap:12px;border:1px solid var(--border);}
+.stat-icon-box{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.stat-value{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);line-height:1;margin-bottom:3px;}
+.stat-label{font-size:11px;color:var(--muted);}
+.stat-change{font-size:10px;font-family:'DM Mono',monospace;margin-top:5px;}
+
+/* ── PROGRESS ── */
+.progress-meta{display:flex;justify-content:space-between;margin-bottom:7px;}
+.progress-label{font-size:12px;color:var(--muted);}
+.progress-value{font-size:12px;color:var(--green-mid);font-weight:600;font-family:'DM Mono',monospace;}
+.progress-track{height:5px;background:var(--bg2);border-radius:100px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#166534,#16a34a);transition:width .5s ease;}
+
+/* ── DAY NODES ── */
+.day-nodes-row{display:flex;align-items:center;gap:5px;margin-top:13px;flex-wrap:wrap;}
+.day-node{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;border:1px solid;cursor:pointer;transition:var(--transition);}
+.dn-done{background:var(--green-light);border-color:#86efac;color:var(--green);}
+.dn-today{background:#16a34a;border-color:#16a34a;color:#fff;box-shadow:0 2px 8px rgba(22,163,74,.35);}
+.dn-locked{background:var(--bg);border-color:var(--border);color:var(--muted2);}
+.dn-available{background:var(--blue-light);border-color:#93c5fd;color:var(--blue);}
+.phase-sep{width:18px;height:1px;background:var(--border2);flex-shrink:0;}
+
+/* ── SCORE RING ── */
+.score-ring-wrap{position:relative;width:100px;height:100px;flex-shrink:0;}
+.score-ring-wrap svg{transform:rotate(-90deg);display:block;}
+.score-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.ring-number{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);line-height:1;}
+.ring-label{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.ring-rank{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-top:6px;}
+
+/* ── TRACK BANNER ── */
+.track-banner{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 28px;margin-bottom:20px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.track-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#166534,#16a34a,#4ade80);}
+.banner-inner{display:flex;align-items:flex-start;gap:24px;}
+.banner-left{flex:1;min-width:0;}
+.banner-right{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.banner-headline{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1.15;margin-bottom:14px;}
+.banner-headline em{color:var(--green-mid);font-style:italic;}
+.banner-stats{display:flex;gap:24px;margin-bottom:18px;}
+.bstat-value{font-family:'Fraunces',serif;font-size:19px;font-weight:700;color:var(--text);line-height:1;}
+.bstat-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
+
+/* ── PLAN CARDS ── */
+.plan-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;cursor:pointer;transition:var(--transition);position:relative;}
+.plan-card:hover{border-color:var(--border2);box-shadow:var(--shadow);transform:translateY(-2px);}
+.plan-card.popular{border:2px solid #16a34a;}
+.plan-card.selected{border:2px solid #16a34a;background:var(--green-bg);}
+.popular-tag{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;padding:3px 12px;border-radius:100px;white-space:nowrap;letter-spacing:.3px;}
+.plan-price{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);line-height:1;margin-bottom:3px;}
+.plan-duration{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:14px;letter-spacing:.3px;}
+.plan-features{display:flex;flex-direction:column;gap:7px;}
+.plan-feature{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--text2);line-height:1.4;}
+.plan-feature i{font-size:12px;margin-top:1px;flex-shrink:0;}
+.plan-feature .fa-check{color:var(--green-mid);}
+.plan-feature .fa-times{color:#fca5a5;}
+
+/* ── TRACK/LEVEL CARDS ── */
+.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.track-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;cursor:pointer;transition:var(--transition);}
+.track-card:hover{border-color:var(--border2);box-shadow:var(--shadow);transform:translateY(-2px);}
+.track-card.selected{border:2px solid #16a34a;background:var(--green-bg);}
+.track-icon{font-size:24px;margin-bottom:10px;color:var(--text2);}
+.track-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.track-desc{font-size:11.5px;color:var(--muted);}
+.level-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;cursor:pointer;transition:var(--transition);}
+.level-card:hover{border-color:var(--border2);box-shadow:var(--shadow);transform:translateY(-2px);}
+.level-card.selected{border:2px solid #16a34a;background:var(--green-bg);}
+.level-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.level-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.level-name{font-size:14px;font-weight:600;color:var(--text);}
+.level-desc{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:10px;}
+.level-exp{font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* ── STEP BAR ── */
+.step-bar{display:flex;align-items:center;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.step-item{display:flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;}
+.step-num{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--muted);flex-shrink:0;transition:var(--transition);}
+.step-text{font-size:12.5px;color:var(--muted);font-weight:500;transition:var(--transition);}
+.step-item.active .step-num{background:#16a34a;border-color:#16a34a;color:#fff;}
+.step-item.active .step-text{color:var(--green);}
+.step-item.done .step-num{background:var(--green-light);border-color:#86efac;color:var(--green);}
+.step-item.done .step-text{color:var(--text2);}
+.step-connector{flex:1;height:1px;background:var(--border);margin:0 10px;}
+
+/* ── TASK / TODAY ── */
+.task-title{font-family:'Fraunces',serif;font-size:19px;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:9px;letter-spacing:-.3px;}
+.task-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:16px;}
+.diff-tabs{display:flex;gap:7px;margin-bottom:16px;}
+.diff-tab{padding:7px 15px;border-radius:var(--radius-md);font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);transition:var(--transition);}
+.diff-tab:hover{background:var(--bg2);color:var(--text2);}
+.diff-tab.active{background:#16a34a;border-color:#16a34a;color:#fff;}
+.level-requirements{border-radius:0;padding:14px 16px;margin-bottom:16px;border-left:3px solid;background:var(--bg);}
+.level-req-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.req-list{display:flex;flex-direction:column;gap:6px;}
+.req-item{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;color:var(--text2);line-height:1.4;}
+.req-item::before{content:'→';font-size:11px;margin-top:1px;flex-shrink:0;font-weight:600;}
+.tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.submit-box{background:var(--bg);border:1.5px dashed var(--border2);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:16px;}
+.submit-label{font-size:10.5px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;font-weight:500;}
+.input-row{display:flex;gap:8px;}
+.text-input{flex:1;padding:9px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);font-family:'DM Mono',monospace;font-size:12px;color:var(--text);outline:none;transition:border-color .15s;min-width:0;}
+.text-input:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12);}
+.text-input::placeholder{color:var(--muted2);}
+.textarea-input{width:100%;padding:10px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:80px;transition:border-color .15s;}
+.textarea-input:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12);}
+.select-input{padding:9px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);font-size:13px;color:var(--text);outline:none;cursor:pointer;}
+.select-input:focus{border-color:#16a34a;}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* ── RESOURCES ── */
+.resource-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:var(--transition);margin-bottom:8px;}
+.resource-item:last-child{margin-bottom:0;}
+.resource-item:hover{background:var(--white);border-color:var(--border2);box-shadow:var(--shadow-sm);}
+.resource-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.res-name{font-size:12.5px;font-weight:600;color:var(--text);}
+.res-meta{font-size:10.5px;color:var(--muted);margin-top:1px;}
+.res-arrow{margin-left:auto;color:var(--muted2);font-size:13px;}
+
+/* ── CERT ── */
+.cert-progress-card{background:var(--green-bg);border:1px solid #86efac;border-radius:var(--radius-lg);padding:18px 20px;position:relative;overflow:hidden;}
+.cert-card-title{font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.cert-card-desc{font-size:11.5px;color:#166534;line-height:1.5;margin-bottom:14px;max-width:75%;}
+.cert-row{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.cert-row span:first-child{color:#166534;}
+.cert-row span:last-child{color:var(--green);font-weight:600;font-family:'DM Mono',monospace;}
+.cert-issued-card{display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,var(--green-bg),#dcfce7);border:1px solid #86efac;border-radius:var(--radius-lg);padding:22px 24px;}
+.cert-icon-big{width:60px;height:60px;border-radius:14px;background:#16a34a;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;flex-shrink:0;}
+.cert-name{font-size:14.5px;font-weight:700;color:#166534;margin-bottom:4px;}
+.cert-meta{font-size:12px;color:#166534;margin-bottom:12px;}
+.cert-actions{display:flex;gap:8px;}
+.cert-score-big{text-align:center;flex-shrink:0;}
+.cert-score-num{font-family:'Fraunces',serif;font-size:34px;font-weight:700;color:var(--green-mid);line-height:1;}
+.cert-score-sub{font-size:11px;color:var(--green);font-family:'DM Mono',monospace;}
+
+/* ── TABLE ── */
+.submissions-table{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);}
+.table-head{display:grid;padding:10px 18px;background:var(--bg);border-bottom:1px solid var(--border);gap:10px;}
+.th{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;font-weight:500;}
+.table-row{display:grid;padding:13px 18px;border-bottom:1px solid var(--border);gap:10px;align-items:center;cursor:pointer;transition:background .12s;}
+.table-row:last-child{border-bottom:none;}
+.table-row:hover{background:var(--bg);}
+.row-day{font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:var(--muted);}
+.row-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.row-sub{font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace;}
+.score-chip{display:inline-flex;padding:3px 9px;border-radius:var(--radius-sm);font-family:'Fraunces',serif;font-size:14px;font-weight:700;border:1px solid;}
+.score-a{background:var(--green-light);color:#166534;border-color:#86efac;}
+.score-b{background:var(--amber-light);color:var(--amber);border-color:#fcd34d;}
+.score-c{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+.result-badge{display:inline-flex;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;border:1px solid;}
+.result-pass{background:var(--green-light);color:var(--green);border-color:#86efac;}
+.result-warn{background:var(--amber-light);color:var(--amber);border-color:#fcd34d;}
+.result-pending{background:var(--blue-light);color:var(--blue);border-color:#93c5fd;}
+.view-btn{font-size:12px;color:var(--blue-mid);font-weight:600;cursor:pointer;transition:var(--transition);}
+.view-btn:hover{color:var(--blue);text-decoration:underline;}
+
+/* ── ORDER SUMMARY ── */
+.order-summary{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:16px;}
+.order-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.order-label{font-size:12.5px;color:var(--text2);}
+.order-value{font-size:12.5px;font-weight:600;color:var(--text);}
+.order-divider{height:1px;background:var(--border);margin:12px 0;}
+.order-total-label{font-size:14px;font-weight:600;color:var(--text);}
+.order-total-value{font-size:18px;font-weight:700;color:var(--green-mid);font-family:'Fraunces',serif;}
+
+/* ── SECTION HEADING ── */
+.section-heading{font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-heading::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1916;color:#fff;padding:12px 18px;border-radius:var(--radius-lg);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none;z-index:999;max-width:300px;display:flex;align-items:center;gap:8px;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast i{color:#4ade80;}
+
+/* ── PLACEHOLDER ── */
+.placeholder-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;}
+.placeholder-icon{font-size:48px;color:var(--muted2);margin-bottom:16px;}
+.placeholder-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.placeholder-desc{font-size:13px;color:var(--muted);max-width:340px;line-height:1.6;margin-bottom:20px;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{animation:fadeInUp .35s ease both;}
+.delay-1{animation-delay:.05s;}.delay-2{animation-delay:.1s;}.delay-3{animation-delay:.15s;}.delay-4{animation-delay:.2s;}.delay-5{animation-delay:.25s;}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+
+/* ── UTILS ── */
+.mb-8{margin-bottom:8px;}.mb-12{margin-bottom:12px;}.mb-16{margin-bottom:16px;}.mb-20{margin-bottom:20px;}.mb-24{margin-bottom:24px;}
+.mt-8{margin-top:8px;}.mt-12{margin-top:12px;}.mt-14{margin-top:14px;}.mt-16{margin-top:16px;}
+.flex{display:flex;}.flex-col{flex-direction:column;}.items-center{align-items:center;}.items-start{align-items:flex-start;}.justify-between{justify-content:space-between;}
+.gap-6{gap:6px;}.gap-8{gap:8px;}.gap-10{gap:10px;}.gap-12{gap:12px;}.gap-14{gap:14px;}.gap-16{gap:16px;}.flex-1{flex:1;}
+.text-sm{font-size:12px;color:var(--text2);}.text-xs{font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace;}
+.text-muted{color:var(--muted);}.font-semibold{font-weight:600;}
+
+/* ── PHASE LABELS ── */
+.phase-labels{display:flex;gap:0;margin-top:6px;font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.hidden{display:none;}
+.modal-box{background:var(--white);border-radius:var(--radius-xl);padding:28px;max-width:560px;width:100%;box-shadow:var(--shadow-lg);max-height:85vh;overflow-y:auto;}
+.modal-title{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:18px;}
+.modal-close{float:right;cursor:pointer;color:var(--muted);font-size:18px;margin-top:-4px;}
+
+/* ── TASK BOARD (USER TASKS) ── */
+.task-board{display:flex;flex-direction:column;gap:10px;}
+.task-board-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:var(--transition);}
+.task-board-item:hover{border-color:var(--border2);box-shadow:var(--shadow-sm);transform:translateY(-1px);}
+.task-board-item.task-active{border-left:3px solid var(--blue-mid);}
+.task-board-item.task-done{border-left:3px solid var(--green-mid);opacity:.85;}
+.task-board-item.task-pending{border-left:3px solid var(--amber-mid);}
+.task-board-item.task-self{border-left:3px solid var(--purple-mid);}
+.task-type-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.task-board-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.task-board-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.task-board-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+
+/* ── NOTES EDITOR ── */
+.notes-editor{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.notes-toolbar{display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--white);}
+.notes-btn{padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid transparent;cursor:pointer;color:var(--text2);background:transparent;transition:var(--transition);}
+.notes-btn:hover{background:var(--bg);border-color:var(--border);}
+.notes-content{min-height:200px;padding:16px;font-size:13px;color:var(--text);line-height:1.7;outline:none;border:none;width:100%;background:transparent;resize:none;}
+
+/* ── DAILY LEARNING ── */
+.day-learning-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;cursor:pointer;transition:var(--transition);}
+.day-learning-card:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+.day-learning-card.active-day{border:2px solid #16a34a;background:var(--green-bg);}
+.dlc-day{font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.dlc-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.dlc-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* ── CONCEPT BLOCKS (GFG-style) ── */
+.concept-block{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;}
+.concept-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);}
+.concept-title{font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--text);}
+.concept-body{padding:18px;}
+.concept-section{margin-bottom:18px;}
+.concept-section-title{font-size:12px;font-weight:600;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+.concept-text{font-size:13px;color:var(--text2);line-height:1.75;}
+.code-block{background:#1a1916;border-radius:var(--radius-md);padding:14px 16px;margin:10px 0;overflow-x:auto;}
+.code-block pre{font-family:'DM Mono',monospace;font-size:12px;color:#f0eeea;line-height:1.7;margin:0;}
+.code-block .code-kw{color:#86efac;}.code-block .code-fn{color:#93c5fd;}.code-block .code-str{color:#fcd34d;}.code-block .code-cm{color:#6b7280;}
+.complexity-table{width:100%;border-collapse:collapse;margin:8px 0;}
+.complexity-table th,.complexity-table td{padding:8px 12px;text-align:left;border:1px solid var(--border);font-size:12px;}
+.complexity-table th{background:var(--bg);font-family:'DM Mono',monospace;font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;}
+.complexity-table .tc-good{color:var(--green);font-weight:600;font-family:'DM Mono',monospace;}
+.complexity-table .tc-ok{color:var(--amber);font-weight:600;font-family:'DM Mono',monospace;}
+.complexity-table .tc-bad{color:var(--red);font-weight:600;font-family:'DM Mono',monospace;}
+.tip-box{background:var(--blue-bg);border:1px solid var(--blue-light);border-left:3px solid var(--blue-mid);border-radius:var(--radius-md);padding:12px 14px;margin:10px 0;}
+.tip-box-title{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--blue);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
+.tip-box p{font-size:12.5px;color:var(--blue);line-height:1.6;}
+.warning-box{background:var(--amber-bg);border:1px solid var(--amber-light);border-left:3px solid var(--amber-mid);border-radius:var(--radius-md);padding:12px 14px;margin:10px 0;}
+.warning-box-title{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--amber);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
+.warning-box p{font-size:12.5px;color:var(--amber);line-height:1.6;}
+
+/* ── ADMIN ── */
+.admin-panel-header{background:linear-gradient(135deg,var(--purple-bg),var(--purple-light));border:1px solid var(--purple-light);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
+.admin-title{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--purple);}
+.admin-meta{font-size:11.5px;color:var(--purple-mid);margin-top:3px;font-family:'DM Mono',monospace;}
+.admin-task-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;transition:var(--transition);}
+.admin-task-item:hover{border-color:var(--border2);box-shadow:var(--shadow-sm);}
+.admin-task-actions{margin-left:auto;display:flex;gap:6px;}
+.form-label{font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
+.form-group{margin-bottom:14px;}
+
+/* ── SUMMARY TIMELINE ── */
+.summary-timeline{position:relative;padding-left:24px;}
+.summary-timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border);}
+.timeline-item{position:relative;margin-bottom:20px;}
+.timeline-dot{position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid;background:var(--white);}
+.tl-done{border-color:var(--green-mid);background:var(--green-light);}
+.tl-active{border-color:var(--blue-mid);background:var(--blue-light);}
+.tl-future{border-color:var(--border2);background:var(--bg);}
+.tl-day-label{font-family:'Fraunces',serif;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:3px;}
+.tl-day-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.tl-day-score{font-size:11px;font-family:'DM Mono',monospace;color:var(--green-mid);font-weight:600;}
+.tl-day-note{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5;background:var(--bg);padding:8px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);}
+
+/* ── SUGGESTION CARD ── */
+.suggestion-card{background:var(--purple-bg);border:1px solid var(--purple-light);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+.suggestion-icon{width:32px;height:32px;border-radius:8px;background:var(--purple-light);display:flex;align-items:center;justify-content:center;color:var(--purple-mid);font-size:14px;flex-shrink:0;}
+.suggestion-text{font-size:12.5px;color:var(--purple);line-height:1.55;}
+.suggestion-text strong{font-weight:600;}
+
+/* ── SELF PROJECT CARD ── */
+.self-project-card{background:linear-gradient(135deg,var(--purple-bg),#f5f3ff);border:1.5px solid var(--purple-light);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:12px;}
+.self-project-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.self-project-title{font-size:14px;font-weight:700;color:var(--purple);font-family:'Fraunces',serif;}
+.self-project-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--purple-mid);}
+.self-project-desc{font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:12px;}
+.self-project-progress{background:var(--purple-light);border-radius:100px;height:4px;margin-bottom:4px;}
+.self-project-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--purple),var(--purple-mid));}
+
+/* ── DOWNLOAD SECTION ── */
+.download-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px;cursor:pointer;transition:var(--transition);}
+.download-item:hover{border-color:var(--border2);box-shadow:var(--shadow-sm);transform:translateX(2px);}
+.dl-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.dl-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.dl-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);}
+.dl-size{margin-left:auto;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);white-space:nowrap;}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">Career<span class="logo-accent">Wizard</span> AI</div>
+      <div class="logo-badge"><i class="fa-solid fa-bolt" style="font-size:9px;margin-right:3px"></i>PRO PLAN</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <div class="nav-item" onclick="showScreen('home')"><i class="fa-solid fa-gauge-high"></i> Dashboard</div>
+      <div class="nav-item active" id="nav-intern" onclick="showScreen('enroll')"><i class="fa-solid fa-certificate"></i> My Internship</div>
+      <div class="nav-item" onclick="showScreen('tasks')"><i class="fa-solid fa-list-check"></i> My Tasks</div>
+      <div class="nav-item" onclick="showScreen('learning')"><i class="fa-solid fa-book-open-reader"></i> Daily Learning</div>
+      <div class="nav-item" onclick="showScreen('summary')"><i class="fa-solid fa-calendar-days"></i> Progress Summary</div>
+      <div class="nav-item" onclick="showScreen('selfproject')"><i class="fa-solid fa-folder-open"></i> My Projects</div>
+      <div class="nav-item" onclick="showScreen('downloads')"><i class="fa-solid fa-download"></i> Resources</div>
+      <div class="nav-section-label">Prepare</div>
+      <div class="nav-item" onclick="showScreen('jobs')"><i class="fa-solid fa-briefcase"></i> Job Matches</div>
+      <div class="nav-item" onclick="showScreen('roadmap')"><i class="fa-solid fa-map"></i> Roadmap</div>
+      <div class="nav-item" onclick="showScreen('interview')"><i class="fa-solid fa-microphone"></i> Interview Prep</div>
+      <div class="nav-item" onclick="showScreen('tests')"><i class="fa-solid fa-clipboard-check"></i> Mock Tests</div>
+      <div class="nav-item" onclick="showScreen('resume')"><i class="fa-solid fa-file-lines"></i> Resume AI</div>
+      <div class="nav-section-label">Account</div>
+      <div class="nav-item" onclick="showScreen('certs')"><i class="fa-solid fa-award"></i> Certificates</div>
+      <div class="nav-item admin-only" onclick="showScreen('admin')" style="display:none"><i class="fa-solid fa-shield-halved"></i> Admin Panel</div>
+      <div class="nav-item" onclick="showScreen('settings')"><i class="fa-solid fa-gear"></i> Settings</div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-card" onclick="showScreen('settings')">
+        <div class="user-avatar" id="sidebar-avatar">H</div>
+        <div>
+          <div class="user-name" id="sidebar-name">Het Panchal</div>
+          <div class="user-plan" id="sidebar-plan">Pro · CE Final Year</div>
+          <div class="role-badge" id="sidebar-role" style="display:none">Admin</div>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <button class="btn btn-sm btn-full" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-light);font-size:11px" onclick="toggleAdminMode()">
+          <i class="fa-solid fa-shield-halved"></i> <span id="admin-toggle-text">Switch to Admin View</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-area">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="breadcrumb" id="breadcrumb">Platform / <span>My Internship</span></div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-badge status-green" id="status-badge">
+          <div class="pulse-dot"></div>
+          <span id="status-text">Browse Plans</span>
+        </div>
+        <div class="icon-btn" onclick="toast('No new notifications')">
+          <i class="fa-solid fa-bell"></i><div class="notif-red"></div>
+        </div>
+        <div class="icon-btn" onclick="toast('Help center coming soon!')">
+          <i class="fa-solid fa-circle-question"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- ══ ENROLL ══ -->
+      <div class="screen active" id="screen-enroll">
+        <div class="card fade-in">
+          <div class="step-bar" id="step-bar">
+            <div class="step-item active" id="step-1"><div class="step-num">1</div><div class="step-text">Choose plan</div></div>
+            <div class="step-connector"></div>
+            <div class="step-item" id="step-2"><div class="step-num">2</div><div class="step-text">Select track</div></div>
+            <div class="step-connector"></div>
+            <div class="step-item" id="step-3"><div class="step-num">3</div><div class="step-text">Pick level</div></div>
+            <div class="step-connector"></div>
+            <div class="step-item" id="step-4"><div class="step-num">4</div><div class="step-text">Confirm</div></div>
+          </div>
+
+          <!-- Step 1 -->
+          <div id="enroll-step-1">
+            <div class="section-heading">Choose your internship plan</div>
+            <div class="grid-plan mb-16">
+              <div class="plan-card" onclick="pickPlan(this,'basic',199,'course')">
+                <div class="plan-price">₹199</div><div class="plan-duration">Course Certificate</div>
+                <div class="plan-features">
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Video lessons + quizzes</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Course completion letter</div>
+                  <div class="plan-feature"><i class="fa-solid fa-times"></i> No GitHub tasks</div>
+                  <div class="plan-feature"><i class="fa-solid fa-times"></i> No AI code review</div>
+                </div>
+              </div>
+              <div class="plan-card" onclick="pickPlan(this,'starter',399,'15')">
+                <div class="plan-price">₹399</div><div class="plan-duration">15-Day Internship</div>
+                <div class="plan-features">
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> 5 real project tasks</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> AI GitHub code review</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Verified certificate</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Own project option ✨</div>
+                </div>
+              </div>
+              <div class="plan-card popular" onclick="pickPlan(this,'standard',599,'30')">
+                <div class="popular-tag">Most popular</div>
+                <div class="plan-price">₹599</div><div class="plan-duration">30-Day Internship</div>
+                <div class="plan-features">
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> 6 phased project tasks</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> AI + human spot review</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Blockchain certificate</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Own project option ✨</div>
+                </div>
+              </div>
+              <div class="plan-card" onclick="pickPlan(this,'pro',999,'45')">
+                <div class="plan-price">₹999</div><div class="plan-duration">45-Day Internship</div>
+                <div class="plan-features">
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> 9 advanced tasks</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Priority AI review</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Premium certificate</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Job match boost</div>
+                </div>
+              </div>
+              <div class="plan-card" onclick="pickPlan(this,'advanced',1899,'90')">
+                <div class="plan-price">₹1,899</div><div class="plan-duration">3-Month Internship</div>
+                <div class="plan-features">
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> 12 real-world tasks</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Mentor review sessions</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Gold certificate</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Company referrals</div>
+                </div>
+              </div>
+              <div class="plan-card" onclick="pickPlan(this,'expert',3599,'180')">
+                <div class="plan-price">₹3,599</div><div class="plan-duration">6-Month Internship</div>
+                <div class="plan-features">
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> 15 enterprise tasks</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> 1:1 mentor calls</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Platinum certificate</div>
+                  <div class="plan-feature"><i class="fa-solid fa-check"></i> Guaranteed interview</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div id="enroll-step-2" style="display:none">
+            <div class="section-heading">Select your domain track</div>
+            <div class="track-grid mb-16">
+              <div class="track-card" onclick="pickTrack(this,'webdev','Web Development')"><div class="track-icon"><i class="fa-solid fa-code"></i></div><div class="track-name">Web Development</div><div class="track-desc">React, Node.js, REST APIs, databases</div></div>
+              <div class="track-card" onclick="pickTrack(this,'ds','Data Science')"><div class="track-icon"><i class="fa-solid fa-chart-simple"></i></div><div class="track-name">Data Science</div><div class="track-desc">Python, Pandas, ML models, visualization</div></div>
+              <div class="track-card" onclick="pickTrack(this,'aiml','AI / ML Engineering')"><div class="track-icon"><i class="fa-solid fa-brain"></i></div><div class="track-name">AI / ML Engineering</div><div class="track-desc">PyTorch, NLP, Computer Vision, deployment</div></div>
+              <div class="track-card" onclick="pickTrack(this,'uiux','UI / UX Design')"><div class="track-icon"><i class="fa-solid fa-pen-ruler"></i></div><div class="track-name">UI / UX Design</div><div class="track-desc">Figma, wireframing, prototyping, research</div></div>
+              <div class="track-card" onclick="pickTrack(this,'devops','DevOps & Cloud')"><div class="track-icon"><i class="fa-solid fa-server"></i></div><div class="track-name">DevOps & Cloud</div><div class="track-desc">Docker, AWS basics, CI/CD pipelines</div></div>
+              <div class="track-card" onclick="pickTrack(this,'pm','Product Management')"><div class="track-icon"><i class="fa-solid fa-clipboard-list"></i></div><div class="track-name">Product Management</div><div class="track-desc">PRDs, user stories, roadmaps, metrics</div></div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="goToStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+          </div>
+
+          <!-- Step 3 -->
+          <div id="enroll-step-3" style="display:none">
+            <div class="section-heading">Choose your difficulty level</div>
+            <div class="grid-3 mb-16">
+              <div class="level-card" onclick="pickLevel(this,'beginner')">
+                <div class="level-header"><div class="level-dot" style="background:#22c55e"></div><div class="level-name">Beginner</div><span class="badge badge-green" style="margin-left:auto">Easy</span></div>
+                <div class="level-desc">HTML, CSS, vanilla JS. No prior project experience needed.</div>
+                <div class="level-exp"><i class="fa-regular fa-clock" style="margin-right:4px"></i>0 – 6 months experience</div>
+              </div>
+              <div class="level-card" onclick="pickLevel(this,'intermediate')">
+                <div class="level-header"><div class="level-dot" style="background:#f59e0b"></div><div class="level-name">Intermediate</div><span class="badge badge-amber" style="margin-left:auto">Recommended</span></div>
+                <div class="level-desc">React + backend + database. Build full-stack apps.</div>
+                <div class="level-exp"><i class="fa-regular fa-clock" style="margin-right:4px"></i>6 months – 2 years</div>
+              </div>
+              <div class="level-card" onclick="pickLevel(this,'advanced')">
+                <div class="level-header"><div class="level-dot" style="background:#ef4444"></div><div class="level-name">Advanced</div><span class="badge badge-red" style="margin-left:auto">Pro</span></div>
+                <div class="level-desc">Full-stack + Docker + CI/CD + tests. Production-level code.</div>
+                <div class="level-exp"><i class="fa-regular fa-clock" style="margin-right:4px"></i>2+ years experience</div>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="goToStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+          </div>
+
+          <!-- Step 4 -->
+          <div id="enroll-step-4" style="display:none">
+            <div class="section-heading">Confirm & enroll</div>
+            <div class="order-summary mb-16">
+              <div class="order-row"><span class="order-label">Plan selected</span><span class="order-value" id="confirm-plan">—</span></div>
+              <div class="order-row"><span class="order-label">Domain track</span><span class="order-value" id="confirm-track">—</span></div>
+              <div class="order-row"><span class="order-label">Difficulty level</span><span class="order-value" id="confirm-level">—</span></div>
+              <div class="order-row"><span class="order-label">Duration</span><span class="order-value" id="confirm-duration">—</span></div>
+              <div class="order-divider"></div>
+              <div class="order-row"><span class="order-total-label">Total amount</span><span class="order-total-value" id="confirm-price">—</span></div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-full mb-8" onclick="completeEnroll()"><i class="fa-solid fa-lock"></i> Pay via Razorpay & Start Internship</button>
+            <div class="text-xs" style="text-align:center"><i class="fa-solid fa-shield-halved" style="margin-right:4px"></i>Secured by Razorpay · 2% transaction fee · Instant activation</div>
+            <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="goToStep(3)"><i class="fa-solid fa-arrow-left"></i> Back</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="screen" id="screen-dashboard">
+        <div class="track-banner mb-20 fade-in">
+          <div class="banner-inner">
+            <div class="banner-left">
+              <div style="display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap">
+                <span class="badge badge-green" id="dash-track"><i class="fa-solid fa-code" style="margin-right:4px;font-size:9px"></i>Web Development</span>
+                <span class="badge badge-blue" id="dash-phase">Phase 2 — Build & Extend</span>
+                <span class="badge badge-gray" id="dash-level">Intermediate</span>
+              </div>
+              <div class="banner-headline">Build <em>real projects.</em><br>Earn your certificate.</div>
+              <div class="banner-stats">
+                <div><div class="bstat-value" id="d-total-days">15</div><div class="bstat-label">Total days</div></div>
+                <div><div class="bstat-value" id="d-plan-price">₹399</div><div class="bstat-label">Plan paid</div></div>
+                <div><div class="bstat-value">#312</div><div class="bstat-label">Your rank</div></div>
+                <div><div class="bstat-value" style="color:var(--green-mid)">89</div><div class="bstat-label">Avg score</div></div>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-meta"><span class="progress-label">Overall progress</span><span class="progress-value" id="d-prog-text">6 / 15 days — 40%</span></div>
+                <div class="progress-track"><div class="progress-fill" id="d-prog-fill" style="width:40%"></div></div>
+                <div class="day-nodes-row" id="day-nodes"></div>
+                <div class="phase-labels mt-8">
+                  <span style="min-width:160px">Phase 1: Foundation &nbsp;</span>
+                  <span style="min-width:18px"></span>
+                  <span style="min-width:180px;color:var(--blue-mid);font-weight:600">Phase 2: Build ◀ you are here &nbsp;</span>
+                  <span style="min-width:18px"></span>
+                  <span>Phase 3: Deploy</span>
+                </div>
+              </div>
+            </div>
+            <div class="banner-right">
+              <div class="score-ring-wrap">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="#e0ddd5" stroke-width="7"/>
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="#16a34a" stroke-width="7" stroke-dasharray="263.9" stroke-dashoffset="52.8" stroke-linecap="round"/>
+                </svg>
+                <div class="score-ring-center"><div class="ring-number">89</div><div class="ring-label">avg score</div></div>
+              </div>
+              <div class="ring-rank">Rank <strong>#312</strong> of 8,420</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-4 mb-20 fade-in delay-1">
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--green-light)"><i class="fa-solid fa-check" style="color:var(--green-mid)"></i></div><div><div class="stat-value">5</div><div class="stat-label">Tasks done</div><div class="stat-change" style="color:var(--green-mid)">↑ 1 today</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--amber-bg)"><i class="fa-solid fa-fire" style="color:var(--amber-mid)"></i></div><div><div class="stat-value">6</div><div class="stat-label">Day streak</div><div class="stat-change" style="color:var(--amber-mid)">Keep it up!</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--blue-bg)"><i class="fa-solid fa-calendar" style="color:var(--blue-mid)"></i></div><div><div class="stat-value" id="d-days-left">9</div><div class="stat-label">Days remaining</div><div class="stat-change" style="color:var(--blue-mid)">On schedule</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--purple-bg)"><i class="fa-solid fa-trophy" style="color:var(--purple-mid)"></i></div><div><div class="stat-value">60%</div><div class="stat-label">Pass threshold</div><div class="stat-change" style="color:var(--green-mid)">You're at 89 ✓</div></div></div>
+        </div>
+
+        <div class="grid-2 mb-20">
+          <!-- Today's task -->
+          <div class="card fade-in delay-2">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-clipboard-list"></i> Today's task — Day 6</div>
+              <button class="btn btn-sm btn-ghost" onclick="openSelfProjectModal()"><i class="fa-solid fa-plus"></i> Add Own Project</button>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:12px">
+              <span class="badge badge-amber"><i class="fa-solid fa-circle-dot" style="font-size:8px;margin-right:3px"></i>Phase 2 · Due 11:59 PM</span>
+            </div>
+            <div class="task-title">Build a REST API with JWT Authentication</div>
+            <div class="task-desc">Extend your Phase 1 frontend — create a Node.js + Express backend with user registration, login, and protected routes.</div>
+            <div class="diff-tabs" id="diff-tabs">
+              <div class="diff-tab" onclick="setDiff(this,'beginner')">🟢 Beginner</div>
+              <div class="diff-tab active" onclick="setDiff(this,'intermediate')">🟡 Intermediate</div>
+              <div class="diff-tab" onclick="setDiff(this,'advanced')">🔴 Advanced</div>
+            </div>
+            <div id="level-box"></div>
+            <div class="tags-row mb-16"><span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">JWT</span><span class="tag">PostgreSQL</span><span class="tag">bcrypt</span></div>
+            <div class="submit-box">
+              <div class="submit-label"><i class="fa-brands fa-github" style="margin-right:5px"></i>Submit GitHub repository link</div>
+              <div class="input-row">
+                <input class="text-input" type="url" id="git-input" placeholder="https://github.com/username/repo-name">
+                <button class="btn btn-primary" onclick="submitGit()">Submit <i class="fa-solid fa-arrow-right"></i></button>
+              </div>
+            </div>
+            <div class="action-row">
+              <button class="btn btn-ghost btn-sm" onclick="toast('AI Help opened!')"><i class="fa-solid fa-robot"></i> Ask AI</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('Rubric: Code 30% + Approach 40% + Docs 30%')"><i class="fa-solid fa-list-check"></i> Rubric</button>
+              <button class="btn btn-ghost btn-sm" onclick="showScreen('learning')"><i class="fa-solid fa-book-open"></i> Learn</button>
+              <button class="btn btn-ghost btn-sm" onclick="toast('Discussion opened!')"><i class="fa-solid fa-comments"></i> Discuss</button>
+            </div>
+          </div>
+
+          <!-- Right col -->
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card fade-in delay-3">
+              <div class="card-title mb-12"><i class="fa-solid fa-book-open"></i> Resources for today</div>
+              <div class="resource-item" onclick="toast('Opening YouTube tutorial...')">
+                <div class="resource-icon" style="background:var(--red-light)"><i class="fa-brands fa-youtube" style="color:var(--red-mid)"></i></div>
+                <div><div class="res-name">JWT Auth in Node.js — Full Tutorial</div><div class="res-meta">YouTube · 28 min · Highly recommended</div></div>
+                <div class="res-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+              </div>
+              <div class="resource-item" onclick="toast('Opening Express.js docs...')">
+                <div class="resource-icon" style="background:var(--green-bg)"><i class="fa-solid fa-book" style="color:var(--green-mid)"></i></div>
+                <div><div class="res-name">Express.js Routing & Middleware</div><div class="res-meta">Official Docs · Reference</div></div>
+                <div class="res-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+              </div>
+              <div class="resource-item" onclick="toast('Opening GitHub template...')">
+                <div class="resource-icon" style="background:var(--blue-bg)"><i class="fa-brands fa-github" style="color:var(--blue-mid)"></i></div>
+                <div><div class="res-name">Node Auth Starter Template</div><div class="res-meta">GitHub · Clone ready</div></div>
+                <div class="res-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+              </div>
+              <div class="resource-item" onclick="showScreen('downloads')">
+                <div class="resource-icon" style="background:var(--purple-bg)"><i class="fa-solid fa-download" style="color:var(--purple-mid)"></i></div>
+                <div><div class="res-name">Download All Resources</div><div class="res-meta">PDFs, Cheatsheets, Templates</div></div>
+                <div class="res-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+              </div>
+            </div>
+            <div class="cert-progress-card fade-in delay-4">
+              <div class="cert-card-title"><i class="fa-solid fa-certificate" style="margin-right:6px"></i>Certificate progress</div>
+              <div class="cert-card-desc">Complete all tasks with 60%+ average to earn your blockchain-verified certificate.</div>
+              <div class="cert-row"><span>Tasks completed</span><span>6 / 15</span></div>
+              <div class="cert-row"><span>Average score</span><span>89 / 100</span></div>
+              <div class="cert-row"><span>Status</span><span>✓ On track</span></div>
+              <button class="btn btn-green-outline btn-sm btn-full mt-12" onclick="showScreen('certs')"><i class="fa-solid fa-eye"></i> Preview certificate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-heading fade-in delay-5">Submitted tasks</div>
+        <div class="submissions-table fade-in delay-5" style="--cols:44px 1fr 110px 80px 70px 60px">
+          <div class="table-head" style="grid-template-columns:44px 1fr 110px 80px 70px 60px">
+            <div class="th">Day</div><div class="th">Task</div><div class="th">Phase</div><div class="th">Score</div><div class="th">Result</div><div class="th">Review</div>
+          </div>
+          <div class="table-row" style="grid-template-columns:44px 1fr 110px 80px 70px 60px" onclick="toast('Task 1: Code 94, Approach 90, Docs 92 — Excellent!')">
+            <div class="row-day">01</div>
+            <div><div class="row-title">HTML/CSS Responsive Landing Page</div><div class="row-sub">5 days ago · github.com/het/day1</div></div>
+            <div><span class="badge badge-blue" style="font-size:10px">Phase 1</span></div>
+            <div><span class="score-chip score-a">92</span></div>
+            <div><span class="result-badge result-pass">PASS</span></div>
+            <div class="view-btn">View →</div>
+          </div>
+          <div class="table-row" style="grid-template-columns:44px 1fr 110px 80px 70px 60px" onclick="toast('Task 2: Code quality 86, Approach 90, Docs 88 — Great!')">
+            <div class="row-day">02</div>
+            <div><div class="row-title">JavaScript Fetch API + DOM Manipulation</div><div class="row-sub">4 days ago · github.com/het/day2</div></div>
+            <div><span class="badge badge-blue" style="font-size:10px">Phase 1</span></div>
+            <div><span class="score-chip score-a">88</span></div>
+            <div><span class="result-badge result-pass">PASS</span></div>
+            <div class="view-btn">View →</div>
+          </div>
+          <div class="table-row" style="grid-template-columns:44px 1fr 110px 80px 70px 60px" onclick="toast('Task 3: Component architecture excellent!')">
+            <div class="row-day">03</div>
+            <div><div class="row-title">React Components + State Management</div><div class="row-sub">3 days ago · github.com/het/day3</div></div>
+            <div><span class="badge badge-blue" style="font-size:10px">Phase 1</span></div>
+            <div><span class="score-chip score-a">91</span></div>
+            <div><span class="result-badge result-pass">PASS</span></div>
+            <div class="view-btn">View →</div>
+          </div>
+          <div class="table-row" style="grid-template-columns:44px 1fr 110px 80px 70px 60px" onclick="toast('Task 4: Schema good, missing indexes on FK. See feedback.')">
+            <div class="row-day">04</div>
+            <div><div class="row-title">PostgreSQL Schema + CRUD Operations</div><div class="row-sub">2 days ago · github.com/het/day4</div></div>
+            <div><span class="badge badge-blue" style="font-size:10px">Phase 1</span></div>
+            <div><span class="score-chip score-b">78</span></div>
+            <div><span class="result-badge result-warn">PASS</span></div>
+            <div class="view-btn">View →</div>
+          </div>
+          <div class="table-row" style="grid-template-columns:44px 1fr 110px 80px 70px 60px" onclick="toast('Task 5: Error handling excellent! Well structured.')">
+            <div class="row-day">05</div>
+            <div><div class="row-title">Express Middleware + Error Handling</div><div class="row-sub">Yesterday · github.com/het/day5</div></div>
+            <div><span class="badge badge-purple" style="font-size:10px">Phase 2</span></div>
+            <div><span class="score-chip score-a">94</span></div>
+            <div><span class="result-badge result-pass">PASS</span></div>
+            <div class="view-btn">View →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MY TASKS ══ -->
+      <div class="screen" id="screen-tasks">
+        <div class="flex items-center justify-between mb-20 fade-in">
+          <div>
+            <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px">My Tasks</div>
+            <div class="text-xs">All assigned + self tasks. Do any task in any order.</div>
+          </div>
+          <button class="btn btn-primary" onclick="openSelfProjectModal()"><i class="fa-solid fa-plus"></i> Add My Own Project</button>
+        </div>
+
+        <!-- AI Suggestions -->
+        <div class="section-heading fade-in">AI Suggestions for you</div>
+        <div class="fade-in delay-1" style="margin-bottom:20px">
+          <div class="suggestion-card">
+            <div class="suggestion-icon"><i class="fa-solid fa-lightbulb"></i></div>
+            <div><div class="suggestion-text"><strong>Next up:</strong> You've completed 5 tasks. Based on your score (89 avg), we suggest trying the <strong>Advanced Docker + CI/CD</strong> task next — it'll push your skills further.</div></div>
+          </div>
+          <div class="suggestion-card">
+            <div class="suggestion-icon"><i class="fa-solid fa-brain"></i></div>
+            <div><div class="suggestion-text"><strong>Skill gap detected:</strong> Your PostgreSQL score was 78. We recommend reviewing <strong>Indexing & Query Optimization</strong> before Day 8's database task.</div></div>
+          </div>
+          <div class="suggestion-card">
+            <div class="suggestion-icon"><i class="fa-solid fa-rocket"></i></div>
+            <div><div class="suggestion-text"><strong>Bonus challenge:</strong> Your streak is strong! Try adding a <strong>WebSocket real-time feature</strong> to your Day 5 project for extra portfolio points.</div></div>
+          </div>
+        </div>
+
+        <!-- Fixed tasks from admin -->
+        <div class="section-heading fade-in delay-1">Assigned Tasks (from Admin)</div>
+        <div class="task-board fade-in delay-2" id="assigned-tasks-list">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Self-assigned tasks -->
+        <div class="section-heading fade-in delay-2" style="margin-top:20px">My Own Projects</div>
+        <div class="task-board fade-in delay-3" id="self-tasks-list">
+          <div class="task-board-item task-self" onclick="openSelfProjectModal()">
+            <div class="task-type-icon" style="background:var(--purple-light)"><i class="fa-solid fa-plus" style="color:var(--purple-mid)"></i></div>
+            <div>
+              <div class="task-board-title" style="color:var(--purple)">Add a project you're working on</div>
+              <div class="task-board-meta">15-day & 30-day plans: track your own project alongside assigned tasks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DAILY LEARNING ══ -->
+      <div class="screen" id="screen-learning">
+        <div class="flex items-center justify-between mb-16 fade-in">
+          <div>
+            <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px">Daily Learning</div>
+            <div class="text-xs">GeeksForGeeks-style explanations · concepts · code · complexity</div>
+          </div>
+          <div class="flex gap-8">
+            <select class="select-input" onchange="filterLearning(this.value)" id="learning-filter">
+              <option value="all">All days</option>
+              <option value="today">Today (Day 6)</option>
+              <option value="done">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2 fade-in delay-1">
+          <!-- Day list -->
+          <div>
+            <div class="section-heading">Day-wise content</div>
+            <div id="day-list" style="display:flex;flex-direction:column;gap:8px">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+          <!-- Concept view -->
+          <div id="concept-view">
+            <div class="section-heading">Today — Day 6: JWT Authentication</div>
+            <div class="concept-block">
+              <div class="concept-header">
+                <div class="concept-title">🔐 What is JWT?</div>
+                <div class="flex gap-6">
+                  <span class="badge badge-blue">Auth</span>
+                  <span class="badge badge-amber">Intermediate</span>
+                </div>
+              </div>
+              <div class="concept-body">
+                <div class="concept-section">
+                  <div class="concept-section-title">📖 Definition</div>
+                  <div class="concept-text">JWT (JSON Web Token) is a compact, URL-safe means of representing claims to be transferred between two parties. It consists of three parts: <strong>Header</strong>, <strong>Payload</strong>, and <strong>Signature</strong>, separated by dots.</div>
+                </div>
+                <div class="concept-section">
+                  <div class="concept-section-title">⚙️ How it works</div>
+                  <div class="concept-text">1. User logs in → server validates credentials<br>2. Server creates JWT signed with a secret key<br>3. Client stores JWT (localStorage/cookie)<br>4. Client sends JWT in <code>Authorization: Bearer &lt;token&gt;</code> header<br>5. Server verifies signature → grants access</div>
+                </div>
+                <div class="concept-section">
+                  <div class="concept-section-title">💻 Code Example</div>
+                  <div class="code-block"><pre><span class="code-cm">// Generate JWT token</span>
+<span class="code-kw">const</span> jwt = <span class="code-fn">require</span>(<span class="code-str">'jsonwebtoken'</span>);
+
+<span class="code-kw">const</span> <span class="code-fn">generateToken</span> = (userId) => {
+  <span class="code-kw">return</span> jwt.<span class="code-fn">sign</span>(
+    { id: userId },
+    process.env.<span class="code-str">JWT_SECRET</span>,
+    { expiresIn: <span class="code-str">'7d'</span> }
+  );
+};
+
+<span class="code-cm">// Verify JWT middleware</span>
+<span class="code-kw">const</span> <span class="code-fn">authMiddleware</span> = (req, res, next) => {
+  <span class="code-kw">const</span> token = req.headers.authorization?.<span class="code-fn">split</span>(<span class="code-str">' '</span>)[1];
+  <span class="code-kw">if</span> (!token) <span class="code-kw">return</span> res.<span class="code-fn">status</span>(401).<span class="code-fn">json</span>({ error: <span class="code-str">'No token'</span> });
+  <span class="code-kw">try</span> {
+    req.user = jwt.<span class="code-fn">verify</span>(token, process.env.<span class="code-str">JWT_SECRET</span>);
+    <span class="code-fn">next</span>();
+  } <span class="code-kw">catch</span> { res.<span class="code-fn">status</span>(401).<span class="code-fn">json</span>({ error: <span class="code-str">'Invalid token'</span> }); }
+};</pre></div>
+                </div>
+                <div class="concept-section">
+                  <div class="concept-section-title">📊 Comparison</div>
+                  <table class="complexity-table">
+                    <tr><th>Feature</th><th>JWT</th><th>Session</th></tr>
+                    <tr><td>Stateless</td><td class="tc-good">✓ Yes</td><td class="tc-bad">✗ No</td></tr>
+                    <tr><td>Scalable</td><td class="tc-good">✓ Easy</td><td class="tc-ok">Needs Redis</td></tr>
+                    <tr><td>Revocation</td><td class="tc-bad">Hard</td><td class="tc-good">Easy</td></tr>
+                    <tr><td>Size</td><td class="tc-ok">~200 bytes</td><td class="tc-good">~30 bytes</td></tr>
+                  </table>
+                </div>
+                <div class="tip-box">
+                  <div class="tip-box-title">💡 Pro Tip</div>
+                  <p>Always use <strong>short expiry</strong> for access tokens (15min) and a separate <strong>refresh token</strong> (7 days) stored in httpOnly cookies. Never store access tokens in localStorage for sensitive apps.</p>
+                </div>
+                <div class="warning-box">
+                  <div class="warning-box-title">⚠️ Common Mistake</div>
+                  <p>Don't store sensitive data (passwords, credit card info) in the JWT payload — it's only base64 encoded, not encrypted. Anyone can decode it.</p>
+                </div>
+                <div class="concept-section">
+                  <div class="concept-section-title">📝 Your Notes</div>
+                  <div class="notes-editor">
+                    <div class="notes-toolbar">
+                      <button class="notes-btn" onclick="formatNote('bold')"><b>B</b></button>
+                      <button class="notes-btn" onclick="formatNote('italic')"><i>I</i></button>
+                      <button class="notes-btn" onclick="toast('Note saved ✓')">Save</button>
+                      <button class="notes-btn" onclick="toast('Note downloaded!')"><i class="fa-solid fa-download"></i></button>
+                    </div>
+                    <textarea class="notes-content" placeholder="Write your notes here... What did you learn today? Any doubts? Key takeaways?" id="day-notes"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PROGRESS SUMMARY ══ -->
+      <div class="screen" id="screen-summary">
+        <div class="flex items-center justify-between mb-20 fade-in">
+          <div>
+            <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px">Progress Summary</div>
+            <div class="text-xs">Day-wise learning log · scores · notes · milestones</div>
+          </div>
+          <button class="btn btn-green-outline" onclick="toast('Exporting summary PDF...')"><i class="fa-solid fa-download"></i> Export PDF</button>
+        </div>
+
+        <div class="grid-4 mb-20 fade-in delay-1">
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--green-light)"><i class="fa-solid fa-check" style="color:var(--green-mid)"></i></div><div><div class="stat-value">5</div><div class="stat-label">Days completed</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--amber-bg)"><i class="fa-solid fa-star" style="color:var(--amber-mid)"></i></div><div><div class="stat-value">89</div><div class="stat-label">Avg score</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--blue-bg)"><i class="fa-solid fa-pen" style="color:var(--blue-mid)"></i></div><div><div class="stat-value">12</div><div class="stat-label">Notes written</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--purple-bg)"><i class="fa-solid fa-fire" style="color:var(--purple-mid)"></i></div><div><div class="stat-value">6</div><div class="stat-label">Day streak</div></div></div>
+        </div>
+
+        <div class="grid-2 fade-in delay-2">
+          <div>
+            <div class="section-heading">Day-by-day timeline</div>
+            <div class="summary-timeline" id="summary-timeline">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+          <div>
+            <div class="section-heading">What you've learned</div>
+            <div class="card">
+              <div style="font-size:13px;color:var(--text2);line-height:1.8">
+                <div style="margin-bottom:10px"><span class="badge badge-green" style="margin-right:8px">Day 1</span> HTML5 semantic elements, CSS flexbox, responsive grid, mobile-first design</div>
+                <div class="divider"></div>
+                <div style="margin-bottom:10px"><span class="badge badge-green" style="margin-right:8px">Day 2</span> Fetch API, Promises, async/await, error handling, DOM events</div>
+                <div class="divider"></div>
+                <div style="margin-bottom:10px"><span class="badge badge-green" style="margin-right:8px">Day 3</span> React components, props, useState, useEffect, conditional rendering</div>
+                <div class="divider"></div>
+                <div style="margin-bottom:10px"><span class="badge badge-amber" style="margin-right:8px">Day 4</span> PostgreSQL schema design, CRUD operations, joins, foreign keys</div>
+                <div class="divider"></div>
+                <div style="margin-bottom:10px"><span class="badge badge-green" style="margin-right:8px">Day 5</span> Express.js middleware, error handling, validation, structured responses</div>
+                <div class="divider"></div>
+                <div><span class="badge badge-blue" style="margin-right:8px">Day 6</span> <em style="color:var(--muted)">Currently learning JWT, bcrypt, auth patterns...</em></div>
+              </div>
+            </div>
+            <div class="section-heading" style="margin-top:20px">My Notes Archive</div>
+            <div id="notes-archive" style="display:flex;flex-direction:column;gap:8px">
+              <div class="card" style="padding:14px 16px">
+                <div class="flex items-center justify-between mb-8"><span class="badge badge-green">Day 1</span><span class="text-xs">2 days ago</span></div>
+                <div style="font-size:12.5px;color:var(--text2);line-height:1.6">Learned that CSS Grid is better for 2D layouts while Flexbox is for 1D. Mobile-first means starting with min-width queries...</div>
+              </div>
+              <div class="card" style="padding:14px 16px">
+                <div class="flex items-center justify-between mb-8"><span class="badge badge-green">Day 3</span><span class="text-xs">3 days ago</span></div>
+                <div style="font-size:12.5px;color:var(--text2);line-height:1.6">useEffect runs after every render by default. Empty dependency array = runs once on mount. Remember to return cleanup function!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SELF PROJECTS ══ -->
+      <div class="screen" id="screen-selfproject">
+        <div class="flex items-center justify-between mb-20 fade-in">
+          <div>
+            <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px">My Projects</div>
+            <div class="text-xs">15-day & 30-day users can track their own side projects alongside internship tasks</div>
+          </div>
+          <button class="btn btn-primary" onclick="openSelfProjectModal()"><i class="fa-solid fa-plus"></i> Add Project</button>
+        </div>
+
+        <div class="card fade-in" style="background:linear-gradient(135deg,var(--purple-bg),#f5f3ff);border-color:var(--purple-light);margin-bottom:20px">
+          <div class="flex items-center gap-12">
+            <div style="font-size:36px">🚀</div>
+            <div>
+              <div style="font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--purple);margin-bottom:4px">Bring Your Own Project</div>
+              <div style="font-size:12.5px;color:var(--purple-mid);line-height:1.6">On 15-day and 30-day plans, you can work on your own project ideas alongside the assigned tasks. Track progress, add notes, submit GitHub links, and get AI feedback — just like regular tasks. Your project will be evaluated and counted towards your final score.</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="self-projects-display" style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div class="section-heading">Suggested project ideas for you</div>
+        <div class="grid-3 fade-in delay-2">
+          <div class="card" style="cursor:pointer;transition:var(--transition)" onclick="toast('Project idea saved to My Projects!')">
+            <div style="font-size:24px;margin-bottom:8px">💬</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Real-time Chat App</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5">WebSocket + Node.js + React. Good for showcasing real-time tech skills.</div>
+            <div style="margin-top:10px"><span class="tag">Socket.io</span> <span class="tag">React</span> <span class="tag">Node.js</span></div>
+          </div>
+          <div class="card" style="cursor:pointer;transition:var(--transition)" onclick="toast('Project idea saved!')">
+            <div style="font-size:24px;margin-bottom:8px">📊</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Dashboard with Analytics</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5">D3.js + React charts, data from public APIs. Great portfolio piece.</div>
+            <div style="margin-top:10px"><span class="tag">D3.js</span> <span class="tag">Charts</span> <span class="tag">APIs</span></div>
+          </div>
+          <div class="card" style="cursor:pointer;transition:var(--transition)" onclick="toast('Project idea saved!')">
+            <div style="font-size:24px;margin-bottom:8px">🛒</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">E-commerce Mini App</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5">Full CRUD with cart, auth, payments. Classic full-stack showcase.</div>
+            <div style="margin-top:10px"><span class="tag">MERN</span> <span class="tag">Stripe</span> <span class="tag">JWT</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DOWNLOADS / RESOURCES ══ -->
+      <div class="screen" id="screen-downloads">
+        <div class="flex items-center justify-between mb-20 fade-in">
+          <div>
+            <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px">Resources & Downloads</div>
+            <div class="text-xs">All materials, cheatsheets, templates, source code — free to download</div>
+          </div>
+        </div>
+
+        <div class="grid-2 fade-in delay-1">
+          <div>
+            <div class="section-heading">📄 Cheatsheets</div>
+            <div class="download-item" onclick="toast('Downloading JavaScript Cheatsheet...')">
+              <div class="dl-icon" style="background:#fef3c7"><i class="fa-brands fa-js" style="color:#d97706"></i></div>
+              <div><div class="dl-name">JavaScript ES6+ Cheatsheet</div><div class="dl-meta">PDF · 4 pages · Key syntax & methods</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 420 KB</div>
+            </div>
+            <div class="download-item" onclick="toast('Downloading React Cheatsheet...')">
+              <div class="dl-icon" style="background:var(--blue-light)"><i class="fa-brands fa-react" style="color:var(--blue-mid)"></i></div>
+              <div><div class="dl-name">React Hooks Cheatsheet</div><div class="dl-meta">PDF · 3 pages · All hooks explained</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 310 KB</div>
+            </div>
+            <div class="download-item" onclick="toast('Downloading SQL Cheatsheet...')">
+              <div class="dl-icon" style="background:var(--green-bg)"><i class="fa-solid fa-database" style="color:var(--green-mid)"></i></div>
+              <div><div class="dl-name">PostgreSQL Query Cheatsheet</div><div class="dl-meta">PDF · 2 pages · Joins, indexes, functions</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 280 KB</div>
+            </div>
+            <div class="download-item" onclick="toast('Downloading Node.js Cheatsheet...')">
+              <div class="dl-icon" style="background:var(--green-light)"><i class="fa-brands fa-node-js" style="color:var(--green)"></i></div>
+              <div><div class="dl-name">Node.js + Express Cheatsheet</div><div class="dl-meta">PDF · 3 pages · Routes, middleware, async</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 350 KB</div>
+            </div>
+
+            <div class="section-heading" style="margin-top:20px">🎨 Starter Templates</div>
+            <div class="download-item" onclick="toast('Downloading MERN starter...')">
+              <div class="dl-icon" style="background:var(--bg2)"><i class="fa-brands fa-github" style="color:var(--text2)"></i></div>
+              <div><div class="dl-name">MERN Stack Starter Template</div><div class="dl-meta">ZIP · React + Express + Mongo boilerplate</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 2.1 MB</div>
+            </div>
+            <div class="download-item" onclick="toast('Downloading auth template...')">
+              <div class="dl-icon" style="background:var(--purple-light)"><i class="fa-solid fa-lock" style="color:var(--purple-mid)"></i></div>
+              <div><div class="dl-name">JWT Auth Node.js Template</div><div class="dl-meta">ZIP · Auth + refresh token + middleware</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 890 KB</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-heading">🎥 Video Playlists</div>
+            <div class="download-item" onclick="toast('Opening YouTube playlist...')">
+              <div class="dl-icon" style="background:var(--red-light)"><i class="fa-brands fa-youtube" style="color:var(--red-mid)"></i></div>
+              <div><div class="dl-name">Web Dev Full Course Playlist</div><div class="dl-meta">YouTube · 32 videos · 18 hours total</div></div>
+              <div class="dl-size"><i class="fa-solid fa-arrow-up-right-from-square" style="color:var(--blue-mid)"></i></div>
+            </div>
+            <div class="download-item" onclick="toast('Opening playlist...')">
+              <div class="dl-icon" style="background:var(--red-light)"><i class="fa-brands fa-youtube" style="color:var(--red-mid)"></i></div>
+              <div><div class="dl-name">React + Redux Masterclass</div><div class="dl-meta">YouTube · 18 videos · 9 hours total</div></div>
+              <div class="dl-size"><i class="fa-solid fa-arrow-up-right-from-square" style="color:var(--blue-mid)"></i></div>
+            </div>
+
+            <div class="section-heading" style="margin-top:20px">📚 Reading Materials</div>
+            <div class="download-item" onclick="toast('Opening MDN docs...')">
+              <div class="dl-icon" style="background:var(--blue-bg)"><i class="fa-solid fa-book" style="color:var(--blue-mid)"></i></div>
+              <div><div class="dl-name">MDN Web Docs (JavaScript)</div><div class="dl-meta">Online reference · Complete JS documentation</div></div>
+              <div class="dl-size"><i class="fa-solid fa-arrow-up-right-from-square" style="color:var(--blue-mid)"></i></div>
+            </div>
+            <div class="download-item" onclick="toast('Downloading interview prep guide...')">
+              <div class="dl-icon" style="background:var(--amber-bg)"><i class="fa-solid fa-file-pdf" style="color:var(--amber-mid)"></i></div>
+              <div><div class="dl-name">Top 100 Interview Questions PDF</div><div class="dl-meta">PDF · 28 pages · Web dev + DSA</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 1.8 MB</div>
+            </div>
+            <div class="download-item" onclick="toast('Downloading DSA roadmap...')">
+              <div class="dl-icon" style="background:var(--purple-bg)"><i class="fa-solid fa-map" style="color:var(--purple-mid)"></i></div>
+              <div><div class="dl-name">DSA Roadmap for Beginners</div><div class="dl-meta">PDF · 10 pages · Phase-wise plan</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 620 KB</div>
+            </div>
+            <div class="download-item" onclick="toast('Downloading portfolio guide...')">
+              <div class="dl-icon" style="background:var(--green-bg)"><i class="fa-solid fa-star" style="color:var(--green-mid)"></i></div>
+              <div><div class="dl-name">Portfolio Project Ideas — 50 Best</div><div class="dl-meta">PDF · 12 pages · Beginner to advanced</div></div>
+              <div class="dl-size"><i class="fa-solid fa-download" style="color:var(--green-mid)"></i> 740 KB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CERTIFICATES ══ -->
+      <div class="screen" id="screen-certs">
+        <div class="card mb-16 fade-in">
+          <div class="card-title mb-16"><i class="fa-solid fa-award"></i> My certificates</div>
+          <div class="cert-issued-card">
+            <div class="cert-icon-big"><i class="fa-solid fa-certificate"></i></div>
+            <div class="cert-details">
+              <div class="cert-name">Web Development — 30-Day Internship</div>
+              <div class="cert-meta"><i class="fa-solid fa-calendar-check" style="margin-right:5px"></i>Issued Jan 15, 2025 &nbsp;·&nbsp; <i class="fa-brands fa-ethereum" style="margin-right:5px"></i>Blockchain verified &nbsp;·&nbsp; ID: CW-2025-00312</div>
+              <div class="cert-actions">
+                <button class="btn btn-green-outline btn-sm" onclick="toast('Downloading certificate PDF...')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                <button class="btn btn-green-outline btn-sm" onclick="toast('Opening LinkedIn share dialog...')"><i class="fa-brands fa-linkedin"></i> Share</button>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Blockchain verification: Valid ✓ — ID CW-2025-00312')"><i class="fa-solid fa-shield-check"></i> Verify</button>
+              </div>
+            </div>
+            <div class="cert-score-big"><div class="cert-score-num">89</div><div class="cert-score-sub">out of 100</div></div>
+          </div>
+        </div>
+        <div class="card fade-in delay-1">
+          <div class="card-title mb-14"><i class="fa-solid fa-clock"></i> In progress</div>
+          <div style="background:var(--bg);border-radius:var(--radius-md);padding:16px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border)">
+            <div>
+              <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px">Web Dev — 15-Day Internship</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:10px">6 / 15 tasks done · Avg score 89 · On track for certificate</div>
+              <div class="progress-track" style="width:240px"><div class="progress-fill" style="width:40%"></div></div>
+            </div>
+            <button class="btn btn-primary" onclick="showScreen('dashboard')"><i class="fa-solid fa-arrow-right"></i> Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ADMIN PANEL ══ -->
+      <div class="screen" id="screen-admin">
+        <div class="admin-panel-header fade-in">
+          <div>
+            <div class="admin-title"><i class="fa-solid fa-shield-halved" style="margin-right:8px"></i>Admin Panel</div>
+            <div class="admin-meta">Manage tasks · Assign to users · Add domain-wise content</div>
+          </div>
+          <span class="badge badge-purple">Super Admin</span>
+        </div>
+
+        <div class="grid-4 mb-20 fade-in delay-1">
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--blue-light)"><i class="fa-solid fa-users" style="color:var(--blue-mid)"></i></div><div><div class="stat-value">1,247</div><div class="stat-label">Active users</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--green-light)"><i class="fa-solid fa-list-check" style="color:var(--green-mid)"></i></div><div><div class="stat-value">48</div><div class="stat-label">Tasks in system</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--amber-bg)"><i class="fa-solid fa-clock" style="color:var(--amber-mid)"></i></div><div><div class="stat-value">34</div><div class="stat-label">Pending reviews</div></div></div>
+          <div class="stat-tile"><div class="stat-icon-box" style="background:var(--purple-bg)"><i class="fa-solid fa-certificate" style="color:var(--purple-mid)"></i></div><div><div class="stat-value">312</div><div class="stat-label">Certs issued</div></div></div>
+        </div>
+
+        <div class="grid-2 fade-in delay-2">
+          <!-- Add Task Form -->
+          <div class="card">
+            <div class="card-title mb-16"><i class="fa-solid fa-plus-circle"></i> Add New Task</div>
+            <div class="form-group">
+              <label class="form-label">Task Title</label>
+              <input class="text-input" style="width:100%" type="text" id="admin-task-title" placeholder="e.g. Build a REST API with JWT Auth">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Domain / Track</label>
+              <select class="select-input" style="width:100%" id="admin-task-domain">
+                <option>Web Development</option>
+                <option>Data Science</option>
+                <option>AI / ML Engineering</option>
+                <option>UI / UX Design</option>
+                <option>DevOps & Cloud</option>
+                <option>Product Management</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assign to plan</label>
+              <select class="select-input" style="width:100%" id="admin-task-plan">
+                <option>15-Day Internship</option>
+                <option>30-Day Internship</option>
+                <option>45-Day Internship</option>
+                <option>All plans</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Task day number (e.g. Day 7)</label>
+              <input class="text-input" style="width:100%" type="number" id="admin-task-day" placeholder="7" min="1" max="180">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Task description</label>
+              <textarea class="textarea-input" id="admin-task-desc" placeholder="Detailed task description with requirements..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Difficulty</label>
+              <select class="select-input" style="width:100%" id="admin-task-level">
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tech tags (comma separated)</label>
+              <input class="text-input" style="width:100%" type="text" id="admin-task-tags" placeholder="Node.js, JWT, PostgreSQL, bcrypt">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Beginner requirements</label>
+              <textarea class="textarea-input" id="admin-req-beginner" placeholder="One requirement per line..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Intermediate requirements</label>
+              <textarea class="textarea-input" id="admin-req-intermediate" placeholder="One requirement per line..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Advanced requirements</label>
+              <textarea class="textarea-input" id="admin-req-advanced" placeholder="One requirement per line..."></textarea>
+            </div>
+            <button class="btn btn-purple btn-full" onclick="adminAddTask()"><i class="fa-solid fa-plus"></i> Create Task</button>
+          </div>
+
+          <!-- Task list -->
+          <div>
+            <div class="card mb-16">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-list"></i> All Tasks</div>
+                <div class="flex gap-8">
+                  <select class="select-input" onchange="filterAdminTasks(this.value)" style="font-size:12px;padding:5px 10px">
+                    <option value="all">All domains</option>
+                    <option value="webdev">Web Dev</option>
+                    <option value="ds">Data Science</option>
+                    <option value="aiml">AI/ML</option>
+                  </select>
+                </div>
+              </div>
+              <div id="admin-tasks-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Assign to user -->
+            <div class="card">
+              <div class="card-title mb-14"><i class="fa-solid fa-user-plus"></i> Assign Task to User</div>
+              <div class="form-group">
+                <label class="form-label">User email or ID</label>
+                <input class="text-input" style="width:100%" type="text" id="admin-assign-user" placeholder="het@example.com or user-id">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Select task to assign</label>
+                <select class="select-input" style="width:100%" id="admin-assign-task">
+                  <option>Day 7 — Docker Basics</option>
+                  <option>Day 8 — Redis Caching</option>
+                  <option>Day 9 — GraphQL API</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Due date</label>
+                <input class="text-input" style="width:100%" type="date" id="admin-assign-due">
+              </div>
+              <button class="btn btn-primary btn-full" onclick="adminAssignTask()"><i class="fa-solid fa-paper-plane"></i> Assign Task</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PLACEHOLDER SCREENS ══ -->
+      <div class="screen" id="screen-home">
+        <div class="placeholder-screen fade-in">
+          <div class="placeholder-icon"><i class="fa-solid fa-gauge-high"></i></div>
+          <div class="placeholder-title">Dashboard</div>
+          <div class="placeholder-desc">Your activity overview, streak, stats, and quick links — all in one place.</div>
+          <button class="btn btn-primary" onclick="showScreen('dashboard')"><i class="fa-solid fa-arrow-right"></i> Go to My Internship</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-jobs">
+        <div class="placeholder-screen fade-in">
+          <div class="placeholder-icon"><i class="fa-solid fa-briefcase"></i></div>
+          <div class="placeholder-title">Job Matches</div>
+          <div class="placeholder-desc">AI-matched jobs from LinkedIn, Naukri, Internshala, and 5 other sources. Complete your internship to unlock full access.</div>
+          <button class="btn btn-primary" onclick="showScreen('dashboard')"><i class="fa-solid fa-certificate"></i> Complete internship first</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-roadmap">
+        <div class="placeholder-screen fade-in">
+          <div class="placeholder-icon"><i class="fa-solid fa-map"></i></div>
+          <div class="placeholder-title">Learning Roadmap</div>
+          <div class="placeholder-desc">AI-generated phase-wise roadmap from basics to advanced — with curated free resources and milestone tracking.</div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-interview">
+        <div class="placeholder-screen fade-in">
+          <div class="placeholder-icon"><i class="fa-solid fa-microphone"></i></div>
+          <div class="placeholder-title">Interview Prep</div>
+          <div class="placeholder-desc">800+ domain-specific questions with STAR method AI answer generator and readiness score tracker.</div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-tests">
+        <div class="placeholder-screen fade-in">
+          <div class="placeholder-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          <div class="placeholder-title">Mock Tests</div>
+          <div class="placeholder-desc">Timed MCQ + coding assessments with real-time all-India leaderboard and skill badges.</div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-resume">
+        <div class="placeholder-screen fade-in">
+          <div class="placeholder-icon"><i class="fa-solid fa-file-lines"></i></div>
+          <div class="placeholder-title">Resume AI</div>
+          <div class="placeholder-desc">Upload your resume and get an instant ATS score, keyword gap analysis, and one-click AI rewrite.</div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-settings">
+        <div class="placeholder-screen fade-in">
+          <div class="placeholder-icon"><i class="fa-solid fa-gear"></i></div>
+          <div class="placeholder-title">Settings</div>
+          <div class="placeholder-desc">Manage your account, notifications, privacy preferences, and connected integrations.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toast-msg">Done</span></div>
+
+<!-- ══ MODAL: Self Project ══ -->
+<div class="modal-overlay hidden" id="modal-selfproject">
+  <div class="modal-box">
+    <div class="modal-title">
+      <i class="fa-solid fa-folder-plus" style="color:var(--purple-mid);margin-right:8px"></i>Add My Own Project
+      <span class="modal-close" onclick="closeModal('modal-selfproject')">✕</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Project Name</label>
+      <input class="text-input" style="width:100%" type="text" id="sp-name" placeholder="e.g. My Chat Application">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Project Description</label>
+      <textarea class="textarea-input" id="sp-desc" placeholder="What are you building? What tech stack? What's the goal?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tech Stack (comma separated)</label>
+      <input class="text-input" style="width:100%" type="text" id="sp-stack" placeholder="React, Node.js, MongoDB">
+    </div>
+    <div class="form-group">
+      <label class="form-label">GitHub Repository (optional)</label>
+      <input class="text-input" style="width:100%" type="url" id="sp-github" placeholder="https://github.com/you/project">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Target completion</label>
+      <select class="select-input" style="width:100%" id="sp-target">
+        <option>Within 15 days</option>
+        <option>Within 30 days</option>
+        <option>Ongoing / No deadline</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-purple btn-lg" style="flex:1" onclick="addSelfProject()"><i class="fa-solid fa-plus"></i> Add Project</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-selfproject')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Task Detail ══ -->
+<div class="modal-overlay hidden" id="modal-task-detail">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-task-title">Task Details<span class="modal-close" onclick="closeModal('modal-task-detail')">✕</span></div>
+    <div id="modal-task-body"></div>
+  </div>
+</div>
+
+<script>
+/* ── STATE ── */
+var state = {
+  plan:null,price:null,duration:null,
+  track:null,trackName:null,level:null,
+  enrollStep:1,enrolled:false,
+  isAdmin:false,
+  selfProjects:[],
+  adminTasks:[
+    {id:1,title:'HTML/CSS Responsive Landing Page',domain:'webdev',day:1,plan:'15-Day Internship',level:'Beginner',tags:['HTML','CSS','Flexbox'],status:'done',score:92,phase:'Phase 1'},
+    {id:2,title:'JavaScript Fetch API + DOM Manipulation',domain:'webdev',day:2,plan:'15-Day Internship',level:'Intermediate',tags:['JS','Fetch','DOM'],status:'done',score:88,phase:'Phase 1'},
+    {id:3,title:'React Components + State Management',domain:'webdev',day:3,plan:'15-Day Internship',level:'Intermediate',tags:['React','useState','useEffect'],status:'done',score:91,phase:'Phase 1'},
+    {id:4,title:'PostgreSQL Schema + CRUD Operations',domain:'webdev',day:4,plan:'15-Day Internship',level:'Intermediate',tags:['PostgreSQL','CRUD','SQL'],status:'done',score:78,phase:'Phase 1'},
+    {id:5,title:'Express Middleware + Error Handling',domain:'webdev',day:5,plan:'15-Day Internship',level:'Intermediate',tags:['Express','Node.js','Middleware'],status:'done',score:94,phase:'Phase 2'},
+    {id:6,title:'Build a REST API with JWT Authentication',domain:'webdev',day:6,plan:'15-Day Internship',level:'Intermediate',tags:['JWT','bcrypt','Node.js'],status:'active',score:null,phase:'Phase 2'},
+    {id:7,title:'Docker Containerization Basics',domain:'devops',day:7,plan:'15-Day Internship',level:'Advanced',tags:['Docker','DevOps','CLI'],status:'available',score:null,phase:'Phase 2'},
+    {id:8,title:'Redis Caching Strategy',domain:'webdev',day:8,plan:'15-Day Internship',level:'Advanced',tags:['Redis','Cache','Node.js'],status:'available',score:null,phase:'Phase 3'},
+  ],
+  notes:{}
+};
+
+var levelContent = {
+  beginner:{color:'#16a34a',title:'🟢 Beginner requirements',items:['HTML + CSS responsive layout — no framework','Vanilla JS form handling with validation','LocalStorage for persisting user data','Basic error messages shown to user','README with setup instructions']},
+  intermediate:{color:'#d97706',title:'🟡 Intermediate requirements',items:['Node.js + Express REST API with 5+ endpoints','JWT access token + refresh token implementation','PostgreSQL user table with bcrypt password hashing','Input validation middleware + structured error responses','README with full API documentation']},
+  advanced:{color:'#dc2626',title:'🔴 Advanced requirements',items:['Full auth system with RBAC + rate limiting','Docker containerisation with docker-compose.yml','Unit + integration tests using Jest + Supertest','CI/CD pipeline via GitHub Actions (lint → test → deploy)','Live deployment to Railway or Render with env config']}
+};
+
+var dayLearning = [
+  {day:1,title:'HTML5 Semantics & CSS Flexbox',topics:['Semantic HTML','CSS Box Model','Flexbox Layout','Responsive Design'],status:'done',score:92},
+  {day:2,title:'JavaScript Async & Fetch API',topics:['Promises','async/await','Fetch API','Error handling'],status:'done',score:88},
+  {day:3,title:'React Fundamentals',topics:['Components','Props & State','Hooks','useEffect'],status:'done',score:91},
+  {day:4,title:'PostgreSQL & SQL Basics',topics:['Schema design','CRUD','Joins','Indexes'],status:'done',score:78},
+  {day:5,title:'Express.js & Middleware',topics:['Routes','Middleware','Error handling','Validation'],status:'done',score:94},
+  {day:6,title:'JWT Authentication',topics:['JWT structure','bcrypt','Auth middleware','Protected routes'],status:'active',score:null},
+  {day:7,title:'Docker & Containerization',topics:['Dockerfile','docker-compose','Volumes','Networks'],status:'locked',score:null},
+  {day:8,title:'Redis Caching',topics:['Key-value store','Cache patterns','Expiry','Sessions'],status:'locked',score:null},
+];
+
+var planNames = {basic:'Course Certificate',starter:'15-Day Internship',standard:'30-Day Internship',pro:'45-Day Internship',advanced:'3-Month Internship',expert:'6-Month Internship'};
+
+/* ── NAVIGATION ── */
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  var el=document.getElementById('screen-'+name);
+  if(el)el.classList.add('active');
+  var bc={enroll:'My Internship',dashboard:'My Internship',certs:'Certificates',home:'Dashboard',jobs:'Job Matches',roadmap:'Roadmap',interview:'Interview Prep',tests:'Mock Tests',resume:'Resume AI',settings:'Settings',tasks:'My Tasks',learning:'Daily Learning',summary:'Progress Summary',selfproject:'My Projects',downloads:'Resources',admin:'Admin Panel'};
+  document.getElementById('breadcrumb').innerHTML='Platform / <span>'+(bc[name]||name)+'</span>';
+  document.getElementById('status-text').textContent=name==='dashboard'?'Active · Day 6 of '+(state.duration||15):(bc[name]||name);
+  document.getElementById('status-badge').className='status-badge '+(name==='dashboard'?'status-green':name==='admin'?'status-purple':'status-amber');
+  if(name==='enroll'&&state.enrolled){showScreen('dashboard');return;}
+  if(name==='dashboard'){buildDayNodes();renderLevelBox(state.level||'intermediate');}
+  if(name==='tasks'){renderAssignedTasks();renderSelfTasks();}
+  if(name==='learning'){renderDayList();}
+  if(name==='summary'){renderTimeline();}
+  if(name==='selfproject'){renderSelfProjects();}
+  if(name==='admin'){renderAdminTasks();}
+}
+
+/* ── ENROLL ── */
+function goToStep(n){
+  for(var i=1;i<=4;i++){
+    var se=document.getElementById('enroll-step-'+i);
+    if(se)se.style.display=i===n?'':'none';
+    var si=document.getElementById('step-'+i);
+    si.className='step-item'+(i===n?' active':i<n?' done':'');
+  }
+  state.enrollStep=n;window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickPlan(el,plan,price,duration){
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');state.plan=plan;state.price=price;state.duration=duration;
+  setTimeout(()=>{if(plan==='basic'){state.track='general';state.trackName='General (Course)';goToStep(3);}else{goToStep(2);}},250);
+}
+
+function pickTrack(el,track,name){
+  document.querySelectorAll('.track-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');state.track=track;state.trackName=name;
+  setTimeout(()=>goToStep(3),250);
+}
+
+function pickLevel(el,level){
+  document.querySelectorAll('.level-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');state.level=level;
+  document.getElementById('confirm-plan').textContent=planNames[state.plan]||state.plan;
+  document.getElementById('confirm-track').textContent=state.trackName||'Web Development';
+  document.getElementById('confirm-level').textContent=level.charAt(0).toUpperCase()+level.slice(1);
+  document.getElementById('confirm-duration').textContent=state.duration==='course'?'Self-paced course':state.duration+' days';
+  document.getElementById('confirm-price').textContent='₹'+state.price.toLocaleString('en-IN');
+  setTimeout(()=>goToStep(4),250);
+}
+
+function completeEnroll(){
+  toast('Payment successful! Internship activated 🎉');
+  state.enrolled=true;
+  var total=parseInt(state.duration)||15;var done=6;var pct=Math.round(done/total*100);
+  document.getElementById('d-total-days').textContent=total;
+  document.getElementById('d-plan-price').textContent='₹'+state.price.toLocaleString('en-IN');
+  document.getElementById('d-prog-text').textContent=done+' / '+total+' days — '+pct+'%';
+  document.getElementById('d-prog-fill').style.width=pct+'%';
+  document.getElementById('d-days-left').textContent=total-done;
+  if(state.trackName)document.getElementById('dash-track').innerHTML='<i class="fa-solid fa-code" style="margin-right:4px;font-size:9px"></i>'+state.trackName;
+  if(state.level)document.getElementById('dash-level').textContent=state.level.charAt(0).toUpperCase()+state.level.slice(1);
+  setTimeout(()=>showScreen('dashboard'),800);
+}
+
+/* ── DASHBOARD ── */
+function buildDayNodes(){
+  var container=document.getElementById('day-nodes');
+  if(!container)return;
+  container.innerHTML='';
+  var total=parseInt(state.duration)||15;var current=6;
+  var phases=Math.ceil(total/5);
+  for(var p=0;p<phases;p++){
+    if(p>0){var sep=document.createElement('div');sep.className='phase-sep';container.appendChild(sep);}
+    for(var d=1;d<=5;d++){
+      var dayNum=p*5+d;if(dayNum>total)break;
+      var node=document.createElement('div');
+      node.className='day-node '+(dayNum<current?'dn-done':dayNum===current?'dn-today':dayNum<=current+2?'dn-available':'dn-locked');
+      node.textContent=dayNum;node.title='Day '+dayNum;
+      node.onclick=(function(n){return function(){
+        if(n<current)toast('Day '+n+' completed — score '+[92,88,91,78,94][n-1]+'/100 ✓');
+        else if(n===current)toast('Day '+n+' — today\'s task is active!');
+        else if(n<=current+2)toast('Day '+n+' is available — start it now!');
+        else toast('Day '+n+' unlocks when you proceed — do any task freely.');
+      };})(dayNum);
+      container.appendChild(node);
+    }
+  }
+}
+
+function renderLevelBox(level){
+  var data=levelContent[level]||levelContent.intermediate;
+  var html='<div class="level-requirements" style="border-left-color:'+data.color+'"><div class="level-req-title">'+data.title+'</div><div class="req-list">';
+  data.items.forEach(item=>{html+='<div class="req-item">'+item+'</div>';});
+  html+='</div></div>';
+  var el=document.getElementById('level-box');
+  if(el)el.innerHTML=html;
+}
+
+function setDiff(el,level){
+  document.querySelectorAll('.diff-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');renderLevelBox(level);
+}
+
+function submitGit(){
+  var url=document.getElementById('git-input').value.trim();
+  if(!url){toast('Please paste your GitHub repo URL first');return;}
+  if(!url.startsWith('https://github.com/')){toast('Please enter a valid GitHub URL');return;}
+  toast('Submitted! AI review in progress — results in ~2 min ✓');
+  document.getElementById('git-input').value='';
+}
+
+/* ── TASKS SCREEN ── */
+function renderAssignedTasks(){
+  var list=document.getElementById('assigned-tasks-list');
+  if(!list)return;
+  list.innerHTML='';
+  state.adminTasks.forEach(task=>{
+    var statusClass=task.status==='done'?'task-done':task.status==='active'?'task-active':task.status==='available'?'task-board-item':'task-board-item';
+    var iconBg=task.status==='done'?'var(--green-light)':task.status==='active'?'var(--blue-light)':task.status==='available'?'var(--amber-bg)':'var(--bg)';
+    var iconColor=task.status==='done'?'var(--green-mid)':task.status==='active'?'var(--blue-mid)':task.status==='available'?'var(--amber-mid)':'var(--muted2)';
+    var iconName=task.status==='done'?'fa-check':task.status==='active'?'fa-circle-dot':task.status==='available'?'fa-play':'fa-lock';
+    var scoreHtml=task.score?'<span class="score-chip '+(task.score>=85?'score-a':task.score>=70?'score-b':'score-c')+'" style="font-size:13px">'+task.score+'</span>':'';
+    var statusBadge=task.status==='done'?'<span class="result-badge result-pass">DONE</span>':task.status==='active'?'<span class="result-badge result-pending">ACTIVE</span>':task.status==='available'?'<span class="result-badge" style="background:var(--amber-light);color:var(--amber);border-color:#fcd34d">OPEN</span>':'<span class="badge badge-gray">LOCKED</span>';
+    var div=document.createElement('div');
+    div.className='task-board-item '+statusClass;
+    div.innerHTML='<div class="task-type-icon" style="background:'+iconBg+'"><i class="fa-solid '+iconName+'" style="color:'+iconColor+'"></i></div>'
+      +'<div style="flex:1"><div class="task-board-title">Day '+task.day+' — '+task.title+'</div>'
+      +'<div class="task-board-meta">'+task.domain+' · '+task.phase+' · '+task.level+' · '+(task.tags.join(', '))+'</div></div>'
+      +'<div class="task-board-right">'+scoreHtml+statusBadge+'</div>';
+    div.onclick=()=>openTaskDetail(task);
+    list.appendChild(div);
+  });
+}
+
+function renderSelfTasks(){
+  var list=document.getElementById('self-tasks-list');
+  if(!list)return;
+  var addBtn=list.querySelector('.task-board-item.task-self');
+  list.innerHTML='';
+  if(state.selfProjects.length===0){
+    list.innerHTML='<div class="task-board-item task-self" onclick="openSelfProjectModal()">'
+      +'<div class="task-type-icon" style="background:var(--purple-light)"><i class="fa-solid fa-plus" style="color:var(--purple-mid)"></i></div>'
+      +'<div><div class="task-board-title" style="color:var(--purple)">Add a project you\'re working on</div>'
+      +'<div class="task-board-meta">15-day & 30-day plans: track your own project alongside assigned tasks</div></div></div>';
+  }else{
+    state.selfProjects.forEach(p=>{
+      var div=document.createElement('div');
+      div.className='task-board-item task-self';
+      div.innerHTML='<div class="task-type-icon" style="background:var(--purple-light)"><i class="fa-solid fa-folder-open" style="color:var(--purple-mid)"></i></div>'
+        +'<div style="flex:1"><div class="task-board-title">'+p.name+'</div>'
+        +'<div class="task-board-meta">'+p.stack+' · '+p.target+'</div></div>'
+        +'<div class="task-board-right"><span class="badge badge-purple">My Project</span></div>';
+      div.onclick=()=>toast('Opening project: '+p.name);
+      list.appendChild(div);
+    });
+    var addMore=document.createElement('div');
+    addMore.className='task-board-item';
+    addMore.style.cursor='pointer';
+    addMore.innerHTML='<div class="task-type-icon" style="background:var(--bg2)"><i class="fa-solid fa-plus" style="color:var(--muted)"></i></div><div class="task-board-title" style="color:var(--muted)">Add another project</div>';
+    addMore.onclick=openSelfProjectModal;
+    list.appendChild(addMore);
+  }
+}
+
+function openTaskDetail(task){
+  document.getElementById('modal-task-title').innerHTML='<i class="fa-solid fa-list-check" style="color:var(--blue-mid);margin-right:8px"></i>Day '+task.day+' — '+task.title+'<span class="modal-close" onclick="closeModal(\'modal-task-detail\')">✕</span>';
+  var lc=levelContent[task.level.toLowerCase()]||levelContent.intermediate;
+  var body='<div class="flex gap-8 mb-16">';
+  task.tags.forEach(t=>{body+='<span class="tag">'+t+'</span>';});
+  body+='</div>';
+  body+='<div class="level-requirements" style="border-left-color:'+lc.color+'"><div class="level-req-title">'+lc.title+'</div><div class="req-list">';
+  lc.items.forEach(i=>{body+='<div class="req-item">'+i+'</div>';});
+  body+='</div></div>';
+  if(task.score){
+    body+='<div style="background:var(--green-bg);border:1px solid #86efac;border-radius:var(--radius-md);padding:14px;margin-bottom:14px">'
+      +'<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px">Score: '+task.score+'/100 · PASS</div>'
+      +'<div style="font-size:12px;color:#166534">Great work! Review your AI feedback below for improvements.</div></div>';
+  }else if(task.status!=='locked'){
+    body+='<div class="submit-box"><div class="submit-label"><i class="fa-brands fa-github" style="margin-right:5px"></i>Submit GitHub link</div>'
+      +'<div class="input-row"><input class="text-input" type="url" id="modal-git-input" placeholder="https://github.com/username/repo">'
+      +'<button class="btn btn-primary" onclick="toast(\'Submitted for review!\')">Submit</button></div></div>';
+  }
+  body+='<div class="action-row"><button class="btn btn-ghost btn-sm" onclick="toast(\'AI Help opened!\')"><i class="fa-solid fa-robot"></i> Ask AI</button>'
+    +'<button class="btn btn-ghost btn-sm" onclick="toast(\'Rubric loaded!\')"><i class="fa-solid fa-list-check"></i> Rubric</button>'
+    +'<button class="btn btn-ghost btn-sm" onclick="showScreen(\'learning\');closeModal(\'modal-task-detail\')"><i class="fa-solid fa-book-open"></i> Learn</button></div>';
+  document.getElementById('modal-task-body').innerHTML=body;
+  document.getElementById('modal-task-detail').classList.remove('hidden');
+}
+
+/* ── LEARNING SCREEN ── */
+function renderDayList(){
+  var list=document.getElementById('day-list');
+  if(!list)return;
+  list.innerHTML='';
+  var filter=document.getElementById('learning-filter')?.value||'all';
+  dayLearning.forEach(d=>{
+    if(filter==='today'&&d.status!=='active')return;
+    if(filter==='done'&&d.status!=='done')return;
+    var div=document.createElement('div');
+    div.className='day-learning-card'+(d.status==='active'?' active-day':'');
+    div.innerHTML='<div class="dlc-day">Day '+d.day+(d.status==='active'?' · Today':d.status==='done'?' · Done':'')+'</div>'
+      +'<div class="dlc-title">'+d.title+'</div>'
+      +'<div class="dlc-meta">'+(d.score?'Score: '+d.score+'/100 ✓':d.status==='active'?'In progress':'Locked')+'</div>'
+      +'<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">'+d.topics.map(t=>'<span class="tag" style="font-size:10px">'+t+'</span>').join('')+'</div>';
+    div.onclick=()=>toast('Opening Day '+d.day+' learning content: '+d.title);
+    list.appendChild(div);
+  });
+}
+
+function filterLearning(val){renderDayList();}
+
+/* ── SUMMARY / TIMELINE ── */
+function renderTimeline(){
+  var tl=document.getElementById('summary-timeline');
+  if(!tl)return;
+  tl.innerHTML='';
+  dayLearning.forEach(d=>{
+    if(d.status==='locked')return;
+    var cls=d.status==='done'?'tl-done':d.status==='active'?'tl-active':'tl-future';
+    var div=document.createElement('div');
+    div.className='timeline-item';
+    div.innerHTML='<div class="timeline-dot '+cls+'"></div>'
+      +'<div class="tl-day-label">Day '+d.day+'</div>'
+      +'<div class="tl-day-title">'+d.title+'</div>'
+      +(d.score?'<div class="tl-day-score">Score: '+d.score+'/100 · PASS</div>':'<div style="font-size:11px;color:var(--blue-mid);font-family:\'DM Mono\',monospace">In progress...</div>')
+      +'<div class="tl-day-note">'+(state.notes['day'+d.day]||'<span style="color:var(--muted2)">No notes yet for this day. Go to Daily Learning to add notes.</span>')+'</div>';
+    tl.appendChild(div);
+  });
+}
+
+/* ── SELF PROJECTS ── */
+function renderSelfProjects(){
+  var display=document.getElementById('self-projects-display');
+  if(!display)return;
+  if(state.selfProjects.length===0){
+    display.innerHTML='<div class="card" style="text-align:center;padding:30px;border:1.5px dashed var(--purple-light)">'
+      +'<div style="font-size:32px;margin-bottom:8px">📁</div>'
+      +'<div style="font-family:\'Fraunces\',serif;font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">No projects yet</div>'
+      +'<div style="font-size:12.5px;color:var(--muted);margin-bottom:16px">Add your own project and track it alongside your internship tasks!</div>'
+      +'<button class="btn btn-purple" onclick="openSelfProjectModal()"><i class="fa-solid fa-plus"></i> Add My First Project</button></div>';
+  }else{
+    display.innerHTML='';
+    state.selfProjects.forEach((p,i)=>{
+      var pct=p.progress||20;
+      var card=document.createElement('div');
+      card.className='self-project-card fade-in';
+      card.innerHTML='<div class="self-project-header"><div><div class="self-project-title">'+p.name+'</div><div class="self-project-meta">'+p.stack+' · '+p.target+'</div></div>'
+        +'<div class="flex gap-8"><span class="badge badge-purple">My Project</span><button class="btn btn-sm btn-ghost" onclick="toast(\'Submitting for AI review...\')"><i class="fa-solid fa-paper-plane"></i> Submit</button></div></div>'
+        +'<div class="self-project-desc">'+p.desc+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-family:\'DM Mono\',monospace">PROGRESS: '+pct+'%</div>'
+        +'<div class="self-project-progress"><div class="self-project-fill" style="width:'+pct+'%"></div></div>'
+        +(p.github?'<div style="margin-top:10px"><a href="'+p.github+'" target="_blank" class="btn btn-ghost btn-sm"><i class="fa-brands fa-github"></i> View on GitHub</a></div>':'');
+      display.appendChild(card);
+    });
+  }
+}
+
+/* ── ADMIN ── */
+function toggleAdminMode(){
+  state.isAdmin=!state.isAdmin;
+  document.getElementById('admin-toggle-text').textContent=state.isAdmin?'Exit Admin View':'Switch to Admin View';
+  var adminNav=document.querySelector('.admin-only');
+  if(adminNav)adminNav.style.display=state.isAdmin?'flex':'none';
+  var roleBadge=document.getElementById('sidebar-role');
+  if(roleBadge)roleBadge.style.display=state.isAdmin?'inline-block':'none';
+  if(state.isAdmin){showScreen('admin');}else{showScreen('dashboard');}
+  toast(state.isAdmin?'Admin mode ON — full access enabled':'Returned to student view');
+}
+
+function renderAdminTasks(){
+  var list=document.getElementById('admin-tasks-list');
+  if(!list)return;
+  list.innerHTML='';
+  state.adminTasks.forEach(task=>{
+    var div=document.createElement('div');
+    div.className='admin-task-item';
+    div.innerHTML='<div><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">Day '+task.day+' — '+task.title+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);font-family:\'DM Mono\',monospace">'+task.domain+' · '+task.plan+' · '+task.level+'</div></div>'
+      +'<div class="admin-task-actions">'
+      +'<button class="btn btn-sm btn-ghost" onclick="toast(\'Editing task: '+task.title.replace(/'/g,'')+'\')"><i class="fa-solid fa-pen"></i></button>'
+      +'<button class="btn btn-sm btn-red" onclick="removeAdminTask('+task.id+')"><i class="fa-solid fa-trash"></i></button></div>';
+    list.appendChild(div);
+  });
+}
+
+function filterAdminTasks(domain){renderAdminTasks();}
+
+function adminAddTask(){
+  var title=document.getElementById('admin-task-title').value.trim();
+  var domain=document.getElementById('admin-task-domain').value;
+  var plan=document.getElementById('admin-task-plan').value;
+  var day=parseInt(document.getElementById('admin-task-day').value)||1;
+  var level=document.getElementById('admin-task-level').value;
+  var tags=document.getElementById('admin-task-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  var desc=document.getElementById('admin-task-desc').value.trim();
+  if(!title){toast('Please enter a task title!');return;}
+  var newTask={id:Date.now(),title,domain:domain.toLowerCase().replace(/\s+/g,''),day,plan,level,tags,desc,status:'available',score:null,phase:'Phase '+(Math.ceil(day/5))};
+  state.adminTasks.push(newTask);
+  renderAdminTasks();
+  ['admin-task-title','admin-task-day','admin-task-tags','admin-task-desc','admin-req-beginner','admin-req-intermediate','admin-req-advanced'].forEach(id=>{
+    var el=document.getElementById(id);if(el)el.value='';
+  });
+  toast('Task created and added to system ✓');
+}
+
+function removeAdminTask(id){
+  state.adminTasks=state.adminTasks.filter(t=>t.id!==id);
+  renderAdminTasks();toast('Task removed');
+}
+
+function adminAssignTask(){
+  var user=document.getElementById('admin-assign-user').value.trim();
+  var task=document.getElementById('admin-assign-task').value;
+  if(!user){toast('Please enter user email or ID');return;}
+  toast('Task "'+task+'" assigned to '+user+' ✓');
+  document.getElementById('admin-assign-user').value='';
+}
+
+/* ── SELF PROJECT MODAL ── */
+function openSelfProjectModal(){
+  document.getElementById('modal-selfproject').classList.remove('hidden');
+}
+
+function addSelfProject(){
+  var name=document.getElementById('sp-name').value.trim();
+  var desc=document.getElementById('sp-desc').value.trim();
+  var stack=document.getElementById('sp-stack').value.trim();
+  var github=document.getElementById('sp-github').value.trim();
+  var target=document.getElementById('sp-target').value;
+  if(!name){toast('Please enter a project name');return;}
+  state.selfProjects.push({name,desc:desc||'No description',stack:stack||'Not specified',github,target,progress:10});
+  closeModal('modal-selfproject');
+  ['sp-name','sp-desc','sp-stack','sp-github'].forEach(id=>{var el=document.getElementById(id);if(el)el.value='';});
+  renderSelfProjects();renderSelfTasks();
+  toast('Project "'+name+'" added! ✓');
+  showScreen('selfproject');
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.add('hidden');
+}
+
+/* ── TOAST ── */
+var toastTimer;
+function toast(msg){
+  var el=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+function formatNote(cmd){
+  var ta=document.getElementById('day-notes');
+  if(!ta)return;
+  ta.focus();
+  var start=ta.selectionStart,end=ta.selectionEnd;
+  var selected=ta.value.substring(start,end);
+  if(!selected){toast('Select some text first!');return;}
+  var wrapped=cmd==='bold'?'**'+selected+'**':'_'+selected+'_';
+  ta.value=ta.value.substring(0,start)+wrapped+ta.value.substring(end);
+}
+
+/* ── INIT ── */
+renderLevelBox('intermediate');
+buildDayNodes();
+renderDayList();
+renderTimeline();
+renderAssignedTasks();
+</script>
+</body>
+</html>

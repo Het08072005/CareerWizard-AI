@@ -1,8 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, SearchIcon, CheckIcon, BuildingOfficeIcon, MapPinIcon, CurrencyDollarIcon, BriefcaseIcon, SparklesIcon, ChevronRightIcon, AdjustmentsHorizontalIcon } from './ui/Icons';
+import { ThemeContext } from '../context/ThemeContext';
 
 const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) => {
+  const { isDark } = useContext(ThemeContext);
   const [activeTab, setActiveTab] = useState('skills');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -72,6 +74,9 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
 
+  const tabColor = isDark ? 'text-cyan-400' : 'text-emerald-600';
+  const tabBorderBg = isDark ? 'bg-cyan-500' : 'bg-emerald-500';
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -81,20 +86,20 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           onWheel={(e) => e.stopPropagation()}
-          className="fixed inset-y-0 right-0 w-full max-w-[400px] bg-[#080808] border-l border-white/10 shadow-2xl flex flex-col z-[9999]"
+          className="fixed inset-y-0 right-0 w-full max-w-[400px] bg-[var(--bg-sidebar)] border-l border-[var(--border-color)] shadow-2xl flex flex-col z-[9999]"
         >
           {/* Header */}
-          <div className="p-4 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+          <div className="p-4 border-b border-[var(--border-color)] bg-white/[0.02] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <button 
                 onClick={onClose}
-                className="p-1.5 hover:bg-white/5 rounded-full transition-colors text-slate-400 hover:text-white mr-1"
+                className="p-1.5 hover:bg-slate-500/10 rounded-full transition-colors text-slate-400 hover:text-[var(--text-main)] mr-1"
               >
                 <ChevronRightIcon size={16} />
               </button>
               <div>
-                <h2 className="text-[16px] font-bold text-white tracking-tight">Advanced Filters</h2>
-                <p className="text-[10px] text-slate-500 font-medium">{activeFilterCount} active filters</p>
+                <h2 className="text-[16px] font-bold text-[var(--text-main)] tracking-tight">Advanced Filters</h2>
+                <p className="text-[10px] text-[var(--text-muted)] font-medium">{activeFilterCount} active filters</p>
               </div>
             </div>
             <button 
@@ -108,7 +113,9 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
           {/* Sidebar Content Layout */}
           <div className="flex-1 flex flex-col min-h-0">
             {/* Navigation Tabs (Vertical for slender sidebar) */}
-            <div className="flex overflow-x-auto custom-scrollbar-hide border-b border-white/5 bg-white/[0.01] shrink-0">
+            <div className={`flex overflow-x-auto custom-scrollbar-hide border-b shrink-0 ${
+              isDark ? 'border-white/5 bg-white/[0.01]' : 'border-slate-200 bg-slate-50'
+            }`}>
               <div className="flex flex-row w-full no-scrollbar">
                 {tabs.map(tab => (
                   <button
@@ -117,12 +124,14 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
                       setActiveTab(tab.id);
                       setSearchTerm('');
                     }}
-                    className={`flex-1 min-w-0 py-2.5 flex flex-col items-center gap-1.5 transition-all duration-300 relative group ${activeTab === tab.id ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`flex-1 min-w-0 py-2.5 flex flex-col items-center gap-1.5 transition-all duration-300 relative group ${
+                      activeTab === tab.id ? tabColor : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                    }`}
                   >
-                    <tab.icon size={15} className={activeTab === tab.id ? 'text-cyan-400' : 'group-hover:text-slate-400'} />
+                    <tab.icon size={15} className={activeTab === tab.id ? tabColor : 'group-hover:text-slate-400'} />
                     <span className="text-[7.5px] font-black uppercase tracking-tight text-center">{tab.label}</span>
                     {activeTab === tab.id && (
-                      <motion.div layoutId="activeTabSidebar" className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-500" />
+                      <motion.div layoutId="activeTabSidebar" className={`absolute bottom-0 left-0 right-0 h-[2px] ${tabBorderBg}`} />
                     )}
                   </button>
                 ))}
@@ -132,13 +141,17 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
             <div className="flex-1 flex flex-col min-h-0">
               {/* Search Input for options */}
               {activeTab !== 'salary' && activeTab !== 'jobType' && (
-                <div className="p-4 bg-black/20 border-b border-white/5">
+                <div className={`p-4 border-b ${isDark ? 'bg-black/20 border-white/5' : 'bg-slate-50 border-slate-200'}`}>
                   <div className="relative">
                     <SearchIcon size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" />
                     <input
                       type="text"
                       placeholder={`Search ${activeTab}...`}
-                      className="w-full h-10 bg-white/[0.03] border border-white/5 rounded-xl pl-12 pr-4 focus:border-cyan-500/30 outline-none transition-all duration-500 text-[13px] text-white"
+                      className={`w-full h-10 rounded-xl pl-12 pr-4 outline-none transition-all duration-500 text-[13px] border ${
+                        isDark
+                          ? 'bg-white/[0.03] border-white/5 focus:border-cyan-500/30 text-white placeholder-slate-700'
+                          : 'bg-white border-slate-200 focus:border-emerald-500/30 text-slate-800 placeholder-slate-400'
+                      }`}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -161,11 +174,23 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
                       <button
                         key={s.label}
                         onClick={() => handleSalaryChange(s.val)}
-                        className={`w-full p-4 rounded-xl border transition-all duration-500 flex items-center justify-between group ${filters.salaryMin === s.val ? 'bg-cyan-500/10 border-cyan-500/50 text-white shadow-[0_0_20px_rgba(6,182,212,0.1)]' : 'bg-white/[0.02] border-white/5 text-slate-400 hover:border-white/20'}`}
+                        className={`w-full p-4 rounded-xl border transition-all duration-500 flex items-center justify-between group ${
+                          filters.salaryMin === s.val 
+                            ? isDark 
+                              ? 'bg-cyan-500/10 border-cyan-500/50 text-white shadow-sm' 
+                              : 'bg-emerald-500/10 border-emerald-500/50 text-emerald-700'
+                            : isDark 
+                              ? 'bg-white/[0.02] border-white/5 text-slate-400 hover:border-white/20' 
+                              : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700'
+                        }`}
                       >
                         <span className="font-semibold text-[13px]">{s.label}</span>
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${filters.salaryMin === s.val ? 'bg-cyan-500 border-cyan-500' : 'border-white/10 group-hover:border-white/30'}`}>
-                          {filters.salaryMin === s.val && <CheckIcon size={10} className="text-black" />}
+                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+                          filters.salaryMin === s.val 
+                            ? isDark ? 'bg-cyan-500 border-cyan-500' : 'bg-emerald-500 border-emerald-500' 
+                            : isDark ? 'border-white/10 group-hover:border-white/30' : 'border-slate-300 group-hover:border-slate-400'
+                        }`}>
+                          {filters.salaryMin === s.val && <CheckIcon size={10} className={isDark ? 'text-black' : 'text-white'} />}
                         </div>
                       </button>
                     ))}
@@ -186,10 +211,22 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
                         <button
                           key={option}
                           onClick={() => toggleFilter(activeTab, option)}
-                          className={`w-full p-3 rounded-lg border transition-all duration-500 flex items-center gap-3 text-left group ${isChecked ? 'bg-white/[0.05] border-white/20 text-white' : 'bg-white/[0.01] border-white/5 text-slate-500 hover:border-white/10 hover:text-slate-300'}`}
+                          className={`w-full p-3 rounded-lg border transition-all duration-500 flex items-center gap-3 text-left group ${
+                            isChecked 
+                              ? isDark 
+                                ? 'bg-white/[0.05] border-white/20 text-white' 
+                                : 'bg-slate-100 border-slate-300 text-slate-900'
+                              : isDark 
+                                ? 'bg-white/[0.01] border-white/5 text-slate-500 hover:border-white/10 hover:text-slate-300' 
+                                : 'bg-transparent border-slate-100 text-slate-500 hover:border-slate-200 hover:text-slate-800'
+                          }`}
                         >
-                          <div className={`w-4 h-4 shrink-0 rounded border flex items-center justify-center transition-all ${isChecked ? 'bg-cyan-500 border-cyan-500' : 'border-white/10 group-hover:border-white/30'}`}>
-                            {isChecked && <CheckIcon size={10} className="text-black" />}
+                          <div className={`w-4 h-4 shrink-0 rounded border flex items-center justify-center transition-all ${
+                            isChecked 
+                              ? isDark ? 'bg-cyan-500 border-cyan-500' : 'bg-emerald-500 border-emerald-500' 
+                              : isDark ? 'border-white/10 group-hover:border-white/30' : 'border-slate-300 group-hover:border-slate-400'
+                          }`}>
+                            {isChecked && <CheckIcon size={10} className={isDark ? 'text-black' : 'text-white'} />}
                           </div>
                           <span className="text-[13px] font-medium truncate">{option}</span>
                         </button>
@@ -201,16 +238,26 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-white/5 bg-white/[0.02] grid grid-cols-2 gap-3 mt-auto shrink-0">
+            <div className={`p-4 border-t mt-auto shrink-0 grid grid-cols-2 gap-3 ${
+              isDark ? 'border-white/5 bg-white/[0.02]' : 'border-slate-200 bg-slate-50'
+            }`}>
               <button
                 onClick={onClose}
-                className="h-10 bg-white/[0.05] hover:bg-white/10 text-white text-[12px] font-bold rounded-xl transition-all duration-500 border border-white/5"
+                className={`h-10 text-[12px] font-bold rounded-xl transition-all duration-500 border ${
+                  isDark
+                    ? 'bg-white/[0.05] hover:bg-white/10 text-white border-white/5'
+                    : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                }`}
               >
                 Close
               </button>
               <button
                 onClick={onClose}
-                className="h-10 bg-cyan-500 hover:bg-cyan-400 text-black text-[12px] font-bold rounded-xl transition-all duration-500 shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+                className={`h-10 text-[12px] font-bold rounded-xl transition-all duration-500 shadow-sm ${
+                  isDark
+                    ? 'bg-cyan-500 hover:bg-cyan-400 text-black'
+                    : 'bg-[#16a34a] hover:bg-[#15803d] text-white'
+                }`}
               >
                 Apply
               </button>

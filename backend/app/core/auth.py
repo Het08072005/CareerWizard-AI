@@ -7,6 +7,7 @@ from app.models.user import User
 from app.core.security import SECRET_KEY, ALGORITHM
 
 security = HTTPBearer()
+security_optional = HTTPBearer(auto_error=False)
 
 def get_db():
     db = SessionLocal()
@@ -28,3 +29,19 @@ def get_current_user(credentials=Depends(security), db: Session = Depends(get_db
         raise HTTPException(status_code=404, detail="User not found")
 
     return user
+
+def get_current_user_optional(credentials=Depends(security_optional), db: Session = Depends(get_db)):
+    if not credentials:
+        return None
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+    except JWTError:
+        return None
+
+    if not user_id:
+        return None
+
+    return db.query(User).filter(User.id == user_id).first()
+

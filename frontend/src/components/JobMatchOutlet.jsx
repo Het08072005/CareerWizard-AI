@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import api from "../api/axiosClient";
 import JobCard from "./JobCard";
 import JobFilter from "./JobFilter";
 import JobFilterModal from "./JobFilterModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { DocumentIcon, BriefcaseIcon, XIcon, ExclamationCircleIcon, CheckIcon, RefreshCwIcon } from "./ui/Icons";
-
+import { ThemeContext } from "../context/ThemeContext";
 
 const JobMatchOutlet = () => {
+  const { isDark } = useContext(ThemeContext);
   const [jobs, setJobs] = useState([]);
   const [originalJobs, setOriginalJobs] = useState([]);
   const [resume, setResume] = useState(null);
@@ -80,7 +81,6 @@ const JobMatchOutlet = () => {
 
     loadAllJobs();
   }, []);
-
 
   const handleUploadClick = () => fileInputRef.current.click();
 
@@ -177,8 +177,6 @@ const JobMatchOutlet = () => {
         params: { query: searchQuery, location: "India" }
       });
 
-
-
       const formatted = res.data.map(j => ({
         ...j,
         match: null,
@@ -230,10 +228,8 @@ const JobMatchOutlet = () => {
     }));
   };
 
-
   useEffect(() => {
     let temp = [...originalJobs];
-
 
     if (filters.search) {
       const searchLower = filters.search.toLowerCase().trim();
@@ -368,11 +364,11 @@ const JobMatchOutlet = () => {
   };
 
   return (
-    <div className="w-full text-slate-200 min-h-screen relative overflow-x-hidden font-sans bg-[#050505] p-5 md:px-10 pt-3 pb-8">
+    <div className="w-full min-h-screen relative overflow-x-hidden font-sans bg-[var(--bg-main)] text-[var(--text-main)] p-5 md:px-10 pt-3 pb-8 transition-colors duration-500">
       {/* ARCHITECTURAL BACKGROUND ELEMENTS */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className={`absolute top-0 right-0 w-[500px] h-[500px] ${isDark ? 'bg-cyan-500/5' : 'hidden'} rounded-full blur-[120px] pointer-events-none`} />
+      <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] ${isDark ? 'bg-indigo-500/5' : 'bg-indigo-500/3'} rounded-full blur-[100px] pointer-events-none`} />
 
       <motion.div
         variants={containerVariants}
@@ -380,13 +376,13 @@ const JobMatchOutlet = () => {
         animate="visible"
         className="max-w-[1300px] mx-auto relative z-10"
       >
-        <motion.div variants={itemVariants} className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4 relative">
+        <motion.div variants={itemVariants} className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4 relative">
           <div className="flex flex-col gap-1 group">
-            <h3 className="text-3xl font-bold text-white tracking-tight leading-none cursor-default">
+            <h3 className="text-3xl font-bold text-[var(--text-main)] tracking-tight leading-none cursor-default">
               AI Job Matching
             </h3>
           </div>
-          <p className="text-[13px] text-slate-400 font-medium max-w-sm md:text-right leading-relaxed opacity-70">
+          <p className="text-[13px] text-[var(--text-muted)] font-medium max-w-sm md:text-right leading-relaxed opacity-75">
             Advanced requirement matching with intelligent resume analysis.
           </p>
         </motion.div>
@@ -401,27 +397,35 @@ const JobMatchOutlet = () => {
               onFilterOpen={() => setIsFilterModalOpen(true)}
               resumeSlot={
                 resume && !loading ? (
-                  <div className="bg-emerald-500/[0.03] border border-white/5 px-4 rounded-xl flex items-center justify-between h-full backdrop-blur-md">
-                    <div className="flex items-center text-emerald-400/80 overflow-hidden">
+                  <div className={`border px-4 rounded-xl flex items-center justify-between h-full backdrop-blur-md ${
+                    isDark ? 'bg-emerald-500/[0.03] border-white/5' : 'bg-emerald-50 border-emerald-100'
+                  }`}>
+                    <div className="flex items-center text-emerald-600 dark:text-emerald-400/80 overflow-hidden">
                       <CheckIcon size={14} className="mr-2 flex-shrink-0" />
                       <span className="text-[10px] font-black tracking-widest uppercase truncate max-w-[120px]">{resume.name}</span>
                     </div>
                     <button onClick={clearResume} className="ml-2 text-rose-500/50 hover:text-rose-500 transition-colors text-[9px] font-black uppercase tracking-widest">Clear</button>
                   </div>
                 ) : loading ? (
-                  <div className="bg-white/[0.01] border border-white/5 px-4 rounded-xl flex items-center justify-center h-full backdrop-blur-md">
-                    <svg className="animate-spin h-4 w-4 text-cyan-500/50 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <div className={`border px-4 rounded-xl flex items-center justify-center h-full backdrop-blur-md ${
+                    isDark ? 'bg-white/[0.01] border-white/5' : 'bg-slate-50 border-slate-200'
+                  }`}>
+                    <svg className={`animate-spin h-4 w-4 mr-3 ${isDark ? 'text-cyan-500/50' : 'text-emerald-500'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-10" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-40" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span className="text-white/20 font-black text-[9px] uppercase tracking-[0.4em]">Analyzing...</span>
+                    <span className="text-[var(--text-muted)] font-black text-[9px] uppercase tracking-[0.4em]">Analyzing...</span>
                   </div>
                 ) : (
                   <label
-                    className={`flex items-center justify-center border border-dashed ${isDragOver ? 'border-cyan-400 bg-cyan-400/[0.03] scale-[1.01]' : 'border-white/10 bg-white/[0.01] hover:border-white/20'} rounded-xl px-4 cursor-pointer h-full transition-all duration-700 group overflow-hidden relative shadow-2xl`}
+                    className={`flex items-center justify-center border border-dashed rounded-xl px-4 cursor-pointer h-full transition-all duration-700 group overflow-hidden relative shadow-md ${
+                      isDragOver 
+                        ? isDark ? 'border-cyan-400 bg-cyan-400/[0.03] scale-[1.01]' : 'border-emerald-500 bg-emerald-500/[0.03] scale-[1.01]' 
+                        : isDark ? 'border-white/10 bg-white/[0.01] hover:border-white/20' : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+                    }`}
                     onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
                   >
-                    <span className="font-black text-slate-500 group-hover:text-slate-300 text-[9px] uppercase tracking-[0.3em] whitespace-nowrap transition-colors duration-700">Upload Resume</span>
+                    <span className="font-black text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 text-[9px] uppercase tracking-[0.3em] whitespace-nowrap transition-colors duration-700">Upload Resume</span>
                     <input type="file" ref={fileInputRef} onChange={handleResumeUpload} className="hidden" accept=".pdf,.doc,.docx" />
                   </label>
                 )
@@ -439,46 +443,46 @@ const JobMatchOutlet = () => {
 
         {initialLoad ? (
           <div className="mt-8 space-y-6">
-            <div className="flex items-center justify-between mb-10 border-b border-white/5 pb-6">
-              <div className="h-4 bg-white/5 w-32 rounded animate-pulse" />
-              <div className="h-4 bg-white/5 w-48 rounded animate-pulse" />
+            <div className="flex items-center justify-between mb-10 border-b border-[var(--border-color)] pb-6">
+              <div className="h-4 bg-slate-500/10 w-32 rounded animate-pulse" />
+              <div className="h-4 bg-slate-500/10 w-48 rounded animate-pulse" />
             </div>
             <div className="grid grid-cols-1 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={`init-skel-${i}`} className="relative bg-[#080808] border border-white/5 rounded-2xl p-8 overflow-hidden">
+                <div key={`init-skel-${i}`} className="relative bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-8 overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-[1px] bg-white/[0.05]" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent animate-shimmer-fast" style={{ backgroundSize: '200% 100%' }} />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-500/[0.02] to-transparent animate-shimmer-fast" style={{ backgroundSize: '200% 100%' }} />
 
                   <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center relative z-10 opacity-40">
-                    <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 shrink-0" />
+                    <div className="w-16 h-16 rounded-xl bg-slate-500/10 border border-[var(--border-color)] shrink-0" />
                     <div className="flex-1 space-y-4">
                       <div className="flex justify-between items-start">
                         <div className="space-y-2 w-full">
-                          <div className="h-6 bg-white/10 w-1/3 rounded-lg" />
-                          <div className="h-3 bg-white/5 w-1/4 rounded-lg" />
+                          <div className="h-6 bg-slate-500/20 w-1/3 rounded-lg" />
+                          <div className="h-3 bg-slate-500/10 w-1/4 rounded-lg" />
                         </div>
-                        <div className="w-24 h-12 rounded-xl bg-white/5 border border-white/10" />
+                        <div className="w-24 h-12 rounded-xl bg-slate-500/10 border border-[var(--border-color)]" />
                       </div>
                       <div className="flex gap-4">
-                        <div className="h-3 bg-white/5 w-20 rounded" />
-                        <div className="h-3 bg-white/5 w-20 rounded" />
-                        <div className="h-3 bg-white/5 w-20 rounded" />
+                        <div className="h-3 bg-slate-500/10 w-20 rounded" />
+                        <div className="h-3 bg-slate-500/10 w-20 rounded" />
+                        <div className="h-3 bg-slate-500/10 w-20 rounded" />
                       </div>
-                      <div className="h-12 bg-white/[0.02] border border-white/5 w-full rounded-xl" />
+                      <div className="h-12 bg-slate-500/5 border border-[var(--border-color)] w-full rounded-xl" />
                       <div className="flex gap-2">
-                        <div className="h-6 bg-white/5 w-16 rounded-lg" />
-                        <div className="h-6 bg-white/5 w-16 rounded-lg" />
-                        <div className="h-6 bg-white/5 w-16 rounded-lg" />
+                        <div className="h-6 bg-slate-500/10 w-16 rounded-lg" />
+                        <div className="h-6 bg-slate-500/10 w-16 rounded-lg" />
+                        <div className="h-6 bg-slate-500/10 w-16 rounded-lg" />
                       </div>
                     </div>
-                    <div className="w-full lg:w-32 h-12 bg-white/5 rounded-xl hidden lg:block" />
+                    <div className="w-full lg:w-32 h-12 bg-slate-500/10 rounded-xl hidden lg:block" />
                   </div>
                 </div>
               ))}
             </div>
             <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-12 h-12 border border-white/10 rounded-full flex items-center justify-center animate-spin mb-8">
-                <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
+              <div className="w-12 h-12 border border-[var(--border-color)] rounded-full flex items-center justify-center animate-spin mb-8">
+                <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]' : 'bg-emerald-500'}`} />
               </div>
               <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] animate-pulse">Syncing vacancies...</p>
             </div>
@@ -487,15 +491,15 @@ const JobMatchOutlet = () => {
           <div className="mt-8 space-y-6">
             <div className="grid grid-cols-1 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={`load-skel-${i}`} className="relative bg-[#080808] border border-white/5 rounded-2xl p-8 overflow-hidden">
+                <div key={`load-skel-${i}`} className="relative bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-8 overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-[1px] bg-white/[0.05]" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/[0.03] to-transparent animate-shimmer-fast" style={{ backgroundSize: '200% 100%' }} />
+                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-${isDark ? 'cyan-500' : 'emerald-500'}/[0.03] to-transparent animate-shimmer-fast`} style={{ backgroundSize: '200% 100%' }} />
                   <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center relative z-10 opacity-40">
-                    <div className="w-16 h-16 rounded-xl bg-white/5 shrink-0" />
+                    <div className="w-16 h-16 rounded-xl bg-slate-500/10 shrink-0" />
                     <div className="flex-1 space-y-4">
-                      <div className="h-6 bg-white/10 w-1/2 rounded" />
-                      <div className="h-4 bg-white/5 w-full rounded" />
-                      <div className="h-4 bg-white/5 w-full rounded" />
+                      <div className="h-6 bg-slate-500/20 w-1/2 rounded" />
+                      <div className="h-4 bg-slate-500/10 w-full rounded" />
+                      <div className="h-4 bg-slate-500/10 w-full rounded" />
                     </div>
                   </div>
                 </div>
@@ -504,33 +508,43 @@ const JobMatchOutlet = () => {
           </div>
         ) : (
           <div className="mt-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 border-b border-white/5 pb-4 gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 border-b border-[var(--border-color)] pb-4 gap-4">
               <div className="flex items-center gap-6">
                 {/* TAB SWITCHER */}
-                <div className="flex items-center p-1 bg-white/[0.03] border border-white/5 rounded-xl backdrop-blur-md">
+                <div className={`flex items-center p-1 border rounded-xl backdrop-blur-md ${
+                  isDark ? 'bg-white/[0.03] border-white/5' : 'bg-slate-100 border-slate-200'
+                }`}>
                   <button
                     onClick={switchToAvailable}
                     className={`px-4 py-2 rounded-lg text-[12px] font-bold transition-all duration-500 ${activeTab === "available"
-                        ? "bg-white/10 text-white shadow-lg"
-                        : "text-slate-500 hover:text-slate-300"
+                        ? isDark ? "bg-white/10 text-white shadow-lg" : "bg-white text-slate-900 shadow"
+                        : isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-500 hover:text-slate-800"
                       }`}
                   >
                     Available Jobs
-                    <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${activeTab === "available" ? "bg-white/10 text-white/60" : "bg-white/5 text-slate-600"
-                      }`}>
+                    <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${
+                      activeTab === "available" 
+                        ? isDark ? "bg-white/10 text-white/60" : "bg-slate-100 text-slate-700" 
+                        : "bg-white/5 text-slate-600"
+                    }`}>
                       {availableJobs.length}
                     </span>
                   </button>
                   <button
                     onClick={switchToLatest}
                     className={`px-4 py-2 rounded-lg text-[12px] font-bold transition-all duration-500 ${activeTab === "latest"
-                        ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.1)]"
-                        : "text-slate-500 hover:text-slate-300"
+                        ? isDark
+                          ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.1)]"
+                          : "bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 shadow-sm"
+                        : isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-500 hover:text-slate-800"
                       }`}
                   >
                     Latest Jobs
-                    <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${activeTab === "latest" ? "bg-cyan-500/20 text-cyan-300" : "bg-white/5 text-slate-600"
-                      }`}>
+                    <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${
+                      activeTab === "latest" 
+                        ? isDark ? "bg-cyan-500/20 text-cyan-300" : "bg-emerald-500/20 text-emerald-700" 
+                        : "bg-white/5 text-slate-600"
+                    }`}>
                       {latestJobs.length}
                     </span>
                   </button>
@@ -540,7 +554,11 @@ const JobMatchOutlet = () => {
                   <button
                     onClick={fetchLatestJobsFromApi}
                     disabled={isFetchingApi}
-                    className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-95"
+                    className={`flex items-center gap-2 px-4 py-2 border rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-95 ${
+                      isDark 
+                        ? "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border-cyan-500/20" 
+                        : "bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border-emerald-200"
+                    }`}
                   >
                     {isFetchingApi ? (
                       <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
@@ -559,7 +577,11 @@ const JobMatchOutlet = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2 text-[12px] font-bold text-slate-300 focus:outline-none focus:border-cyan-500/50 transition-all cursor-pointer"
+                  className={`rounded-xl px-4 py-2 text-[12px] font-bold focus:outline-none transition-all cursor-pointer border ${
+                    isDark 
+                      ? 'bg-[#080808] border-white/10 text-slate-300 focus:border-cyan-500/50' 
+                      : 'bg-white border-slate-200 text-slate-700 focus:border-emerald-500/50'
+                  }`}
                 >
                   <option value="latest">Sort: Newest First</option>
                   <option value="oldest">Sort: Oldest First</option>
@@ -577,7 +599,7 @@ const JobMatchOutlet = () => {
                   </button>
                 )}
                 {resume && (
-                  <span className="text-[12px] font-semibold text-emerald-400 flex items-center">
+                  <span className="text-[12px] font-semibold text-emerald-500 flex items-center">
                     <CheckIcon size={14} className="mr-2" />
                     Optimized Match
                   </span>
@@ -590,9 +612,11 @@ const JobMatchOutlet = () => {
                 {jobs.map((job) => <JobCard key={job.id} job={job} />)}
               </div>
             ) : (
-              <div className="bg-white/[0.01] border border-white/5 p-16 rounded-2xl text-center max-w-2xl mx-auto flex flex-col items-center">
-                <h3 className="text-lg font-bold text-white mb-2">No Matches Found</h3>
-                <p className="text-[14px] text-slate-500 font-medium max-w-xs leading-relaxed mb-8">Try adjusting your filters or search terms to find relevant job opportunities.</p>
+              <div className={`border p-16 rounded-2xl text-center max-w-2xl mx-auto flex flex-col items-center ${
+                isDark ? 'bg-white/[0.01] border-white/5' : 'bg-slate-50 border-slate-200'
+              }`}>
+                <h3 className="text-lg font-bold text-[var(--text-main)] mb-2">No Matches Found</h3>
+                <p className="text-[14px] text-[var(--text-muted)] font-medium max-w-xs leading-relaxed mb-8">Try adjusting your filters or search terms to find relevant job opportunities.</p>
                 <button
                   onClick={() => setFilters({
                     search: "",
@@ -603,7 +627,11 @@ const JobMatchOutlet = () => {
                     role: [],
                     salaryMin: 0
                   })}
-                  className="px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-[12px] font-bold transition-all uppercase tracking-widest"
+                  className={`px-6 py-2 border rounded-xl text-[12px] font-bold transition-all uppercase tracking-widest ${
+                    isDark 
+                      ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white' 
+                      : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
+                  }`}
                 >
                   Clear All Filters
                 </button>

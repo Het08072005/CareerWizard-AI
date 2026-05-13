@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { ThemeContext } from "../context/ThemeContext";
 
 export default function Navbar() {
   const { isLoggedIn, logout, user } = useContext(AuthContext);
+  const { theme, toggleTheme, isDark } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -41,15 +43,21 @@ export default function Navbar() {
   );
 
   return (
-    <nav className={`fixed w-full top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-black/60 backdrop-blur-xl py-2.5 border-b border-white/5 shadow-2xl' : 'bg-transparent py-4'}`}>
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-500 ${
+      scrolled 
+        ? isDark
+          ? 'bg-black/60 backdrop-blur-xl py-2.5 border-b border-white/5 shadow-2xl'
+          : 'bg-white/80 backdrop-blur-xl py-2.5 border-b border-[#e0ddd5] shadow-sm'
+        : 'bg-transparent py-4'
+    }`}>
       <div className="max-w-[1440px] mx-auto px-4 flex justify-between items-center h-full">
 
         {/* BRAND */}
         <Link to="/" className="group flex items-center relative z-10 py-1">
-          <h1 className="text-xl md:text-2xl font-light tracking-[-0.05em] text-slate-400 transition-all duration-700 group-hover:text-white group-hover:tracking-normal relative">
-            career<span className="font-semibold text-white ml-0.5 tracking-tight group-hover:brand-gradient-text transition-all duration-700">wizard</span>
+          <h1 className="cw-brand-logo relative">
+            career<span className="accent">wizard</span>
             <div className="absolute -inset-x-4 -inset-y-1 bg-white/[0.03] blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10 rounded-lg"></div>
-            <span className="absolute -right-3 -top-1 text-[8px] font-black tracking-widest text-cyan-500 opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:translate-x-1">AI</span>
+            <span className={`absolute -right-3 -top-1 text-[8px] font-black tracking-widest ${isDark ? 'text-cyan-500' : 'text-emerald-500'} opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:translate-x-1`}>AI</span>
           </h1>
         </Link>
 
@@ -57,32 +65,45 @@ export default function Navbar() {
         <div className="flex items-center space-x-8">
           {!isLoggedIn ? (
             <div className="flex items-center space-x-8">
-              <Link to="/login" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors">Login</Link>
-              <Link to="/signup" className="px-6 py-2.5 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-cyan-400 transition-all hover:translate-y-[-2px] shadow-2xl">
+              <Link to="/login" className={`text-[10px] font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'} transition-colors`}>Login</Link>
+              <Link to="/signup" className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:translate-y-[-2px] shadow-2xl ${
+                isDark 
+                  ? 'bg-white text-black hover:bg-cyan-400' 
+                  : 'bg-[#0f172a] text-white hover:bg-[#16a34a]'
+              }`}>
                 Get Started
               </Link>
             </div>
           ) : (
             <div className="flex items-center space-x-6">
-              <Link to="/overview" className="hidden md:block text-xs font-bold tracking-widest text-slate-400 hover:text-cyan-400 transition-colors uppercase">System Dashboard</Link>
+              <Link to="/internship" className={`hidden md:block text-xs font-bold tracking-widest ${isDark ? 'text-slate-400 hover:text-cyan-400' : 'text-slate-600 hover:text-emerald-600'} transition-colors uppercase`}>My Internship</Link>
+              <Link to="/overview" className={`hidden md:block text-xs font-bold tracking-widest ${isDark ? 'text-slate-400 hover:text-cyan-400' : 'text-slate-600 hover:text-emerald-600'} transition-colors uppercase`}>System Dashboard</Link>
 
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all overflow-hidden relative"
+                  className={`w-10 h-10 rounded-full border flex items-center justify-center hover:bg-white/5 transition-all overflow-hidden relative ${isDark ? 'border-white/10' : 'border-[#e0ddd5]'}`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
-                  <ProfileIcon className="w-5 h-5 text-slate-300" />
+                  <ProfileIcon className={`w-5 h-5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`} />
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 top-12 w-56 glass-card rounded-2xl py-2 overflow-hidden animate-reveal-up border border-white/10">
+                  <div className="absolute right-0 top-12 w-56 glass-card rounded-2xl py-2 overflow-hidden animate-reveal-up border border-white/10 z-[1000] bg-black/90 backdrop-blur-2xl">
                     <div className="px-4 py-3 border-b border-white/5">
                       <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black">Logged in as</p>
                       <p className="text-sm font-bold text-white truncate">{user?.name || 'System User'}</p>
                     </div>
                     <button onClick={() => { navigate("/profile"); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors">Account Config</button>
+                    <button onClick={() => { navigate("/internship"); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors">My Internship</button>
                     <button onClick={() => { navigate("/overview"); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors">Core Interface</button>
+
+                    {/* Light/Dark Toggle Option in user menu */}
+                    <button onClick={() => { toggleTheme(); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors flex items-center justify-between">
+                      <span>Toggle Theme</span>
+                      <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 bg-white/10 rounded">{isDark ? 'Dark' : 'Light'}</span>
+                    </button>
+
                     <div className="border-t border-white/5 mt-1 pt-1">
                       <button onClick={handleLogout} className="w-full text-left px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-500/5 transition-colors">Disconnect</button>
                     </div>
