@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 
+const CustomCheckCircle = ({ size = 18, strokeWidth = 2.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+  </svg>
+);
+
 const initialTasks = [
   { day: 1, title: 'HTML5 & Responsive Layouts', domain: 'frontend', level: 'Beginner', tags: ['HTML5', 'CSS Grid', 'Flexbox'], status: 'done', score: 95 },
   { day: 2, title: 'Vanilla JS State Management', domain: 'frontend', level: 'Intermediate', tags: ['ES6+', 'State', 'DOM'], status: 'done', score: 88 },
@@ -69,9 +76,10 @@ export default function InternshipTasks() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: task.status === 'done' ? '#16a34a' : task.status === 'active' ? '#2563eb' : 'var(--cw-muted)'
+                  color: task.status === 'done' ? '#16a34a' : task.status === 'active' ? '#2563eb' : 'var(--cw-muted)',
+                  fontSize: 18
                 }}>
-                  <i className={`fa-solid ${task.status === 'done' ? 'fa-check' : task.status === 'active' ? 'fa-bolt' : 'fa-lock'}`} />
+                  {task.status === 'done' ? <CustomCheckCircle size={20} strokeWidth={2.5} /> : <i className={`fa-solid ${task.status === 'active' ? 'fa-bolt' : 'fa-lock'}`} />}
                 </div>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700 }}>
@@ -89,7 +97,17 @@ export default function InternshipTasks() {
                   </span>
                 )}
                 <span className={`cw-badge ${task.status === 'done' ? 'cw-badge-green' : task.status === 'active' ? 'cw-badge-amber' : 'cw-badge-secondary'}`}>
-                  {task.status.toUpperCase()}
+                  {task.status === 'done' ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <CustomCheckCircle size={14} strokeWidth={2.8} /> DONE
+                    </span>
+                  ) : task.status === 'active' ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <i className="fa-solid fa-bolt" style={{ fontSize: 10 }} /> ACTIVE
+                    </span>
+                  ) : (
+                    task.status.toUpperCase()
+                  )}
                 </span>
               </div>
             </div>

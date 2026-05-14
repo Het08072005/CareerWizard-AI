@@ -408,7 +408,7 @@ const JobMatchOutlet = () => {
                   </div>
                 ) : loading ? (
                   <div className={`border px-4 rounded-xl flex items-center justify-center h-full backdrop-blur-md ${
-                    isDark ? 'bg-white/[0.01] border-white/5' : 'bg-slate-50 border-slate-200'
+                    isDark ? 'bg-white/[0.01] border-white/5' : 'bg-[var(--bg-sidebar)] border-slate-200'
                   }`}>
                     <svg className={`animate-spin h-4 w-4 mr-3 ${isDark ? 'text-cyan-500/50' : 'text-emerald-500'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-10" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -421,7 +421,7 @@ const JobMatchOutlet = () => {
                     className={`flex items-center justify-center border border-dashed rounded-xl px-4 cursor-pointer h-full transition-all duration-700 group overflow-hidden relative shadow-md ${
                       isDragOver 
                         ? isDark ? 'border-cyan-400 bg-cyan-400/[0.03] scale-[1.01]' : 'border-emerald-500 bg-emerald-500/[0.03] scale-[1.01]' 
-                        : isDark ? 'border-white/10 bg-white/[0.01] hover:border-white/20' : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+                        : isDark ? 'border-white/10 bg-white/[0.01] hover:border-white/20' : 'border-slate-200 bg-[var(--bg-sidebar)] hover:border-slate-300'
                     }`}
                     onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
                   >
@@ -512,19 +512,19 @@ const JobMatchOutlet = () => {
               <div className="flex items-center gap-6">
                 {/* TAB SWITCHER */}
                 <div className={`flex items-center p-1 border rounded-xl backdrop-blur-md ${
-                  isDark ? 'bg-white/[0.03] border-white/5' : 'bg-slate-100 border-slate-200'
+                  isDark ? 'bg-white/[0.03] border-white/5' : 'bg-[var(--bg-sidebar)] border-slate-200'
                 }`}>
                   <button
                     onClick={switchToAvailable}
                     className={`px-4 py-2 rounded-lg text-[12px] font-bold transition-all duration-500 ${activeTab === "available"
-                        ? isDark ? "bg-white/10 text-white shadow-lg" : "bg-white text-slate-900 shadow"
+                        ? isDark ? "bg-white/10 text-white shadow-lg" : "bg-[var(--bg-main)] text-slate-900 shadow"
                         : isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-500 hover:text-slate-800"
                       }`}
                   >
                     Available Jobs
                     <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${
                       activeTab === "available" 
-                        ? isDark ? "bg-white/10 text-white/60" : "bg-slate-100 text-slate-700" 
+                        ? isDark ? "bg-white/10 text-white/60" : "bg-slate-200/60 text-slate-700" 
                         : "bg-white/5 text-slate-600"
                     }`}>
                       {availableJobs.length}
@@ -550,27 +550,25 @@ const JobMatchOutlet = () => {
                   </button>
                 </div>
 
-                {activeTab === "latest" && (
-                  <button
-                    onClick={fetchLatestJobsFromApi}
-                    disabled={isFetchingApi}
-                    className={`flex items-center gap-2 px-4 py-2 border rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-95 ${
-                      isDark 
-                        ? "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border-cyan-500/20" 
-                        : "bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border-emerald-200"
-                    }`}
-                  >
-                    {isFetchingApi ? (
-                      <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
-                        <circle className="opacity-10" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-40" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    ) : (
-                      <RefreshCwIcon size={14} />
-                    )}
-                    Fetch New Jobs
-                  </button>
-                )}
+                <button
+                  onClick={fetchLatestJobsFromApi}
+                  disabled={isFetchingApi}
+                  className={`flex items-center gap-2 px-4 py-2 border rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-95 ${
+                    isDark 
+                      ? "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border-cyan-500/20" 
+                      : "bg-[var(--bg-sidebar)] hover:bg-[var(--bg-main)] text-slate-800 border-slate-200 hover:border-slate-400/50 shadow-sm"
+                  }`}
+                >
+                  {isFetchingApi ? (
+                    <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
+                      <circle className="opacity-10" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-40" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : (
+                    <RefreshCwIcon size={14} className={isFetchingApi ? "animate-spin" : ""} />
+                  )}
+                  Refresh
+                </button>
               </div>
 
               <div className="flex items-center gap-4">
@@ -580,7 +578,7 @@ const JobMatchOutlet = () => {
                   className={`rounded-xl px-4 py-2 text-[12px] font-bold focus:outline-none transition-all cursor-pointer border ${
                     isDark 
                       ? 'bg-[#080808] border-white/10 text-slate-300 focus:border-cyan-500/50' 
-                      : 'bg-white border-slate-200 text-slate-700 focus:border-emerald-500/50'
+                      : 'bg-[var(--bg-sidebar)] border-slate-200 text-slate-700 focus:border-emerald-500/50'
                   }`}
                 >
                   <option value="latest">Sort: Newest First</option>

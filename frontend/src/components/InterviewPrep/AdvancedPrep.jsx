@@ -22,129 +22,109 @@ const AdvancedPrep = ({
     const displayCategories = ['All Questions', ...(categories || [])];
 
     return (
-        <div className="w-full text-[var(--text-main)] min-h-screen bg-transparent p-6 md:px-12 py-8 selection:bg-indigo-500/30">
+        <div className="w-full text-[var(--text-main)] min-h-screen bg-transparent p-4 md:px-8 py-4 selection:bg-indigo-500/30">
             {/* Header Section: Minimalist Intelligence Status */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className={`relative mb-8 p-8 rounded-3xl border transition-colors duration-500 ${
-                    isDark ? 'bg-white/[0.01] border-white/[0.04]' : 'bg-white border-slate-200 shadow-sm'
+                className={`relative mb-4 p-4 rounded-xl border transition-colors duration-500 ${
+                    isDark ? 'bg-white/[0.01] border-white/[0.04]' : 'bg-[var(--bg-sidebar)] border-slate-200 shadow-sm'
                 } overflow-hidden`}
             >
                 <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
                     <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
                         {/* Role Primary Label */}
-                        <div className="flex items-center gap-5">
-                            <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500">
-                                <SparklesIcon size={26} />
-                            </div>
-                            <h2 className="text-3xl font-semibold tracking-tight leading-none">
-                                {role}
-                            </h2>
-                        </div>
-
-                        <div className={`h-10 w-[1px] hidden md:block ${isDark ? 'bg-white/[0.06]' : 'bg-slate-200'}`} />
-
-                        {/* Progress Module */}
-                        <div className="flex items-center gap-8">
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between gap-12">
-                                    <span className="text-[13px] font-bold text-slate-500 dark:text-slate-650 tracking-tight">Progress</span>
-                                    <span className="text-[13px] font-bold text-indigo-500 dark:text-indigo-400 tracking-tight">{completedCount} / {totalCount}</span>
-                                </div>
-                                <div className={`w-48 lg:w-64 h-1.5 rounded-full overflow-hidden border ${
-                                    isDark ? 'bg-white/[0.03] border-white/[0.05]' : 'bg-slate-100 border-slate-200'
-                                }`}>
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${progressPercent}%` }}
-                                        transition={{ duration: 1.5, ease: "circOut" }}
-                                        className="h-full bg-gradient-to-r from-indigo-600 to-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.4)]"
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-black dark:text-white">
+                                <SparklesIcon size={18} />
+                             </div>
+                             <h2 className="text-lg font-semibold tracking-tight leading-none text-black dark:text-white">
+                                 {role}
+                             </h2>
+                         </div>
+ 
+                         <div className={`h-10 w-[1px] hidden md:block ${isDark ? 'bg-white/[0.06]' : 'bg-slate-200'}`} />
+ 
+                         {/* Progress Module */}
+                         <div className="flex items-center gap-8">
+                             <div className="space-y-1.5">
+                                 <div className="flex items-center justify-between gap-12">
+                                     <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-tight uppercase">Progress</span>
+                                     <span className="text-[11px] font-semibold text-black dark:text-white tracking-tight">{completedCount} / {totalCount}</span>
+                                 </div>
+                                 <div className={`w-48 lg:w-64 h-1.5 rounded-full overflow-hidden border ${
+                                     isDark ? 'bg-white/[0.03] border-white/[0.05]' : 'bg-slate-100 border-slate-200'
+                                 }`}>
+                                     <motion.div
+                                         initial={{ width: 0 }}
+                                         animate={{ width: `${progressPercent}%` }}
+                                         transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                                         className="h-full bg-gradient-to-r from-black to-slate-700 dark:from-white dark:to-slate-300"
+                                     />
+                                 </div>
+                             </div>
+                         </div>
                     </div>
 
                     <button
                         type="button"
                         onClick={onRoleChange}
-                        className={`group w-10 h-10 flex items-center justify-center border rounded-full transition-all duration-300 ${
+                        className={`group w-9 h-9 flex items-center justify-center border rounded-full transition-all duration-300 ${
                             isDark 
                                 ? 'bg-white/[0.02] hover:bg-white/[0.05] border-white/[0.06] hover:border-indigo-500/30' 
-                                : 'bg-slate-50 hover:bg-slate-100 border-slate-200 hover:border-indigo-500/30'
+                                : 'bg-[var(--bg-main)] hover:bg-slate-200 border-slate-200 hover:border-indigo-500/30'
                         }`}
                         title="Return to Selection"
                     >
-                        <ArrowLeftIcon size={14} className="group-hover:-translate-x-1 transition-transform duration-300 text-slate-500 group-hover:text-indigo-500" />
+                        <ArrowLeftIcon size={13} className="group-hover:-translate-x-1 transition-transform duration-300 text-slate-500 group-hover:text-indigo-500" />
                     </button>
                 </div>
             </motion.div>
 
-            {/* Categories Hub */}
-            <div className="mb-12">
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            {/* Categories Hub: Flat Tabs like Image 1 */}
+            <div className={`mb-6 border-b flex overflow-x-auto scrollbar-none ${
+                isDark ? 'border-white/[0.05]' : 'border-slate-100'
+            }`}>
+                <div className="flex gap-6 md:gap-8 pb-px">
                     {displayCategories.map((cat, idx) => {
-                        const CatIcon = categoryIcons[cat] || BriefcaseIcon;
+                        const CatIcon = categoryIcons[cat] || BookIcon;
                         const isActive = selectedCategory === cat;
                         const count = cat === 'All Questions' ? totalQuestionsForRole : counts[cat] || 0;
 
                         return (
-                            <motion.button
+                            <button
                                 key={`cat-${cat}-${idx}`}
-                                initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{
-                                    delay: idx * 0.04,
-                                    duration: 0.7,
-                                    ease: [0.16, 1, 0.3, 1]
-                                }}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`group relative p-5 rounded-2xl border transition-all duration-700 text-left overflow-hidden ${
+                                className={`group relative flex items-center gap-2 pb-3 text-left select-none outline-none border-b-2 transition-all duration-200 ${
                                     isActive
-                                        ? 'bg-indigo-500/[0.06] border-indigo-500/30 shadow-sm'
-                                        : isDark 
-                                            ? 'bg-[#060606] border-white/[0.04] hover:border-white/10'
-                                            : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-350 shadow-sm'
+                                        ? 'border-black text-black dark:border-white dark:text-white font-medium'
+                                        : 'border-transparent text-slate-500 hover:text-black dark:text-slate-400 dark:hover:text-white'
                                 }`}
                             >
-                                <div className="relative z-10 flex flex-col gap-5">
-                                    <div className={`w-10 h-10 rounded-[0.85rem] flex items-center justify-center transition-all duration-700 ${
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                    <CatIcon size={10} className={`flex-shrink-0 transition-colors duration-200 ${
                                         isActive 
-                                            ? 'bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)]' 
-                                            : isDark
-                                                ? 'bg-white/[0.01] text-slate-600 group-hover:text-white group-hover:bg-white/[0.04]'
-                                                : 'bg-slate-50 text-slate-400 group-hover:text-indigo-500 group-hover:bg-indigo-50'
+                                            ? 'text-black dark:text-white' 
+                                            : 'text-slate-400 group-hover:text-black dark:text-slate-500 dark:group-hover:text-white'
+                                    }`} />
+                                    <span className={`text-[11px] font-medium tracking-tight truncate ${
+                                        isActive 
+                                            ? 'text-black dark:text-white' 
+                                            : 'text-slate-500 group-hover:text-black dark:text-slate-400 dark:group-hover:text-white'
                                     }`}>
-                                        <CatIcon size={18} className={isActive ? 'scale-110' : 'group-hover:scale-110 transition-transform duration-700'} />
-                                    </div>
-
-                                    <div className="space-y-1.5">
-                                        <h4 className={`text-[13px] font-bold transition-colors ${
-                                            isActive 
-                                                ? 'text-indigo-650 dark:text-white' 
-                                                : 'text-slate-500 dark:text-slate-600 group-hover:text-slate-800 dark:group-hover:text-slate-400'
-                                        }`}>
-                                            {cat}
-                                        </h4>
-                                        <div className="flex items-center gap-2">
-                                            <span className={`text-2xl font-bold tracking-tight ${
-                                                isActive ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-700 dark:text-white/60'
-                                            }`}>{count}</span>
-                                            <span className="text-[9px] font-bold text-slate-400 dark:text-slate-700 tracking-tight mt-0.5">Asset Nodes</span>
-                                        </div>
-                                    </div>
+                                        {cat.replace(' Questions', '')}
+                                    </span>
                                 </div>
 
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="active-selection-glow"
-                                        className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.03] to-transparent pointer-events-none"
-                                    />
-                                )}
-                            </motion.button>
+                                <span className={`text-[10px] font-bold tracking-tight px-2 py-0.5 rounded-full transition-colors duration-200 ${
+                                    isActive 
+                                        ? 'bg-black text-white dark:bg-white dark:text-black' 
+                                        : 'bg-slate-100 text-slate-600 dark:bg-white/[0.08] dark:text-slate-300'
+                                }`}>
+                                    {count}
+                                </span>
+                            </button>
                         );
                     })}
                 </div>
@@ -152,18 +132,18 @@ const AdvancedPrep = ({
 
             {/* Content List */}
             <div className="w-full relative">
-                <div className={`flex items-center justify-between mb-8 border-b pb-8 ${
+                <div className={`flex items-center justify-between mb-5 border-b pb-3.5 ${
                     isDark ? 'border-white/[0.04]' : 'border-slate-200'
                 }`}>
-                    <div className="flex items-center gap-8">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-600 tracking-tight">Target Phase</span>
-                            <h3 className="text-2xl font-bold tracking-tight">{selectedCategory}</h3>
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-600 tracking-wider uppercase">Target Phase:</span>
+                            <span className="text-[13px] font-bold text-[var(--text-main)]">{selectedCategory}</span>
                         </div>
-                        <div className={`h-10 w-[1px] ${isDark ? 'bg-white/[0.06]' : 'bg-slate-200'}`} />
-                        <div className="flex flex-col gap-1">
-                            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-600 tracking-tight">Available Payload</span>
-                            <span className="text-2xl font-bold text-indigo-550 dark:text-indigo-400 tracking-tight">{questions.length} <span className="text-[11px] font-bold text-slate-450 dark:text-slate-600 tracking-tight ml-1">Nodes</span></span>
+                        <div className={`h-4 w-[1px] ${isDark ? 'bg-white/[0.06]' : 'bg-slate-200'}`} />
+                        <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-600 tracking-wider uppercase">Available Payload:</span>
+                            <span className="text-[13px] font-bold text-black dark:text-white">{questions.length} Nodes</span>
                         </div>
                     </div>
                 </div>
@@ -179,7 +159,7 @@ const AdvancedPrep = ({
                             >
                                 {[1, 2, 3, 4].map((_, idx) => (
                                     <div key={`skeleton-${idx}`} className={`relative h-24 w-full border rounded-2xl overflow-hidden ${
-                                        isDark ? 'bg-[#080808] border-white/[0.04]' : 'bg-white border-slate-200'
+                                        isDark ? 'bg-[#080808] border-white/[0.04]' : 'bg-[var(--bg-sidebar)] border-slate-200'
                                     }`}>
                                         <motion.div
                                             animate={{
@@ -213,27 +193,24 @@ const AdvancedPrep = ({
                                 </div>
                             </motion.div>
                         ) : (
-                            questions.map((question, idx) => (
-                                <motion.div
-                                    key={question.id || `q-${idx}`}
-                                    initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
-                                    whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                                    viewport={{ once: true, margin: "-50px" }}
-                                    transition={{
-                                        duration: 0.8,
-                                        delay: Math.min(idx * 0.1, 0.4),
-                                        ease: [0.16, 1, 0.3, 1]
-                                    }}
-                                >
+                            <motion.div
+                                key="questions-list"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                className="space-y-4"
+                            >
+                                {questions.map((question) => (
                                     <QuestionCard
+                                        key={question.id}
                                         question={question}
                                         toggleComplete={toggleComplete}
                                         currentNote={allNotes[question.id] || ''}
                                         onSaveNote={onSaveNote}
                                         onExplainWithAI={onExplainWithAI}
                                     />
-                                </motion.div>
-                             ))
+                                ))}
+                            </motion.div>
                         )}
                     </AnimatePresence>
 

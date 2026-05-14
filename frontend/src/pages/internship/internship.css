@@ -45,10 +45,10 @@
 
 /* Light theme values */
 html.light {
-  --cw-white: #ffffff;
+  --cw-white: #f9f8f4;
   --cw-bg: #f0eeea;
   --cw-bg2: #e8e6e0;
-  --cw-surface: #ffffff;
+  --cw-surface: #f9f8f4;
   --cw-border: #e0ddd5;
   --cw-border2: #ccc9be;
   --cw-text: #1a1916;

@@ -9,7 +9,7 @@ const SkillTag = ({ skill }) => {
     <span className={`inline-flex items-center rounded-lg px-3 py-1 text-[11px] font-semibold border mr-2 mb-2 transition-all duration-500 ${
       isDark 
         ? 'bg-white/[0.03] border-white/5 text-slate-400 hover:border-white/20 hover:text-white' 
-        : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900'
+        : 'bg-[var(--bg-main)] border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900'
     }`}>
       {skill}
     </span>
@@ -38,7 +38,7 @@ const JobCard = ({ job }) => {
         <div className={`w-16 h-16 rounded-xl shrink-0 border flex items-center justify-center transition-all duration-700 ${
           isDark 
             ? 'bg-white/[0.02] border-white/5 group-hover:border-cyan-500/20' 
-            : 'bg-slate-50 border-slate-200 group-hover:border-emerald-500/20'
+            : 'bg-[var(--bg-main)] border-slate-200 group-hover:border-emerald-500/20'
         }`}>
           <BriefcaseIcon size={24} className={`transition-colors duration-700 ${
             isDark 

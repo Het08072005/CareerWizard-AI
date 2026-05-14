@@ -127,29 +127,29 @@ const Roadmap = ({ roleData, onBack }) => {
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
         variants={itemVariants}
-        className={`relative group border border-[var(--border-color)] rounded-3xl p-10 overflow-hidden shadow-2xl mb-10 transition-colors duration-500 ${
-          isDark ? 'bg-[#080808]' : 'bg-white'
+        className={`relative group border border-[var(--border-color)] rounded-2xl p-6 md:p-8 overflow-hidden shadow-xl mb-6 transition-colors duration-500 ${
+          isDark ? 'bg-[#080808]' : 'bg-[var(--bg-sidebar)]'
         }`}
       >
         <div className={`absolute top-0 right-0 w-[400px] h-[400px] ${isDark ? 'bg-indigo-500/5' : 'bg-indigo-500/[0.02]'} rounded-full blur-[100px] pointer-events-none`} />
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.02] to-transparent pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
-            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl shadow-2xl transition-all duration-700 border ${
-              isDark ? 'bg-white/[0.02] border-white/5 group-hover:border-indigo-500/20' : 'bg-slate-50 border-slate-200 group-hover:border-indigo-500/20'
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-xl transition-all duration-700 border ${
+              isDark ? 'bg-white/[0.02] border-white/5 group-hover:border-indigo-500/20' : 'bg-[var(--bg-main)] border-slate-200 group-hover:border-indigo-500/20'
             }`}>
-              {typeof roleData?.icon === 'string' ? <span>{roleData.icon}</span> : (roleData?.icon ? <roleData.icon size={28} className="text-indigo-500" /> : <TrendingUpIcon size={28} className="text-indigo-500" />)}
+              {typeof roleData?.icon === 'string' ? <span className="scale-90">{roleData.icon}</span> : (roleData?.icon ? <roleData.icon size={22} className="text-indigo-500" /> : <TrendingUpIcon size={22} className="text-indigo-500" />)}
             </div>
             <div>
-              <h2 className="text-3xl font-semibold tracking-tight leading-none cursor-default">{roleData?.title || "Career Path"}</h2>
-              <p className="text-[12px] text-[var(--text-muted)] font-medium tracking-normal italic mt-2 opacity-80">{roleData?.path || "Technical Roadmap"}</p>
+              <h2 className="text-2xl font-bold tracking-tight leading-none cursor-default">{roleData?.title || "Career Path"}</h2>
+              <p className="text-[11px] text-[var(--text-muted)] font-medium tracking-normal italic mt-1.5 opacity-80">{roleData?.path || "Technical Roadmap"}</p>
             </div>
           </div>
 
           <button
             onClick={onBack}
-            className={`h-12 px-8 text-[11px] font-semibold uppercase tracking-widest rounded-xl transition-all duration-700 shadow-sm active:scale-95 ${
+            className={`h-10 px-5 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all duration-700 shadow-sm active:scale-95 ${
               isDark 
                 ? 'bg-white text-black hover:bg-indigo-500 hover:text-white' 
                 : 'bg-slate-900 text-white hover:bg-indigo-600'
@@ -159,23 +159,23 @@ const Roadmap = ({ roleData, onBack }) => {
           </button>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 relative z-10">
-          <div className={`border border-[var(--border-color)] rounded-xl p-5 transition-all duration-700 ${isDark ? 'bg-white/[0.01] hover:border-white/10' : 'bg-slate-50 hover:border-slate-300'}`}>
-            <div className="text-[9px] font-semibold text-slate-500 dark:text-slate-600 tracking-wider mb-2 uppercase">Average Salary</div>
-            <div className="text-2xl font-semibold tracking-tight">{roleData.salary}</div>
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+          <div className={`border border-[var(--border-color)] rounded-xl p-4 transition-all duration-700 ${isDark ? 'bg-white/[0.01] hover:border-white/10' : 'bg-[var(--bg-main)] hover:border-slate-300'}`}>
+            <div className="text-[8px] font-semibold text-slate-500 dark:text-slate-600 tracking-wider mb-1 uppercase">Average Salary</div>
+            <div className="text-xl font-bold tracking-tight">{roleData.salary}</div>
           </div>
-          <div className={`border border-[var(--border-color)] rounded-xl p-5 transition-all duration-700 ${isDark ? 'bg-white/[0.01] hover:border-white/10' : 'bg-slate-50 hover:border-slate-300'}`}>
-            <div className="text-[9px] font-semibold text-slate-500 dark:text-slate-600 tracking-wider mb-2 uppercase">Market Demand</div>
-            <div className="text-2xl font-semibold tracking-tight uppercase">{roleData.demand}</div>
+          <div className={`border border-[var(--border-color)] rounded-xl p-4 transition-all duration-700 ${isDark ? 'bg-white/[0.01] hover:border-white/10' : 'bg-[var(--bg-main)] hover:border-slate-300'}`}>
+            <div className="text-[8px] font-semibold text-slate-500 dark:text-slate-600 tracking-wider mb-1 uppercase">Market Demand</div>
+            <div className="text-xl font-bold tracking-tight uppercase">{roleData.demand}</div>
           </div>
-          <div className={`border border-[var(--border-color)] rounded-xl p-5 transition-all duration-700 relative overflow-hidden group/progress ${isDark ? 'bg-white/[0.01] hover:border-indigo-500/20' : 'bg-slate-50 hover:border-indigo-500/20'}`}>
+          <div className={`border border-[var(--border-color)] rounded-xl p-4 transition-all duration-700 relative overflow-hidden group/progress ${isDark ? 'bg-white/[0.01] hover:border-indigo-500/20' : 'bg-[var(--bg-main)] hover:border-indigo-500/20'}`}>
             <div className="absolute inset-0 bg-indigo-500/[0.01] opacity-0 group-hover/progress:opacity-100 transition-opacity" />
-            <div className="text-[9px] font-semibold text-slate-500 dark:text-slate-600 tracking-wider mb-2 uppercase">Path Completion</div>
-            <div className="text-2xl font-semibold text-indigo-500 dark:text-indigo-400 tracking-tight">{percent}%</div>
+            <div className="text-[8px] font-semibold text-slate-500 dark:text-slate-600 tracking-wider mb-1 uppercase">Path Completion</div>
+            <div className="text-xl font-bold text-indigo-500 dark:text-indigo-400 tracking-tight">{percent}%</div>
           </div>
         </div>
 
-        <div className="mt-10">
+        <div className="mt-6">
           <ProgressBar progress={percent} />
         </div>
       </motion.div>
@@ -186,23 +186,23 @@ const Roadmap = ({ roleData, onBack }) => {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={itemVariants}
-        className={`border border-[var(--border-color)] rounded-3xl p-10 mb-10 overflow-hidden relative transition-colors duration-500 ${
-          isDark ? 'bg-[#080808]' : 'bg-white shadow-sm'
+        className={`border border-[var(--border-color)] rounded-2xl p-6 mb-6 overflow-hidden relative transition-colors duration-500 ${
+          isDark ? 'bg-[#080808]' : 'bg-[var(--bg-sidebar)] shadow-sm'
         }`}
       >
         <div className={`absolute top-0 left-0 w-[500px] h-[500px] ${isDark ? 'bg-cyan-500/[0.03]' : 'bg-cyan-500/[0.01]'} rounded-full blur-[120px] pointer-events-none -translate-x-1/2 -translate-y-1/2`} />
-        <h3 className="text-[12px] font-semibold tracking-widest mb-6 flex items-center opacity-80">
-          <ChartBarIcon size={14} className="text-cyan-500 mr-3" />
+        <h3 className="text-[10px] font-semibold tracking-widest mb-4 flex items-center opacity-85">
+          <ChartBarIcon size={12} className="text-cyan-500 mr-2.5" />
           Technical Requirements
         </h3>
-        <div className="flex flex-wrap gap-3 relative z-10">
+        <div className="flex flex-wrap gap-2 relative z-10">
           {(roleData.requiredSkills || []).map((s, i) => (
             <span
               key={s}
-              className={`px-4 py-2 border rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all duration-500 ${
+              className={`px-3 py-1.5 border rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all duration-500 ${
                 isDark 
                   ? 'bg-white/[0.02] border-white/5 text-slate-400 hover:border-cyan-500/30 hover:text-cyan-300 hover:bg-cyan-500/5' 
-                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-emerald-500/30 hover:text-emerald-600 hover:bg-emerald-500/[0.02]'
+                  : 'bg-[var(--bg-main)] border-slate-200 text-slate-600 hover:border-emerald-500/30 hover:text-emerald-600 hover:bg-emerald-500/[0.02]'
               }`}
             >
               {s}

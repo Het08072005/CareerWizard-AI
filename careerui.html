@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerWizard AI – My Internship</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#22c55e; --green-dark:#16a34a; --green-light:#dcfce7; --green-pale:#f0fdf4;
+  --purple:#7c3aed; --purple-light:#ede9fe; --blue:#3b82f6; --blue-light:#dbeafe;
+  --orange:#f97316; --orange-light:#ffedd5; --yellow:#eab308; --yellow-light:#fef9c3;
+  --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb; --gray-300:#d1d5db;
+  --gray-400:#9ca3af; --gray-500:#6b7280; --gray-600:#4b5563; --gray-700:#374151;
+  --gray-800:#1f2937; --gray-900:#111827;
+  --sidebar-w:232px;
+  --font-body:'Plus Jakarta Sans',sans-serif;
+  --font-heading:'Rubik',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--gray-100);color:var(--gray-800);display:flex;min-height:100vh;font-size:14px;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:20px 18px 12px;border-bottom:1px solid var(--gray-100);}
+.logo-text{font-family:var(--font-heading);font-weight:700;font-size:18px;color:var(--gray-900);letter-spacing:-0.3px;}
+.logo-text span{color:var(--green);}
+.pro-badge{display:inline-flex;align-items:center;gap:4px;background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:6px;font-family:var(--font-heading);}
+.pro-badge::before{content:'⚡';font-size:10px;}
+.sidebar-section{padding:16px 10px 8px;}
+.sidebar-section-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--gray-400);text-transform:uppercase;padding:0 8px;margin-bottom:6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--gray-600);font-weight:500;font-size:13.5px;transition:all 0.15s;text-decoration:none;}
+.nav-item:hover{background:var(--gray-100);color:var(--gray-900);}
+.nav-item.active{background:var(--green-pale);color:var(--green-dark);font-weight:600;}
+.nav-item .icon{font-size:16px;width:20px;text-align:center;}
+.sidebar-user{margin-top:auto;border-top:1px solid var(--gray-100);padding:14px 12px;}
+.user-row{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;background:var(--green-dark);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+.user-name{font-weight:600;font-size:13px;color:var(--gray-800);}
+.user-sub{font-size:11px;color:var(--gray-400);}
+.switch-admin{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--gray-500);margin-top:10px;padding:0 2px;cursor:pointer;}
+.switch-admin:hover{color:var(--green-dark);}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:52px;background:#fff;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:90;}
+.breadcrumb{font-size:13px;color:var(--gray-400);display:flex;align-items:center;gap:6px;font-family:var(--font-heading);font-weight:500;}
+.breadcrumb span{color:var(--gray-700);}
+.topbar-actions{display:flex;align-items:center;gap:10px;}
+.topbar-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray-200);background:#fff;color:var(--gray-700);font-family:var(--font-heading);transition:all 0.15s;}
+.topbar-btn.active{background:var(--green-pale);border-color:var(--green);color:var(--green-dark);}
+.topbar-btn .dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+.icon-btn{width:34px;height:34px;border:1.5px solid var(--gray-200);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--gray-500);background:#fff;}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);margin-top:52px;flex:1;padding:28px 32px;max-width:1200px;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;}
+.page-title{font-family:var(--font-heading);font-weight:700;font-size:26px;color:var(--gray-900);letter-spacing:-0.4px;}
+.page-sub{font-size:13px;color:var(--gray-500);margin-top:3px;}
+
+/* ═══ LEVEL SELECTOR SCREEN ═══ */
+#level-screen{display:block;}
+#internship-screen{display:none;}
+
+.level-hero{text-align:center;padding:48px 0 36px;}
+.level-hero h1{font-family:var(--font-heading);font-size:32px;font-weight:700;color:var(--gray-900);letter-spacing:-0.5px;margin-bottom:10px;}
+.level-hero p{font-size:15px;color:var(--gray-500);max-width:480px;margin:0 auto;}
+
+.level-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:780px;margin:0 auto 32px;}
+
+.level-card{background:#fff;border:2px solid var(--gray-200);border-radius:20px;padding:32px 28px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.level-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.1);}
+.level-card.selected{border-color:var(--green);box-shadow:0 0 0 4px rgba(34,197,94,0.12);}
+.level-card.selected-int{border-color:var(--purple);box-shadow:0 0 0 4px rgba(124,58,237,0.12);}
+
+.level-card-icon{font-size:40px;margin-bottom:14px;}
+.level-card h2{font-family:var(--font-heading);font-size:20px;font-weight:700;color:var(--gray-900);margin-bottom:6px;}
+.level-card .level-desc{font-size:13px;color:var(--gray-500);line-height:1.6;margin-bottom:18px;}
+
+.level-skills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.level-skill{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;font-family:var(--font-heading);}
+.sk-green{background:var(--green-light);color:var(--green-dark);}
+.sk-purple{background:var(--purple-light);color:var(--purple);}
+.sk-blue{background:var(--blue-light);color:var(--blue);}
+.sk-orange{background:var(--orange-light);color:var(--orange);}
+
+.level-phases{margin-top:4px;}
+.level-phases h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-400);margin-bottom:8px;font-family:var(--font-heading);}
+.phase-row{display:flex;gap:6px;flex-direction:column;}
+.phase-item{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--gray-600);}
+.phase-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ph-green{background:var(--green);}
+.ph-purple{background:var(--purple);}
+.ph-orange{background:var(--orange);}
+
+.level-badge-corner{position:absolute;top:16px;right:16px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;font-family:var(--font-heading);}
+.badge-beg{background:var(--green-light);color:var(--green-dark);}
+.badge-int{background:var(--purple-light);color:var(--purple);}
+
+.confirm-btn{display:block;width:100%;max-width:340px;margin:0 auto;padding:14px;background:var(--green-dark);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font-heading);cursor:pointer;transition:all 0.2s;opacity:0.4;pointer-events:none;}
+.confirm-btn.ready{opacity:1;pointer-events:all;}
+.confirm-btn.ready:hover{background:#166534;transform:translateY(-2px);}
+.confirm-btn-int.ready{background:var(--purple);}
+.confirm-btn-int.ready:hover{background:#5b21b6;}
+
+/* ═══ TRACK BANNER ═══ */
+.track-banner{background:linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%);border-radius:16px;padding:24px 28px;color:#fff;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:relative;overflow:hidden;}
+.track-banner.int-banner{background:linear-gradient(135deg,#3b0764 0%,#4c1d95 50%,#5b21b6 100%);}
+.track-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,0.05);border-radius:50%;}
+.track-info h2{font-family:var(--font-heading);font-size:18px;font-weight:700;margin-bottom:4px;}
+.track-info p{font-size:13px;opacity:0.8;margin-bottom:14px;}
+.track-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.track-tag{background:rgba(255,255,255,0.15);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;backdrop-filter:blur(4px);}
+.track-stats{display:flex;gap:28px;position:relative;z-index:1;}
+.stat-item{text-align:center;}
+.stat-num{font-family:var(--font-heading);font-size:28px;font-weight:700;display:block;}
+.stat-label{font-size:11px;opacity:0.75;}
+
+/* LEVEL SWITCH */
+.level-switch-bar{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:12px 18px;margin-bottom:20px;}
+.level-switch-bar .lsb-label{font-family:var(--font-heading);font-size:13px;font-weight:600;color:var(--gray-600);}
+.lsb-tabs{display:flex;gap:4px;background:var(--gray-100);padding:3px;border-radius:8px;}
+.lsb-tab{padding:6px 18px;font-size:12.5px;font-weight:700;border-radius:6px;cursor:pointer;color:var(--gray-400);font-family:var(--font-heading);transition:all 0.15s;}
+.lsb-tab.act-beg{background:#fff;color:var(--green-dark);box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.lsb-tab.act-int{background:#fff;color:var(--purple);box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.change-track-btn{font-size:12px;color:var(--gray-400);cursor:pointer;font-weight:500;text-decoration:underline;}
+.change-track-btn:hover{color:var(--gray-700);}
+
+/* PROGRESS */
+.progress-section{background:#fff;border-radius:12px;padding:18px 22px;margin-bottom:20px;border:1px solid var(--gray-200);display:flex;align-items:center;gap:20px;}
+.progress-label{font-family:var(--font-heading);font-size:13px;font-weight:600;color:var(--gray-700);white-space:nowrap;}
+.progress-bar-wrap{flex:1;height:8px;background:var(--gray-100);border-radius:20px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),#16a34a);border-radius:20px;transition:width 1s ease;}
+.progress-bar-fill.purple-fill{background:linear-gradient(90deg,var(--purple),#5b21b6);}
+.progress-pct{font-family:var(--font-heading);font-size:14px;font-weight:700;color:var(--green-dark);white-space:nowrap;}
+.progress-pct.purple-pct{color:var(--purple);}
+.progress-days{font-size:12px;color:var(--gray-400);white-space:nowrap;}
+
+/* PHASES */
+.phases-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-family:var(--font-heading);font-size:16px;font-weight:600;color:var(--gray-900);}
+.phase-pills{display:flex;gap:6px;}
+.phase-pill{padding:5px 14px;font-size:12px;font-weight:700;border-radius:20px;cursor:pointer;border:2px solid transparent;font-family:var(--font-heading);transition:all 0.15s;}
+.phase-pill.p-beg-1{background:var(--green-light);color:var(--green-dark);}
+.phase-pill.p-beg-2{background:var(--blue-light);color:var(--blue);}
+.phase-pill.p-beg-3{background:var(--orange-light);color:var(--orange);}
+.phase-pill.p-int-1{background:var(--purple-light);color:var(--purple);}
+.phase-pill.p-int-2{background:var(--orange-light);color:var(--orange);}
+.phase-pill.p-int-3{background:var(--blue-light);color:var(--blue);}
+.phase-pill.inactive{background:var(--gray-100);color:var(--gray-400);border-color:transparent;}
+
+/* PHASE SEPARATOR */
+.phase-separator{display:flex;align-items:center;gap:12px;margin:20px 0 14px;}
+.phase-sep-line{flex:1;height:1.5px;background:var(--gray-200);}
+.phase-sep-label{font-family:var(--font-heading);font-size:13px;font-weight:700;padding:5px 16px;border-radius:20px;white-space:nowrap;}
+.psl-1-beg{background:var(--green-light);color:var(--green-dark);}
+.psl-2-beg{background:var(--blue-light);color:var(--blue);}
+.psl-3-beg{background:var(--orange-light);color:var(--orange);}
+.psl-1-int{background:var(--purple-light);color:var(--purple);}
+.psl-2-int{background:var(--orange-light);color:var(--orange);}
+.psl-3-int{background:var(--blue-light);color:var(--blue);}
+
+/* DAY CARD */
+.day-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;}
+.day-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.07);border-color:var(--gray-300);}
+.day-card.done{border-left:4px solid var(--green);}
+.day-card.active-day{border-left:4px solid var(--blue);border-color:var(--blue);box-shadow:0 4px 20px rgba(59,130,246,0.1);}
+.day-card.active-day-int{border-left:4px solid var(--purple);border-color:var(--purple);box-shadow:0 4px 20px rgba(124,58,237,0.1);}
+.day-card.locked{opacity:0.62;}
+
+.day-card-header{display:flex;align-items:center;padding:16px 20px;cursor:pointer;gap:14px;user-select:none;}
+.day-number-badge{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-heading);font-weight:700;font-size:14px;position:relative;}
+.day-number-badge.done{background:var(--green-light);color:var(--green-dark);}
+.day-number-badge.act-b{background:var(--blue-light);color:var(--blue);}
+.day-number-badge.act-i{background:var(--purple-light);color:var(--purple);}
+.day-number-badge.lock{background:var(--gray-100);color:var(--gray-400);}
+.done-check{position:absolute;bottom:-4px;right:-4px;width:18px;height:18px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;border:2px solid #fff;}
+
+.day-meta{flex:1;min-width:0;}
+.day-title-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap;}
+.day-title{font-family:var(--font-heading);font-weight:600;font-size:14px;color:var(--gray-900);}
+.today-badge{background:#dbeafe;color:#1d4ed8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.day-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.day-tag{font-size:11.5px;color:var(--gray-500);background:var(--gray-50);padding:2px 8px;border-radius:6px;border:1px solid var(--gray-100);}
+.type-pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;}
+.pill-learn{background:var(--purple-light);color:var(--purple);}
+.pill-task{background:var(--blue-light);color:var(--blue);}
+.pill-project{background:var(--orange-light);color:var(--orange);}
+
+.day-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.day-score{font-family:var(--font-heading);font-size:20px;font-weight:700;color:var(--green-dark);}
+.score-lbl{font-size:10px;color:var(--gray-400);font-weight:500;text-align:center;}
+.status-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;font-family:var(--font-heading);}
+.b-done{background:var(--green-light);color:var(--green-dark);}
+.b-start{background:var(--blue-light);color:var(--blue);}
+.b-start-int{background:var(--purple-light);color:var(--purple);}
+.b-lock{background:var(--gray-100);color:var(--gray-400);}
+.chevron{font-size:18px;color:var(--gray-400);transition:transform 0.2s;line-height:1;}
+.chevron.open{transform:rotate(180deg);}
+
+/* DAY CONTENT */
+.day-content{display:none;border-top:1.5px solid var(--gray-100);padding:22px;background:var(--gray-50);}
+.day-content.open{display:block;}
+
+.day-tabs{display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--gray-200);}
+.day-tab{padding:8px 16px;font-size:13px;font-weight:600;font-family:var(--font-heading);color:var(--gray-400);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
+.day-tab.active{color:var(--green-dark);border-bottom-color:var(--green-dark);}
+.day-tab.active.int{color:var(--purple);border-bottom-color:var(--purple);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.content-grid{display:grid;grid-template-columns:1fr 300px;gap:18px;}
+@media(max-width:860px){.content-grid{grid-template-columns:1fr;}}
+
+.content-box{background:#fff;border-radius:10px;padding:18px;border:1px solid var(--gray-200);margin-bottom:14px;}
+.content-box h4{font-family:var(--font-heading);font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.content-box p{font-size:13.5px;color:var(--gray-600);line-height:1.65;}
+
+.steps-list{list-style:none;}
+.steps-list li{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
+.step-num{width:24px;height:24px;background:var(--green-dark);color:#fff;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);margin-top:1px;}
+.step-num.int{background:var(--purple);}
+.step-text{font-size:13.5px;color:var(--gray-700);line-height:1.55;}
+.step-text strong{color:var(--gray-900);font-weight:600;}
+.step-text code{background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:'Courier New',monospace;font-size:12px;color:var(--green-dark);border:1px solid var(--gray-200);}
+
+.yt-link{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--gray-50);border:1px solid var(--gray-200);text-decoration:none;margin-bottom:7px;cursor:pointer;transition:all 0.15s;}
+.yt-link:hover{background:#fef2f2;border-color:#fca5a5;}
+.yt-icon{width:30px;height:22px;background:#ff0000;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.yt-icon::after{content:'▶';color:#fff;font-size:9px;}
+.yt-title{font-size:12px;font-weight:500;color:var(--gray-700);line-height:1.3;}
+.yt-ch{font-size:11px;color:var(--gray-400);margin-top:1px;}
+.yt-dur{margin-left:auto;font-size:10.5px;color:var(--gray-400);background:var(--gray-100);padding:2px 6px;border-radius:4px;white-space:nowrap;font-family:var(--font-heading);font-weight:600;}
+.doc-link{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:var(--gray-50);border:1px solid var(--gray-200);margin-bottom:6px;font-size:12.5px;font-weight:500;color:var(--blue);cursor:pointer;transition:all 0.15s;}
+.doc-link:hover{background:var(--blue-light);border-color:#93c5fd;}
+
+.input-field{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;color:var(--gray-700);font-family:var(--font-body);background:var(--gray-50);outline:none;transition:border-color 0.15s;margin-bottom:8px;}
+.input-field:focus{border-color:var(--green);background:#fff;}
+.submit-btn{width:100%;padding:10px;background:var(--green-dark);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--font-heading);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.submit-btn:hover{background:#166534;}
+.submit-btn.done-s{background:var(--green-light);color:var(--green-dark);cursor:default;}
+.submit-btn.int-s{background:var(--purple);}
+.submit-btn.int-s:hover{background:#5b21b6;}
+
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;font-family:var(--font-heading);}
+.chip-g{background:var(--green-light);color:var(--green-dark);}
+.chip-p{background:var(--purple-light);color:var(--purple);}
+.chip-b{background:var(--blue-light);color:var(--blue);}
+
+.locked-overlay{text-align:center;padding:36px;color:var(--gray-500);}
+.locked-overlay .li{font-size:36px;margin-bottom:10px;}
+.locked-overlay h4{font-family:var(--font-heading);font-size:14px;font-weight:600;color:var(--gray-600);margin-bottom:4px;}
+
+/* CERT */
+.cert-card{border:1.5px dashed var(--gray-300);border-radius:8px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--gray-50);}
+.cert-card:hover{border-color:var(--green);background:var(--green-pale);}
+.cert-card.int-cert:hover{border-color:var(--purple);background:#faf5ff;}
+
+/* QUIZ */
+.quiz-block{background:var(--yellow-light);border:1.5px solid #fde68a;border-radius:10px;padding:16px;margin-top:14px;}
+.quiz-block h4{font-family:var(--font-heading);font-size:13px;font-weight:700;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.quiz-opt{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;border:1.5px solid #fde68a;background:#fff;cursor:pointer;font-size:13px;color:var(--gray-700);margin-bottom:6px;transition:all 0.15s;}
+.quiz-opt:hover{border-color:var(--yellow);}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green-dark);}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Career<span>Wizard</span> AI</div>
+    <div class="pro-badge">PRO PLAN</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">MAIN</div>
+    <a class="nav-item" href="#">🏠 Dashboard</a>
+    <a class="nav-item active" href="#">🎓 My Internship</a>
+    <a class="nav-item" href="#">✅ My Tasks</a>
+    <a class="nav-item" href="#">📚 Daily Learning</a>
+    <a class="nav-item" href="#">📊 Progress Summary</a>
+    <a class="nav-item" href="#">💼 My Projects</a>
+    <a class="nav-item" href="#">📥 Resources</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">PREPARE</div>
+    <a class="nav-item" href="#">🔍 Job Matches</a>
+    <a class="nav-item" href="#">🗺️ Roadmap</a>
+    <a class="nav-item" href="#">🎤 Interview Prep</a>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-row">
+      <div class="user-avatar">H</div>
+      <div><div class="user-name">Het Panchal</div><div class="user-sub">Pro · CE Final Year</div></div>
+    </div>
+    <div class="switch-admin">🛡 Switch to Admin View</div>
+  </div>
+</aside>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="breadcrumb">Platform / <span>My Internship</span></div>
+  <div class="topbar-actions">
+    <div class="topbar-btn active"><span class="dot"></span> My Internship</div>
+    <div class="icon-btn">🔔</div>
+    <div class="icon-btn">❓</div>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ════════════════════════════════════════
+     LEVEL SELECTION SCREEN
+════════════════════════════════════════ -->
+<div id="level-screen">
+  <div class="page-header">
+    <div>
+      <div class="page-title">My Internship</div>
+      <div class="page-sub">Choose your skill level to get a personalized 15-day internship plan.</div>
+    </div>
+  </div>
+
+  <div class="level-hero">
+    <h1>What's your current level? 🎯</h1>
+    <p>Be honest — the right track makes all the difference. You can always switch later.</p>
+  </div>
+
+  <div class="level-cards">
+
+    <!-- BEGINNER CARD -->
+    <div class="level-card" id="card-beg" onclick="selectLevel('beg')">
+      <div class="level-badge-corner badge-beg">Beginner</div>
+      <div class="level-card-icon">🌱</div>
+      <h2>Beginner Track</h2>
+      <div class="level-desc">New to web development or less than 3 months of coding experience. You'll start from the very basics and build up systematically.</div>
+      <div class="level-skills">
+        <span class="level-skill sk-green">HTML/CSS</span>
+        <span class="level-skill sk-green">JavaScript</span>
+        <span class="level-skill sk-green">Git Basics</span>
+        <span class="level-skill sk-blue">React Intro</span>
+        <span class="level-skill sk-blue">Node.js</span>
+        <span class="level-skill sk-orange">Final Project</span>
+      </div>
+      <div class="level-phases">
+        <h4>📅 15-Day Plan — 3 Phases</h4>
+        <div class="phase-row">
+          <div class="phase-item"><div class="phase-dot ph-green"></div>Phase 1 (Days 1–5): Foundations — Git, HTML/CSS, JS</div>
+          <div class="phase-item"><div class="phase-dot ph-purple"></div>Phase 2 (Days 6–10): Backend — Node.js, Express, PostgreSQL</div>
+          <div class="phase-item"><div class="phase-dot ph-orange"></div>Phase 3 (Days 11–15): Full-Stack — React, Docker, Deploy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERMEDIATE CARD -->
+    <div class="level-card" id="card-int" onclick="selectLevel('int')">
+      <div class="level-badge-corner badge-int">Intermediate</div>
+      <div class="level-card-icon">🚀</div>
+      <h2>Intermediate Track</h2>
+      <div class="level-desc">You know HTML/CSS/JS basics and have built a few projects. Jump straight into real project-based work — no hand-holding.</div>
+      <div class="level-skills">
+        <span class="level-skill sk-purple">React / Next.js</span>
+        <span class="level-skill sk-purple">REST APIs</span>
+        <span class="level-skill sk-orange">Full-Stack Projects</span>
+        <span class="level-skill sk-blue">Docker + CI/CD</span>
+        <span class="level-skill sk-orange">Capstone</span>
+      </div>
+      <div class="level-phases">
+        <h4>📅 15-Day Plan — 3 Phases (Project-Only)</h4>
+        <div class="phase-row">
+          <div class="phase-item"><div class="phase-dot ph-purple"></div>Phase 1 (Days 1–5): Project Alpha — Social Platform API</div>
+          <div class="phase-item"><div class="phase-dot ph-orange"></div>Phase 2 (Days 6–10): Project Beta — Real-Time Dashboard</div>
+          <div class="phase-item"><div class="phase-dot ph-green"></div>Phase 3 (Days 11–15): Capstone — Full SaaS MVP</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="confirm-btn" id="confirm-btn" onclick="startInternship()">
+    Continue →
+  </button>
+</div>
+
+<!-- ════════════════════════════════════════
+     INTERNSHIP MAIN SCREEN
+════════════════════════════════════════ -->
+<div id="internship-screen">
+
+  <div class="page-header">
+    <div>
+      <div class="page-title" id="screen-title">My Internship</div>
+      <div class="page-sub" id="screen-sub">Complete all days in order.</div>
+    </div>
+  </div>
+
+  <!-- Track Banner -->
+  <div class="track-banner" id="track-banner">
+    <div class="track-info">
+      <h2 id="banner-title">🚀 Full-Stack Web Dev — Beginner Track</h2>
+      <p id="banner-sub">15-Day Internship · Batch #12 · Starts Jun 1, 2025</p>
+      <div class="track-tags" id="banner-tags"></div>
+    </div>
+    <div class="track-stats">
+      <div class="stat-item"><span class="stat-num" id="stat-done">0</span><span class="stat-label">Days Done</span></div>
+      <div class="stat-item"><span class="stat-num" id="stat-avg">—</span><span class="stat-label">Avg Score</span></div>
+      <div class="stat-item"><span class="stat-num" id="stat-left">15</span><span class="stat-label">Days Left</span></div>
+    </div>
+  </div>
+
+  <!-- Level switch bar -->
+  <div class="level-switch-bar">
+    <div class="lsb-label" id="lsb-label">🌱 Beginner Track Active</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="lsb-tabs">
+        <div class="lsb-tab act-beg" id="tab-beg" onclick="switchTrack('beg')">🌱 Beginner</div>
+        <div class="lsb-tab" id="tab-int" onclick="switchTrack('int')">🚀 Intermediate</div>
+      </div>
+      <div class="change-track-btn" onclick="goBack()">← Change</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="progress-label">Overall Progress</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progress-pct" id="prog-pct">0%</div>
+    <div class="progress-days" id="prog-days">Day 1 of 15</div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="phases-header">
+    <div class="section-title">Internship Timeline</div>
+    <div class="phase-pills" id="phase-pills"></div>
+  </div>
+
+  <!-- BEGINNER TRACK -->
+  <div id="track-beg">
+
+    <!-- PHASE 1 -->
+    <div class="phase-separator">
+      <div class="phase-sep-line"></div>
+      <div class="phase-sep-label psl-1-beg">🌱 Phase 1 — Foundations (Days 1–5)</div>
+      <div class="phase-sep-line"></div>
+    </div>
+
+    <!-- D1 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('b1')">
+        <div class="day-number-badge done">D1<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Git Setup + Version Control Fundamentals</span><span class="type-pill pill-learn">Learning</span></div>
+          <div class="day-tags"><span class="day-tag">Git</span><span class="day-tag">GitHub</span><span class="day-tag">Terminal</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score">96</div><div class="score-lbl">score</div></div><div class="status-badge b-done">DONE</div><div class="chevron" id="chev-b1">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b1">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="stab('b1','ov',this)">📖 Overview</div>
+          <div class="day-tab" onclick="stab('b1','st',this)">🛠 Setup Steps</div>
+          <div class="day-tab" onclick="stab('b1','rs',this)">🎥 Resources</div>
+          <div class="day-tab" onclick="stab('b1','qz',this)">⚡ Quiz</div>
+        </div>
+        <div class="tab-panel active" id="b1-ov">
+          <div class="content-grid">
+            <div>
+              <div class="content-box"><h4>📋 Learning Day — What You'll Learn</h4><p>Install Git, configure GitHub, understand branching & commits. This is the universal foundation every developer needs. By end of day you'll have a live GitHub profile with your first repo pushed.</p></div>
+              <div style="margin-bottom:10px"><span class="chip chip-g">⏱ 3–4 hours</span> &nbsp; <span class="chip chip-p">📌 No submission — mark done</span></div>
+            </div>
+            <div>
+              <div class="content-box"><h4>🎥 Top Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Git & GitHub Full Course</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">1h 8m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Git for Beginners</div><div class="yt-ch">freeCodeCamp</div></div><div class="yt-dur">1h 40m</div></div>
+                <div class="doc-link">🎮 learngitbranching.js.org</div>
+                <div class="doc-link">📄 Git Cheat Sheet – GitHub</div>
+              </div>
+              <div class="content-box"><h4>✅ Mark Done</h4><button class="submit-btn done-s">✓ Day 1 Complete</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="b1-st">
+          <ol class="steps-list">
+            <li><div class="step-num">1</div><div class="step-text"><strong>Install Git</strong> → <code>git-scm.com/downloads</code> → default settings.</div></li>
+            <li><div class="step-num">2</div><div class="step-text"><strong>Verify</strong> → <code>git --version</code> in terminal.</div></li>
+            <li><div class="step-num">3</div><div class="step-text"><strong>Config</strong> → <code>git config --global user.name "Name"</code> + email.</div></li>
+            <li><div class="step-num">4</div><div class="step-text"><strong>GitHub account</strong> → choose professional username, add profile photo.</div></li>
+            <li><div class="step-num">5</div><div class="step-text"><strong>SSH Key</strong> → <code>ssh-keygen -t ed25519 -C "email"</code> → add to GitHub Settings.</div></li>
+            <li><div class="step-num">6</div><div class="step-text"><strong>First repo</strong> → Create <code>careerwizard-internship</code> on GitHub → clone → commit → push.</div></li>
+            <li><div class="step-num">7</div><div class="step-text"><strong>Branch practice</strong> → <code>git checkout -b feature/test</code> → make change → merge to main.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="b1-rs">
+          <div class="content-box"><h4>🎥 All Videos</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Git & GitHub Full Course</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">1h 8m</div></div>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Git Complete Tutorial</div><div class="yt-ch">freeCodeCamp</div></div><div class="yt-dur">1h 40m</div></div>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">13 Advanced Git Techniques</div><div class="yt-ch">Fireship</div></div><div class="yt-dur">8m</div></div>
+            <div class="doc-link">📄 Official Git Book (git-scm.com)</div>
+            <div class="doc-link">🎮 Learn Git Branching (interactive)</div>
+            <div class="doc-link">📋 GitHub Quickstart Guide</div>
+          </div>
+        </div>
+        <div class="tab-panel" id="b1-qz">
+          <div class="quiz-block"><h4>⚡ Git Quiz</h4>
+            <div style="font-size:13px;color:var(--gray-700);font-weight:500;margin-bottom:8px;">What does <code>git stash</code> do?</div>
+            <label class="quiz-opt"><input type="radio" name="bq1"> Deletes uncommitted changes</label>
+            <label class="quiz-opt correct"><input type="radio" name="bq1" checked> Temporarily saves uncommitted changes</label>
+            <label class="quiz-opt"><input type="radio" name="bq1"> Creates a new branch</label>
+          </div>
+          <button class="submit-btn done-s" style="max-width:220px;margin-top:12px">✓ 2/2 Correct</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- D2 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('b2')">
+        <div class="day-number-badge done">D2<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">HTML/CSS Responsive Landing Page</span><span class="type-pill pill-task">Task</span></div>
+          <div class="day-tags"><span class="day-tag">HTML5</span><span class="day-tag">CSS3</span><span class="day-tag">Flexbox</span><span class="day-tag">Responsive</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score">92</div><div class="score-lbl">score</div></div><div class="status-badge b-done">DONE</div><div class="chevron" id="chev-b2">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b2">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="stab('b2','ov',this)">📖 Overview</div>
+          <div class="day-tab" onclick="stab('b2','st',this)">🛠 Task Brief</div>
+          <div class="day-tab" onclick="stab('b2','rs',this)">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="b2-ov">
+          <div class="content-grid">
+            <div>
+              <div class="content-box"><h4>📋 Task</h4><p>Build a fully responsive landing page using only HTML + CSS. Must work on mobile, tablet, desktop. Include: Navbar, Hero with CTA, Features grid (3 col), Testimonials, Footer.</p></div>
+              <span class="chip chip-g">⏱ 4–6 hours</span> &nbsp; <span class="chip chip-b">📤 GitHub repo + live link</span>
+            </div>
+            <div>
+              <div class="content-box"><h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Build Responsive Website</div><div class="yt-ch">Kevin Powell</div></div><div class="yt-dur">2h 20m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">CSS Flexbox Crash Course</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">40m</div></div>
+              </div>
+              <div class="content-box"><h4>📤 Submitted</h4>
+                <input class="input-field" value="https://github.com/hetpanchal/landing-day2" readonly>
+                <button class="submit-btn done-s">✓ Score: 92/100</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="b2-st">
+          <ol class="steps-list">
+            <li><div class="step-num">1</div><div class="step-text">Create <code>day2-landing/</code> folder → <code>git init</code>.</div></li>
+            <li><div class="step-num">2</div><div class="step-text">Build <code>index.html</code> with semantic tags: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>.</div></li>
+            <li><div class="step-num">3</div><div class="step-text">Add <code>styles.css</code> — use CSS variables. Implement Flexbox navbar + CSS Grid features section.</div></li>
+            <li><div class="step-num">4</div><div class="step-text">Add <code>@media</code> queries for 768px (tablet) and 480px (mobile).</div></li>
+            <li><div class="step-num">5</div><div class="step-text">Push to GitHub → enable GitHub Pages → submit both links.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="b2-rs">
+          <div class="content-box"><h4>📚 Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">HTML & CSS Full Course</div><div class="yt-ch">Dave Gray</div></div><div class="yt-dur">11h</div></div>
+            <div class="doc-link">📄 MDN – Flexbox Guide</div>
+            <div class="doc-link">📄 CSS Tricks – Complete Grid Guide</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D3 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('b3')">
+        <div class="day-number-badge done">D3<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">JavaScript — DOM + Fetch API</span><span class="type-pill pill-task">Task</span></div>
+          <div class="day-tags"><span class="day-tag">JS</span><span class="day-tag">Fetch</span><span class="day-tag">DOM</span><span class="day-tag">Async</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score">88</div><div class="score-lbl">score</div></div><div class="status-badge b-done">DONE</div><div class="chevron" id="chev-b3">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b3">
+        <div class="day-tabs"><div class="day-tab active" onclick="stab('b3','ov',this)">📖 Overview</div><div class="day-tab" onclick="stab('b3','rs',this)">🎥 Resources</div></div>
+        <div class="tab-panel active" id="b3-ov">
+          <div class="content-grid">
+            <div><div class="content-box"><h4>📋 Task</h4><p>Build a "Country Explorer" using the REST Countries API. Show flag cards with name, population, capital. Add search + region filter.</p></div><span class="chip chip-g">⏱ 5–7 hours</span></div>
+            <div>
+              <div class="content-box"><h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Fetch API Explained</div><div class="yt-ch">Web Dev Simplified</div></div><div class="yt-dur">16m</div></div>
+              </div>
+              <div class="content-box"><h4>📤 Submitted</h4><input class="input-field" value="https://github.com/hetpanchal/country-explorer" readonly><button class="submit-btn done-s">✓ Score: 88/100</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="b3-rs">
+          <div class="content-box"><h4>📚 Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Async JS – Callbacks, Promises, Async/Await</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">25m</div></div>
+            <div class="doc-link">📄 MDN – Fetch API</div><div class="doc-link">📄 restcountries.com Docs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D4 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('b4')">
+        <div class="day-number-badge done">D4<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">React Components + State (useState, useEffect)</span><span class="type-pill pill-task">Task</span></div>
+          <div class="day-tags"><span class="day-tag">React</span><span class="day-tag">useState</span><span class="day-tag">useEffect</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score">91</div><div class="score-lbl">score</div></div><div class="status-badge b-done">DONE</div><div class="chevron" id="chev-b4">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b4">
+        <div class="day-tabs"><div class="day-tab active" onclick="stab('b4','ov',this)">📖 Overview</div><div class="day-tab" onclick="stab('b4','rs',this)">🎥 Resources</div></div>
+        <div class="tab-panel active" id="b4-ov">
+          <div class="content-grid">
+            <div><div class="content-box"><h4>📋 Task</h4><p>Build a Task Manager in React with full CRUD using <code>useState</code>. Persist to localStorage via <code>useEffect</code>. Minimum 5 components.</p></div></div>
+            <div><div class="content-box"><h4>📤 Submitted</h4><input class="input-field" value="https://github.com/hetpanchal/react-tasks" readonly><button class="submit-btn done-s">✓ Score: 91/100</button></div></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="b4-rs">
+          <div class="content-box"><h4>📚 Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">React JS Full Course</div><div class="yt-ch">Dave Gray</div></div><div class="yt-dur">9h</div></div>
+            <div class="doc-link">📄 react.dev – Official Docs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D5 -->
+    <div class="day-card active-day">
+      <div class="day-card-header" onclick="toggle('b5')">
+        <div class="day-number-badge act-b">D5</div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Node.js + Express REST API</span><span class="type-pill pill-task">Task</span><span class="today-badge">📍 TODAY</span></div>
+          <div class="day-tags"><span class="day-tag">Node.js</span><span class="day-tag">Express</span><span class="day-tag">REST</span><span class="day-tag">API</span></div>
+        </div>
+        <div class="day-right"><div class="status-badge b-start">START →</div><div class="chevron open" id="chev-b5">⌄</div></div>
+      </div>
+      <div class="day-content open" id="content-b5">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="stab('b5','ov',this)">📖 Overview</div>
+          <div class="day-tab" onclick="stab('b5','st',this)">🛠 Task Brief</div>
+          <div class="day-tab" onclick="stab('b5','rs',this)">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="b5-ov">
+          <div class="content-grid">
+            <div>
+              <div class="content-box"><h4>📋 Task Description</h4><p>Build a Blog REST API with Node.js + Express. Full CRUD for posts + comments. Test with Postman. Use in-memory array (no DB yet — that's Phase 2). Host on Render (free tier).</p></div>
+              <span class="chip chip-g">⏱ 5–8 hours</span> &nbsp; <span class="chip chip-b">📤 GitHub + Render URL</span>
+            </div>
+            <div>
+              <div class="content-box"><h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Node.js & Express Full Course</div><div class="yt-ch">Dave Gray</div></div><div class="yt-dur">8h</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Express.js Crash Course</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">1h 15m</div></div>
+                <div class="doc-link">📄 Express.js Official Docs</div>
+              </div>
+              <div class="content-box"><h4>📤 Submit Your Work</h4>
+                <input class="input-field" placeholder="GitHub repo link...">
+                <input class="input-field" placeholder="Live Render URL (optional)...">
+                <button class="submit-btn">Submit for Review 🚀</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="b5-st">
+          <ol class="steps-list">
+            <li><div class="step-num">1</div><div class="step-text"><code>mkdir blog-api && cd blog-api && npm init -y</code></div></li>
+            <li><div class="step-num">2</div><div class="step-text"><code>npm install express cors dotenv</code> — set up <code>server.js</code> with basic Express app on port 3000.</div></li>
+            <li><div class="step-num">3</div><div class="step-text">Create routes: <code>GET /posts</code>, <code>POST /posts</code>, <code>GET /posts/:id</code>, <code>PUT /posts/:id</code>, <code>DELETE /posts/:id</code>.</div></li>
+            <li><div class="step-num">4</div><div class="step-text">Add comments routes nested: <code>GET /posts/:id/comments</code>, <code>POST /posts/:id/comments</code>.</div></li>
+            <li><div class="step-num">5</div><div class="step-text">Add input validation — return proper HTTP status codes (200, 201, 400, 404).</div></li>
+            <li><div class="step-num">6</div><div class="step-text">Test all routes in Postman. Export Postman collection + include in repo.</div></li>
+            <li><div class="step-num">7</div><div class="step-text">Deploy on Render.com (free) → submit live URL.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="b5-rs">
+          <div class="content-box"><h4>📚 All Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Node.js Crash Course</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">1h 30m</div></div>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">REST API Design Best Practices</div><div class="yt-ch">Web Dev Simplified</div></div><div class="yt-dur">28m</div></div>
+            <div class="doc-link">📄 expressjs.com/docs</div><div class="doc-link">📄 Render Deployment Guide</div><div class="doc-link">📄 HTTP Status Codes Reference</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-separator">
+      <div class="phase-sep-line"></div>
+      <div class="phase-sep-label psl-2-beg">🔵 Phase 2 — Backend & Databases (Days 6–10)</div>
+      <div class="phase-sep-line"></div>
+    </div>
+
+    <!-- D6 locked -->
+    <div class="day-card locked">
+      <div class="day-card-header" onclick="toggle('b6')">
+        <div class="day-number-badge lock">D6</div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">PostgreSQL + Indexing & Query Optimization</span><span class="type-pill pill-learn">Learning</span></div>
+          <div class="day-tags"><span class="day-tag">PostgreSQL</span><span class="day-tag">SQL</span><span class="day-tag">Indexing</span></div>
+        </div>
+        <div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-b6">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b6"><div class="locked-overlay"><div class="li">🔒</div><h4>Complete Day 5 to Unlock</h4><p>Finish Phase 1 first.</p></div></div>
+    </div>
+    <div class="day-card locked">
+      <div class="day-card-header" onclick="toggle('b7')">
+        <div class="day-number-badge lock">D7</div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Full-Stack CRUD with PostgreSQL + Express</span><span class="type-pill pill-task">Task</span></div>
+          <div class="day-tags"><span class="day-tag">Node.js</span><span class="day-tag">PostgreSQL</span><span class="day-tag">pg</span></div>
+        </div>
+        <div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-b7">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b7"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div>
+    </div>
+    <div class="day-card locked">
+      <div class="day-card-header" onclick="toggle('b8')">
+        <div class="day-number-badge lock">D8</div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">JWT Authentication + bcrypt + Middleware</span><span class="type-pill pill-task">Task</span></div>
+          <div class="day-tags"><span class="day-tag">JWT</span><span class="day-tag">bcrypt</span><span class="day-tag">Auth</span></div>
+        </div>
+        <div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-b8">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b8"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div>
+    </div>
+    <div class="day-card locked">
+      <div class="day-card-header" onclick="toggle('b9')">
+        <div class="day-number-badge lock">D9</div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Redis Caching + Rate Limiting</span><span class="type-pill pill-task">Task</span></div>
+          <div class="day-tags"><span class="day-tag">Redis</span><span class="day-tag">Caching</span><span class="day-tag">Performance</span></div>
+        </div>
+        <div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-b9">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b9"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div>
+    </div>
+    <div class="day-card locked">
+      <div class="day-card-header" onclick="toggle('b10')">
+        <div class="day-number-badge lock">D10</div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Testing — Jest + Supertest (API Testing)</span><span class="type-pill pill-task">Task</span></div>
+          <div class="day-tags"><span class="day-tag">Jest</span><span class="day-tag">Supertest</span><span class="day-tag">TDD</span></div>
+        </div>
+        <div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-b10">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-b10"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-separator">
+      <div class="phase-sep-line"></div>
+      <div class="phase-sep-label psl-3-beg">🟠 Phase 3 — Full-Stack + Deploy (Days 11–15)</div>
+      <div class="phase-sep-line"></div>
+    </div>
+
+    <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:14px;color:var(--gray-400);">
+      <span style="font-size:24px">🔒</span>
+      <div style="flex:1">
+        <div style="font-family:var(--font-heading);font-weight:600;color:var(--gray-600);margin-bottom:4px;font-size:14px;">Days 11–15 — Full-Stack + Deployment (Locked)</div>
+        <div style="font-size:12.5px;line-height:1.6">D11: React + Node Integration · D12: Docker & Containerize · D13: CI/CD with GitHub Actions · D14–15: Capstone — Deploy full SaaS app on AWS/Vercel</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <span style="background:var(--orange-light);color:var(--orange);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;font-family:var(--font-heading);">D11–D13: Tasks</span>
+        <span style="background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;font-family:var(--font-heading);">D14–D15: Capstone</span>
+      </div>
+    </div>
+
+  </div><!-- /track-beg -->
+
+  <!-- ══════════════════════════════════
+       INTERMEDIATE TRACK
+  ══════════════════════════════════ -->
+  <div id="track-int" style="display:none;">
+
+    <!-- PHASE 1 -->
+    <div class="phase-separator">
+      <div class="phase-sep-line"></div>
+      <div class="phase-sep-label psl-1-int">🚀 Phase 1 — Project Alpha: Social Platform API (Days 1–5)</div>
+      <div class="phase-sep-line"></div>
+    </div>
+
+    <!-- I-D1 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('i1')">
+        <div class="day-number-badge done">D1<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Project Setup — Next.js 14 + Prisma + PostgreSQL</span><span class="type-pill pill-project">Project</span></div>
+          <div class="day-tags"><span class="day-tag">Next.js 14</span><span class="day-tag">Prisma</span><span class="day-tag">PostgreSQL</span><span class="day-tag">TypeScript</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score" style="color:var(--purple)">94</div><div class="score-lbl">score</div></div><div class="status-badge" style="background:var(--purple-light);color:var(--purple)">DONE</div><div class="chevron" id="chev-i1">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-i1">
+        <div class="day-tabs">
+          <div class="day-tab active int" onclick="stab('i1','ov',this)">📖 Overview</div>
+          <div class="day-tab" onclick="stab('i1','st',this)">🛠 Setup</div>
+          <div class="day-tab" onclick="stab('i1','rs',this)">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="i1-ov">
+          <div class="content-grid">
+            <div>
+              <div class="content-box"><h4>📋 Day 1 — Project Alpha Kickoff</h4>
+                <p>You're building a <strong>Social Platform REST API</strong> over 5 days. Day 1: initialize the Next.js 14 project with TypeScript, set up Prisma ORM, connect to PostgreSQL, define your schema (User, Post, Comment, Follow), and run your first migration.</p>
+                <br><p>This is intermediate — you're expected to move fast. No hand-holding on basics.</p>
+              </div>
+              <span class="chip chip-p">⏱ 5–7 hours</span>
+            </div>
+            <div>
+              <div class="content-box"><h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Next.js 14 Full Course</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">2h 15m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Prisma + PostgreSQL Setup</div><div class="yt-ch">Fireship</div></div><div class="yt-dur">22m</div></div>
+                <div class="doc-link">📄 Prisma Docs – Getting Started</div>
+                <div class="doc-link">📄 Next.js 14 App Router Docs</div>
+              </div>
+              <div class="content-box"><h4>📤 Submitted</h4><input class="input-field" value="https://github.com/hetpanchal/social-api" readonly><button class="submit-btn" style="background:var(--purple-light);color:var(--purple);cursor:default">✓ Score: 94/100</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="i1-st">
+          <ol class="steps-list">
+            <li><div class="step-num int">1</div><div class="step-text"><code>npx create-next-app@latest social-api --typescript --app</code></div></li>
+            <li><div class="step-num int">2</div><div class="step-text"><code>npm install prisma @prisma/client</code> → <code>npx prisma init</code> → set <code>DATABASE_URL</code> in <code>.env</code>.</div></li>
+            <li><div class="step-num int">3</div><div class="step-text">Define schema: <strong>User</strong> (id, name, email, bio, avatar, createdAt), <strong>Post</strong> (id, title, content, authorId, tags, likes), <strong>Comment</strong>, <strong>Follow</strong> (followerId, followingId).</div></li>
+            <li><div class="step-num int">4</div><div class="step-text"><code>npx prisma migrate dev --name init</code> → verify tables in pgAdmin.</div></li>
+            <li><div class="step-num int">5</div><div class="step-text">Set up API route structure: <code>app/api/users/route.ts</code>, <code>app/api/posts/route.ts</code>. Scaffold all CRUD endpoints.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="i1-rs">
+          <div class="content-box"><h4>📚 All Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Next.js 14 App Router Tutorial</div><div class="yt-ch">Traversy Media</div></div><div class="yt-dur">2h 15m</div></div>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Prisma in 100 Seconds</div><div class="yt-ch">Fireship</div></div><div class="yt-dur">2m</div></div>
+            <div class="doc-link">📄 prisma.io/docs</div><div class="doc-link">📄 nextjs.org/docs/app</div><div class="doc-link">📄 TypeScript Handbook</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- I-D2 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('i2')">
+        <div class="day-number-badge done">D2<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Auth System — NextAuth.js + JWT + Role Guards</span><span class="type-pill pill-project">Project</span></div>
+          <div class="day-tags"><span class="day-tag">NextAuth</span><span class="day-tag">JWT</span><span class="day-tag">OAuth</span><span class="day-tag">Middleware</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score" style="color:var(--purple)">89</div><div class="score-lbl">score</div></div><div class="status-badge" style="background:var(--purple-light);color:var(--purple)">DONE</div><div class="chevron" id="chev-i2">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-i2">
+        <div class="day-tabs"><div class="day-tab active int" onclick="stab('i2','ov',this)">📖 Overview</div><div class="day-tab" onclick="stab('i2','rs',this)">🎥 Resources</div></div>
+        <div class="tab-panel active" id="i2-ov">
+          <div class="content-grid">
+            <div><div class="content-box"><h4>📋 Task</h4><p>Implement full auth: NextAuth.js with Google OAuth + credentials, JWT sessions, role-based middleware (user / admin / moderator), protected route guards on API routes.</p></div></div>
+            <div><div class="content-box"><h4>📤 Submitted</h4><input class="input-field" value="https://github.com/hetpanchal/social-api" readonly><button class="submit-btn" style="background:var(--purple-light);color:var(--purple);cursor:default">✓ Score: 89/100</button></div></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="i2-rs">
+          <div class="content-box"><h4>📚 Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">NextAuth.js Full Tutorial</div><div class="yt-ch">Web Dev Simplified</div></div><div class="yt-dur">1h 10m</div></div>
+            <div class="doc-link">📄 next-auth.js.org/docs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- I-D3 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('i3')">
+        <div class="day-number-badge done">D3<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Advanced Queries — Feed Algorithm + Pagination</span><span class="type-pill pill-project">Project</span></div>
+          <div class="day-tags"><span class="day-tag">Prisma</span><span class="day-tag">Cursor Pagination</span><span class="day-tag">Feed Logic</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score" style="color:var(--purple)">91</div><div class="score-lbl">score</div></div><div class="status-badge" style="background:var(--purple-light);color:var(--purple)">DONE</div><div class="chevron" id="chev-i3">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-i3">
+        <div class="day-tabs"><div class="day-tab active int" onclick="stab('i3','ov',this)">📖 Overview</div><div class="day-tab" onclick="stab('i3','rs',this)">🎥 Resources</div></div>
+        <div class="tab-panel active" id="i3-ov">
+          <div class="content-grid">
+            <div><div class="content-box"><h4>📋 Task</h4><p>Build a personalized feed endpoint showing posts from followed users, sorted by engagement score (likes × recency). Implement cursor-based pagination (not offset). Add full-text search on posts.</p></div></div>
+            <div><div class="content-box"><h4>📤 Submitted</h4><input class="input-field" value="https://github.com/hetpanchal/social-api" readonly><button class="submit-btn" style="background:var(--purple-light);color:var(--purple);cursor:default">✓ Score: 91/100</button></div></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="i3-rs">
+          <div class="content-box"><h4>📚 Resources</h4>
+            <div class="doc-link">📄 Prisma – Cursor Pagination</div><div class="doc-link">📄 PostgreSQL Full-Text Search</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- I-D4 -->
+    <div class="day-card done">
+      <div class="day-card-header" onclick="toggle('i4')">
+        <div class="day-number-badge done">D4<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">Redis Caching + Rate Limiting + API Optimization</span><span class="type-pill pill-project">Project</span></div>
+          <div class="day-tags"><span class="day-tag">Redis</span><span class="day-tag">Rate Limit</span><span class="day-tag">Upstash</span></div>
+        </div>
+        <div class="day-right"><div><div class="day-score" style="color:var(--purple)">87</div><div class="score-lbl">score</div></div><div class="status-badge" style="background:var(--purple-light);color:var(--purple)">DONE</div><div class="chevron" id="chev-i4">⌄</div></div>
+      </div>
+      <div class="day-content" id="content-i4">
+        <div class="day-tabs"><div class="day-tab active int" onclick="stab('i4','ov',this)">📖 Overview</div><div class="day-tab" onclick="stab('i4','rs',this)">🎥 Resources</div></div>
+        <div class="tab-panel active" id="i4-ov">
+          <div class="content-grid">
+            <div><div class="content-box"><h4>📋 Task</h4><p>Add Upstash Redis caching to feed + user profile endpoints (TTL: 60s). Implement sliding-window rate limiting (100 req/min/user). Benchmark before/after with k6.</p></div></div>
+            <div><div class="content-box"><h4>📤 Submitted</h4><input class="input-field" value="https://github.com/hetpanchal/social-api" readonly><button class="submit-btn" style="background:var(--purple-light);color:var(--purple);cursor:default">✓ Score: 87/100</button></div></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="i4-rs">
+          <div class="content-box"><h4>📚 Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Redis in 100 Seconds</div><div class="yt-ch">Fireship</div></div><div class="yt-dur">2m</div></div>
+            <div class="doc-link">📄 Upstash Redis Docs</div><div class="doc-link">📄 k6 Load Testing Guide</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- I-D5 TODAY -->
+    <div class="day-card active-day-int">
+      <div class="day-card-header" onclick="toggle('i5')">
+        <div class="day-number-badge act-i">D5</div>
+        <div class="day-meta">
+          <div class="day-title-row"><span class="day-title">API Testing + Swagger Docs + Phase 1 Wrap-Up</span><span class="type-pill pill-project">Project</span><span class="today-badge">📍 TODAY</span></div>
+          <div class="day-tags"><span class="day-tag">Jest</span><span class="day-tag">Supertest</span><span class="day-tag">Swagger</span><span class="day-tag">OpenAPI</span></div>
+        </div>
+        <div class="day-right"><div class="status-badge b-start-int">START →</div><div class="chevron open" id="chev-i5">⌄</div></div>
+      </div>
+      <div class="day-content open" id="content-i5">
+        <div class="day-tabs">
+          <div class="day-tab active int" onclick="stab('i5','ov',this)">📖 Overview</div>
+          <div class="day-tab" onclick="stab('i5','st',this)">🛠 Task Brief</div>
+          <div class="day-tab" onclick="stab('i5','rs',this)">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="i5-ov">
+          <div class="content-grid">
+            <div>
+              <div class="content-box"><h4>📋 Phase 1 Final Day</h4>
+                <p>Wrap up Project Alpha: write integration tests (80%+ coverage), auto-generate Swagger/OpenAPI docs, add health check endpoint, write a proper README with API reference. Deploy to Railway/Render.</p>
+                <br><p>Phase 1 is reviewed as a <strong>complete project</strong> — presentation-ready quality expected.</p>
+              </div>
+              <span class="chip chip-p">⏱ 6–8 hours</span> &nbsp; <span class="chip chip-b">📤 GitHub + Live API + Swagger URL</span>
+            </div>
+            <div>
+              <div class="content-box"><h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">API Testing with Jest + Supertest</div><div class="yt-ch">Fireship</div></div><div class="yt-dur">18m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Swagger OpenAPI Tutorial</div><div class="yt-ch">TechWorld with Nana</div></div><div class="yt-dur">30m</div></div>
+                <div class="doc-link">📄 swagger.io/docs</div>
+                <div class="doc-link">📄 Railway Deployment Guide</div>
+              </div>
+              <div class="content-box"><h4>📤 Submit Phase 1</h4>
+                <input class="input-field" placeholder="GitHub repo...">
+                <input class="input-field" placeholder="Live API base URL...">
+                <input class="input-field" placeholder="Swagger docs URL...">
+                <button class="submit-btn int-s">Submit Phase 1 Project 🚀</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="i5-st">
+          <ol class="steps-list">
+            <li><div class="step-num int">1</div><div class="step-text"><code>npm install --save-dev jest @types/jest supertest</code> → configure <code>jest.config.ts</code>.</div></li>
+            <li><div class="step-num int">2</div><div class="step-text">Write integration tests for all CRUD routes — mock DB with Prisma mock or use test DB.</div></li>
+            <li><div class="step-num int">3</div><div class="step-text">Run <code>jest --coverage</code> — ensure 80%+ line coverage.</div></li>
+            <li><div class="step-num int">4</div><div class="step-text"><code>npm install swagger-jsdoc swagger-ui-express</code> → document all endpoints with JSDoc annotations.</div></li>
+            <li><div class="step-num int">5</div><div class="step-text">Write professional README: project overview, local setup, API reference table, env vars, deployment.</div></li>
+            <li><div class="step-num int">6</div><div class="step-text">Deploy on Railway (free) → submit GitHub + live URL + Swagger URL.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="i5-rs">
+          <div class="content-box"><h4>📚 All Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Testing Node APIs with Jest + Supertest</div><div class="yt-ch">Web Dev Simplified</div></div><div class="yt-dur">32m</div></div>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">How to Write a Good README</div><div class="yt-ch">Eddie Jaoude</div></div><div class="yt-dur">14m</div></div>
+            <div class="doc-link">📄 swagger.io/tools</div><div class="doc-link">📄 Railway.app Docs</div><div class="doc-link">📄 Jest Official Docs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 INT -->
+    <div class="phase-separator">
+      <div class="phase-sep-line"></div>
+      <div class="phase-sep-label psl-2-int">🟠 Phase 2 — Project Beta: Real-Time Dashboard (Days 6–10)</div>
+      <div class="phase-sep-line"></div>
+    </div>
+
+    <div class="day-card locked"><div class="day-card-header" onclick="toggle('i6')"><div class="day-number-badge lock">D6</div><div class="day-meta"><div class="day-title-row"><span class="day-title">WebSockets + Socket.io — Real-Time Notifications</span><span class="type-pill pill-project">Project</span></div><div class="day-tags"><span class="day-tag">Socket.io</span><span class="day-tag">WebSocket</span><span class="day-tag">Events</span></div></div><div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-i6">⌄</div></div></div><div class="day-content" id="content-i6"><div class="locked-overlay"><div class="li">🔒</div><h4>Complete Phase 1 to Unlock</h4></div></div></div>
+
+    <div class="day-card locked"><div class="day-card-header" onclick="toggle('i7')"><div class="day-number-badge lock">D7</div><div class="day-meta"><div class="day-title-row"><span class="day-title">Analytics Dashboard — Recharts + Data Aggregation</span><span class="type-pill pill-project">Project</span></div><div class="day-tags"><span class="day-tag">React</span><span class="day-tag">Recharts</span><span class="day-tag">D3</span></div></div><div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-i7">⌄</div></div></div><div class="day-content" id="content-i7"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div></div>
+
+    <div class="day-card locked"><div class="day-card-header" onclick="toggle('i8')"><div class="day-number-badge lock">D8</div><div class="day-meta"><div class="day-title-row"><span class="day-title">File Uploads — S3 + Presigned URLs + Image Optimization</span><span class="type-pill pill-project">Project</span></div><div class="day-tags"><span class="day-tag">AWS S3</span><span class="day-tag">Presigned URLs</span><span class="day-tag">Sharp</span></div></div><div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-i8">⌄</div></div></div><div class="day-content" id="content-i8"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div></div>
+
+    <div class="day-card locked"><div class="day-card-header" onclick="toggle('i9')"><div class="day-number-badge lock">D9</div><div class="day-meta"><div class="day-title-row"><span class="day-title">Docker — Containerize Full App + docker-compose</span><span class="type-pill pill-project">Project</span></div><div class="day-tags"><span class="day-tag">Docker</span><span class="day-tag">docker-compose</span><span class="day-tag">Nginx</span></div></div><div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-i9">⌄</div></div></div><div class="day-content" id="content-i9"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div></div>
+
+    <div class="day-card locked"><div class="day-card-header" onclick="toggle('i10')"><div class="day-number-badge lock">D10</div><div class="day-meta"><div class="day-title-row"><span class="day-title">Phase 2 Wrap — CI/CD with GitHub Actions + Deploy</span><span class="type-pill pill-project">Project</span></div><div class="day-tags"><span class="day-tag">GitHub Actions</span><span class="day-tag">CI/CD</span><span class="day-tag">Vercel</span></div></div><div class="day-right"><div class="status-badge b-lock">🔒 Locked</div><div class="chevron" id="chev-i10">⌄</div></div></div><div class="day-content" id="content-i10"><div class="locked-overlay"><div class="li">🔒</div><h4>Locked</h4></div></div></div>
+
+    <!-- PHASE 3 INT -->
+    <div class="phase-separator">
+      <div class="phase-sep-line"></div>
+      <div class="phase-sep-label psl-3-int">🔵 Phase 3 — Capstone: Full SaaS MVP (Days 11–15)</div>
+      <div class="phase-sep-line"></div>
+    </div>
+
+    <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:14px;">
+      <span style="font-size:24px">🔒</span>
+      <div style="flex:1">
+        <div style="font-family:var(--font-heading);font-weight:600;color:var(--gray-600);margin-bottom:4px;font-size:14px;">Days 11–15 — Capstone SaaS MVP (Locked)</div>
+        <div style="font-size:12.5px;color:var(--gray-500);line-height:1.6">D11: SaaS Architecture + Stripe Integration · D12: Multi-tenancy + Org System · D13: Email (Resend) + Webhooks · D14: Performance audit + Monitoring (Sentry) · D15: Capstone Presentation + Portfolio Write-up</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <span style="background:var(--purple-light);color:var(--purple);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;font-family:var(--font-heading);">D11–D14: SaaS Build</span>
+        <span style="background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;font-family:var(--font-heading);">D15: Capstone Demo</span>
+      </div>
+    </div>
+
+  </div><!-- /track-int -->
+
+</div><!-- /internship-screen -->
+</main>
+
+<script>
+var currentLevel = 'beg';
+var selectedLevel = null;
+
+function selectLevel(lvl) {
+  selectedLevel = lvl;
+  document.querySelectorAll('.level-card').forEach(c => {
+    c.classList.remove('selected','selected-int');
+  });
+  if(lvl==='beg'){
+    document.getElementById('card-beg').classList.add('selected');
+    document.getElementById('confirm-btn').className='confirm-btn ready';
+    document.getElementById('confirm-btn').textContent='Start Beginner Track 🌱';
+  } else {
+    document.getElementById('card-int').classList.add('selected-int');
+    document.getElementById('confirm-btn').className='confirm-btn confirm-btn-int ready';
+    document.getElementById('confirm-btn').textContent='Start Intermediate Track 🚀';
+  }
+}
+
+function startInternship() {
+  if(!selectedLevel) return;
+  currentLevel = selectedLevel;
+  document.getElementById('level-screen').style.display='none';
+  document.getElementById('internship-screen').style.display='block';
+  applyTrack(currentLevel);
+  setTimeout(()=>{ document.getElementById('prog-fill').style.width = currentLevel==='beg'?'26%':'26%'; },300);
+}
+
+function applyTrack(lvl) {
+  var beg = lvl==='beg';
+  document.getElementById('track-beg').style.display = beg?'block':'none';
+  document.getElementById('track-int').style.display = beg?'none':'block';
+
+  var banner = document.getElementById('track-banner');
+  banner.className = beg?'track-banner':'track-banner int-banner';
+
+  document.getElementById('banner-title').textContent = beg?'🌱 Full-Stack Web Dev — Beginner Track':'🚀 Advanced Full-Stack — Intermediate Track';
+  document.getElementById('banner-sub').textContent = '15-Day Internship · Batch #12 · Starts Jun 1, 2025';
+
+  var tagsEl = document.getElementById('banner-tags');
+  var begTags = ['Git','HTML/CSS','JavaScript','React','Node.js','PostgreSQL','Docker'];
+  var intTags = ['Next.js 14','Prisma','Redis','Socket.io','AWS S3','Docker','CI/CD','SaaS'];
+  tagsEl.innerHTML = (beg?begTags:intTags).map(t=>'<span class="track-tag">'+t+'</span>').join('');
+
+  document.getElementById('lsb-label').textContent = beg?'🌱 Beginner Track Active':'🚀 Intermediate Track Active';
+  document.getElementById('tab-beg').className = beg?'lsb-tab act-beg':'lsb-tab';
+  document.getElementById('tab-int').className = beg?'lsb-tab':'lsb-tab act-int';
+
+  document.getElementById('stat-done').textContent = beg?'4':'4';
+  document.getElementById('stat-avg').textContent = beg?'90.2':'90.2';
+  document.getElementById('stat-left').textContent = beg?'11':'11';
+  document.getElementById('prog-pct').textContent = '26%';
+  document.getElementById('prog-pct').className = beg?'progress-pct':'progress-pct purple-pct';
+  document.getElementById('prog-fill').className = beg?'progress-bar-fill':'progress-bar-fill purple-fill';
+  document.getElementById('prog-fill').style.width = '26%';
+  document.getElementById('prog-days').textContent = 'Day 5 of 15';
+}
+
+function switchTrack(lvl) {
+  currentLevel = lvl;
+  applyTrack(lvl);
+}
+
+function goBack() {
+  document.getElementById('level-screen').style.display='block';
+  document.getElementById('internship-screen').style.display='none';
+}
+
+function toggle(id) {
+  var c = document.getElementById('content-'+id);
+  var ch = document.getElementById('chev-'+id);
+  if(!c) return;
+  var open = c.classList.contains('open');
+  c.classList.toggle('open',!open);
+  if(ch) ch.classList.toggle('open',!open);
+}
+
+function stab(dayId, tab, el) {
+  // deactivate panels
+  document.querySelectorAll('[id^="'+dayId+'-"]').forEach(p=>p.classList.remove('active'));
+  var panel = document.getElementById(dayId+'-'+tab);
+  if(panel) panel.classList.add('active');
+  // update tab buttons
+  var content = document.getElementById('content-'+dayId);
+  if(content) content.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+</script>
+</body>
+</html>

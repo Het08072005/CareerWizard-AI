@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100..900&family=Syne:wght@400..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Rubik:wght@500&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --font-serif: 'Instrument Serif', serif;
   --font-primary: 'Plus Jakarta Sans', sans-serif;
@@ -28,13 +30,13 @@
 /* Light Mode Theme matching career.html exactly */
 html.light {
   --bg-main: #f0eeea;
-  --bg-sidebar: #ffffff;
-  --bg-card: #ffffff;
+  --bg-sidebar: #f9f8f4;
+  --bg-card: #f9f8f4;
   --border-color: #e0ddd5;
   --text-main: #1a1916;
   --text-muted: #8a877e;
 
-  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg: rgba(249, 248, 244, 0.8);
   --glass-border: rgba(0, 0, 0, 0.08);
 }
 

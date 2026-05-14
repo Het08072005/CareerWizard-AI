@@ -23,13 +23,15 @@ import {
     CalendarIcon,
     ArrowDownTrayIcon,
     CreditCardIcon,
-    IdentificationIcon
+    IdentificationIcon,
+    CheckBadgeIcon
 } from "@heroicons/react/24/outline";
 
 import {
     MapIcon,
     ChatIcon,
-    SparklesIcon
+    SparklesIcon,
+    CertificateIcon
 } from "../components/ui/Icons";
 
 const tabs = [
@@ -42,12 +44,6 @@ const tabs = [
     { name: "Interview", path: "/overview/interview-prep", icon: ChatIcon },
 ];
 
-const accountTabs = [
-    { name: "Certificates", path: "/internship/certificates", icon: IdentificationIcon },
-    { name: "My Plan", path: "/internship/enroll", icon: CreditCardIcon },
-    { name: "Settings", path: "/profile", icon: Cog6ToothIcon }
-];
-
 const internshipSubmenu = [
     { name: "Dashboard", path: "/internship", icon: ChartPieIcon },
     { name: "My Tasks", path: "/internship/tasks", icon: ClipboardDocumentListIcon },
@@ -55,6 +51,7 @@ const internshipSubmenu = [
     { name: "My Projects", path: "/internship/projects", icon: FolderIcon },
     { name: "Progress Summary", path: "/internship/summary", icon: CalendarIcon },
     { name: "Resources", path: "/internship/resources", icon: ArrowDownTrayIcon },
+    { name: "Certificates", path: "/internship/certificates", icon: CertificateIcon },
 ];
 
 const Overview = () => {
@@ -73,6 +70,17 @@ const Overview = () => {
     const isHome = location.pathname === '/' || location.pathname === '/overview' || location.pathname === '/overview/';
     const [isInternshipExpanded, setIsInternshipExpanded] = useState(isInternshipRoute);
 
+    const accountTabs = [
+        { name: "My Plan", path: "/internship/enroll", icon: CreditCardIcon },
+        { name: "Settings", path: "/profile", icon: Cog6ToothIcon },
+        { 
+            name: isCollapsed ? "Expand Sidebar" : "Minimize Sidebar", 
+            path: "#", 
+            icon: isCollapsed ? ChevronRightIcon : ChevronLeftIcon, 
+            onClick: () => setIsCollapsed(!isCollapsed) 
+        }
+    ];
+
     useEffect(() => {
         if (location.pathname.startsWith('/internship')) {
             setIsInternshipExpanded(true);
@@ -86,14 +94,25 @@ const Overview = () => {
         }
     }, [location.pathname]);
 
+    const profileMenuRef = useRef(null);
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsDropdownOpen(false);
             }
         }
+        function handleClickOutsideProfile(event) {
+            if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+                setIsProfileMenuOpen(false);
+            }
+        }
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutsideProfile);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutsideProfile);
+        };
     }, []);
 
     const ProfileIcon = ({ className }) => (
@@ -258,8 +277,8 @@ const Overview = () => {
                                         className={`
                                             relative flex items-center h-11 rounded-xl transition-all duration-500 group px-4
                                             ${active 
-                                                ? isDark ? 'text-white bg-white/[0.04]' : 'text-[#16a34a] bg-emerald-500/10'
-                                                : isDark ? 'text-slate-500 hover:text-white hover:bg-white/[0.03]' : 'text-[#8a877e] hover:text-[#1a1916] hover:bg-slate-100'}
+                                                ? isDark ? 'text-white bg-white/[0.04]' : 'text-[#15803d] bg-emerald-500/10 font-bold'
+                                                : isDark ? 'text-slate-500 hover:text-white hover:bg-white/[0.03]' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'}
                                             ${isCollapsed ? 'justify-center px-0' : 'justify-start'}
                                         `}
                                     >
@@ -345,14 +364,14 @@ const Overview = () => {
                                                                 ${subActive 
                                                                     ? isDark 
                                                                         ? 'text-cyan-400 bg-cyan-400/[0.05]' 
-                                                                        : 'text-[#16a34a] bg-emerald-500/5 font-semibold'
+                                                                        : 'text-[#15803d] bg-emerald-500/5 font-bold'
                                                                     : isDark 
-                                                                        ? 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.02]' 
-                                                                        : 'text-slate-500 hover:text-[#1a1916] hover:bg-slate-50'}
+                                                                        ? 'text-slate-400 hover:text-slate-300 hover:bg-white/[0.02]' 
+                                                                        : 'text-slate-700 hover:text-black hover:bg-slate-100/80'}
                                                             `}
                                                         >
                                                             {sub.icon && (
-                                                                <sub.icon className={`w-3.5 h-3.5 shrink-0 mr-2 ${subActive ? (isDark ? 'text-cyan-400' : 'text-[#16a34a]') : 'text-slate-400'}`} strokeWidth={2} />
+                                                                <sub.icon className={`w-3.5 h-3.5 shrink-0 mr-2 ${subActive ? (isDark ? 'text-cyan-400' : 'text-[#15803d]') : 'text-slate-400'}`} strokeWidth={2} />
                                                             )}
                                                             <span>{sub.name}</span>
                                                         </Link>
@@ -367,7 +386,7 @@ const Overview = () => {
 
                         {/* ACCOUNT SECTION HEADER */}
                         {!isCollapsed && (
-                            <div className="px-4 py-3 mt-6 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400/50">
+                            <div className="px-4 py-3 mt-6 text-[10px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-500/60">
                                 Account
                             </div>
                         )}
@@ -376,73 +395,95 @@ const Overview = () => {
                             const active = location.pathname === tab.path;
                             const IconComponent = tab.icon;
 
-                            return (
-                                <div key={tab.path} className="flex flex-col space-y-1">
-                                    <Link
-                                        to={tab.path}
-                                        className={`
-                                            relative flex items-center h-11 rounded-xl transition-all duration-500 group px-4
-                                            ${active 
-                                                ? isDark ? 'text-white bg-white/[0.04]' : 'text-[#16a34a] bg-emerald-500/10'
-                                                : isDark ? 'text-slate-500 hover:text-white hover:bg-white/[0.03]' : 'text-[#8a877e] hover:text-[#1a1916] hover:bg-slate-100'}
-                                            ${isCollapsed ? 'justify-center px-0' : 'justify-start'}
-                                        `}
-                                    >
-                                        {/* SURGICAL ACTIVE INDICATOR */}
-                                        {active && (
-                                            <motion.div
-                                                layoutId="nav_dot_account"
-                                                className={`absolute left-[-2px] w-[3px] h-4 rounded-full ${
+                            const content = (
+                                <>
+                                    {/* SURGICAL ACTIVE INDICATOR */}
+                                    {active && (
+                                        <motion.div
+                                            layoutId="nav_dot_account"
+                                            className={`absolute left-[-2px] w-[3px] h-4 rounded-full ${
+                                                isDark 
+                                                    ? 'bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' 
+                                                    : 'bg-[#15803d] shadow-[0_0_15px_rgba(21,128,61,0.8)]'
+                                            }`}
+                                        />
+                                    )}
+
+                                    <div className={`
+                                        flex items-center justify-center transition-all duration-500
+                                        ${active 
+                                            ? isDark 
+                                                ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]' 
+                                                : 'text-[#15803d] drop-shadow-[0_0_8px_rgba(21,128,61,0.4)]' 
+                                            : ''}
+                                        ${isCollapsed ? 'w-9 h-9' : 'mr-4'}
+                                    `}>
+                                        <IconComponent className="shrink-0 w-4 h-4" strokeWidth={1.5} />
+                                    </div>
+
+                                    {!isCollapsed && (
+                                        <motion.span
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="text-[15px] font-semibold tracking-tight whitespace-nowrap text-left"
+                                        >
+                                            {tab.name}
+                                        </motion.span>
+                                    )}
+
+                                    {/* COLLAPSED TOOLTIP */}
+                                    {isCollapsed && (
+                                        <div className="absolute left-[70px] top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 translate-x-4 transition-all duration-500 z-[300]">
+                                            <div className="relative">
+                                                <div className={`absolute left-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 border-l border-b rotate-45 ${isDark ? 'bg-black border-cyan-500/20' : 'bg-white border-slate-200'}`} />
+                                                <div className={`backdrop-blur-2xl border px-4 py-2 rounded-xl shadow-xl ${
                                                     isDark 
-                                                        ? 'bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' 
-                                                        : 'bg-[#16a34a] shadow-[0_0_15px_rgba(22,163,74,0.8)]'
-                                                }`}
-                                            />
-                                        )}
-
-                                        <div className={`
-                                            flex items-center justify-center transition-all duration-500
-                                            ${active 
-                                                ? isDark 
-                                                    ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]' 
-                                                    : 'text-[#16a34a] drop-shadow-[0_0_8px_rgba(22,163,74,0.4)]' 
-                                                : ''}
-                                            ${isCollapsed ? 'w-9 h-9' : 'mr-4'}
-                                        `}>
-                                            <IconComponent className="shrink-0 w-4 h-4" strokeWidth={1.5} />
-                                        </div>
-
-                                        {!isCollapsed && (
-                                            <motion.span
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                className="text-[15px] font-semibold tracking-tight whitespace-nowrap"
-                                            >
-                                                {tab.name}
-                                            </motion.span>
-                                        )}
-
-                                        {/* COLLAPSED TOOLTIP */}
-                                        {isCollapsed && (
-                                            <div className="absolute left-[70px] top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 translate-x-4 transition-all duration-500 z-[300]">
-                                                <div className="relative">
-                                                    <div className={`absolute left-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 border-l border-b rotate-45 ${isDark ? 'bg-black border-cyan-500/20' : 'bg-white border-slate-200'}`} />
-                                                    <div className={`backdrop-blur-2xl border px-4 py-2 rounded-xl shadow-xl ${
+                                                        ? 'bg-black/80 border-white/10 border-cyan-500/20' 
+                                                        : 'bg-white border-slate-200 shadow-md'
+                                                }`}>
+                                                    <span className={`text-[9px] font-bold uppercase tracking-[0.15em] whitespace-nowrap ${
                                                         isDark 
-                                                            ? 'bg-black/80 border-white/10 border-cyan-500/20' 
-                                                            : 'bg-white border-slate-200 shadow-md'
+                                                            ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]' 
+                                                            : 'text-[#15803d]'
                                                     }`}>
-                                                        <span className={`text-[9px] font-bold uppercase tracking-[0.15em] whitespace-nowrap ${
-                                                            isDark 
-                                                                ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]' 
-                                                                : 'text-[#16a34a]'
-                                                        }`}>
-                                                            {tab.name}
-                                                        </span>
-                                                    </div>
+                                                        {tab.name}
+                                                    </span>
                                                 </div>
                                             </div>
-                                        )}
+                                        </div>
+                                    )}
+                                </>
+                            );
+
+                            const buttonClass = `
+                                relative flex items-center h-11 rounded-xl transition-all duration-500 group px-4 cursor-pointer w-full text-left
+                                ${active 
+                                    ? isDark ? 'text-white bg-white/[0.04]' : 'text-[#15803d] bg-emerald-500/10 font-bold'
+                                    : isDark ? 'text-slate-500 hover:text-white hover:bg-white/[0.03]' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100/80'}
+                                ${isCollapsed ? 'justify-center px-0' : 'justify-start'}
+                            `;
+
+                            if (tab.onClick) {
+                                return (
+                                    <div key={tab.name} className="flex flex-col space-y-1 w-full">
+                                        <button
+                                            type="button"
+                                            onClick={tab.onClick}
+                                            className={buttonClass}
+                                        >
+                                            {content}
+                                        </button>
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <div key={tab.path} className="flex flex-col space-y-1 w-full">
+                                    <Link
+                                        to={tab.path}
+                                        className={buttonClass}
+                                    >
+                                        {content}
                                     </Link>
                                 </div>
                             );
@@ -451,7 +492,7 @@ const Overview = () => {
 
                     {/* USER PROFILE WIDGET & CONSOLIDATED POP-OVER PREFERENCES */}
                     {!isCollapsed ? (
-                        <div className="relative px-3 py-4 border-t border-slate-500/10 flex flex-col gap-2">
+                        <div ref={profileMenuRef} className="relative px-3 py-4 border-t border-slate-500/10 flex flex-col gap-2">
                             {/* POPUP BOX / CONTROLS PANEL */}
                             <AnimatePresence>
                                 {isProfileMenuOpen && (
@@ -528,19 +569,6 @@ const Overview = () => {
                                             <Cog6ToothIcon className="w-3.5 h-3.5 text-slate-400" strokeWidth={2} />
                                             <span>Profile Settings</span>
                                         </button>
-
-                                        {/* COLLAPSE SYSTEM */}
-                                        <button
-                                            onClick={() => { setIsCollapsed(true); setIsProfileMenuOpen(false); }}
-                                            className={`w-full flex items-center gap-3 py-2 px-3 text-[11px] font-semibold rounded-xl transition ${
-                                                isDark 
-                                                    ? 'hover:bg-white/[0.04] text-slate-300' 
-                                                    : 'hover:bg-slate-100 text-slate-600'
-                                            }`}
-                                        >
-                                            <ChevronLeftIcon className="w-3.5 h-3.5 text-slate-400" strokeWidth={2} />
-                                            <span>Minimize Sidebar</span>
-                                        </button>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -583,7 +611,7 @@ const Overview = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="relative px-3 py-4 flex flex-col items-center justify-center border-t border-slate-500/10">
+                        <div ref={profileMenuRef} className="relative px-3 py-4 flex flex-col items-center justify-center border-t border-slate-500/10">
                             {/* POPUP BOX (NEXT TO THE SIDEBAR) */}
                             <AnimatePresence>
                                 {isProfileMenuOpen && (
@@ -651,19 +679,6 @@ const Overview = () => {
                                         >
                                             <Cog6ToothIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" strokeWidth={2} />
                                             <span>Settings</span>
-                                        </button>
-
-                                        {/* EXPAND SYSTEM */}
-                                        <button
-                                            onClick={() => { setIsCollapsed(false); setIsProfileMenuOpen(false); }}
-                                            className={`w-full flex items-center gap-2.5 py-2 px-3 text-[11px] font-semibold rounded-xl transition ${
-                                                isDark 
-                                                    ? 'hover:bg-white/[0.04] text-slate-300' 
-                                                    : 'hover:bg-slate-100 text-slate-600'
-                                            }`}
-                                        >
-                                            <ChevronRightIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" strokeWidth={2} />
-                                            <span>Expand Sidebar</span>
                                         </button>
                                     </motion.div>
                                 )}

@@ -104,7 +104,7 @@ const InterviewPrepOutlet = () => {
         };
 
         loadQuestions();
-    }, [selectedRole, allCompletedStatus, allRoleNotes, allAIExplanations]);
+    }, [selectedRole]);
 
 
     const handleSaveNote = useCallback((questionId, noteContent) => {
@@ -195,8 +195,6 @@ const InterviewPrepOutlet = () => {
         if (!selectedRole) return;
 
         const filterQuestions = () => {
-            setLoading(true);
-
             let filtered = [];
             if (!selectedCategory || selectedCategory === 'All Questions') {
                 filtered = allRoleQuestions;
@@ -208,7 +206,6 @@ const InterviewPrepOutlet = () => {
                 filtered = allRoleQuestions.filter(q => q.category === selectedCategory);
             }
             setQuestions(filtered);
-            setLoading(false);
         };
 
         filterQuestions();
@@ -248,7 +245,7 @@ const InterviewPrepOutlet = () => {
     };
 
     return (
-        <div className="min-h-screen bg-transparent relative overflow-hidden transition-colors duration-500 text-[var(--text-main)] dark-prep-scroll selection:bg-indigo-500/30">
+        <div className="min-h-screen bg-transparent relative overflow-hidden transition-colors duration-500 text-slate-900 dark:text-slate-200 dark-prep-scroll selection:bg-indigo-500/30">
             <style>{customScrollbarStyle}</style>
             {/* Grid Trace Background */}
             <div className="fixed inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '60px 60px' }} />

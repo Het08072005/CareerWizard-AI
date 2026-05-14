@@ -24,8 +24,8 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
   };
 
   return (
-    <div className={`backdrop-blur-3xl rounded-xl p-4 md:p-5 border transition-all duration-500 ${
-      isDark ? "bg-[#0A0A0A] border-white/5" : "bg-white border-slate-200"
+    <div className={`backdrop-blur-3xl rounded-xl p-3 md:p-4 border transition-all duration-500 ${
+      isDark ? "bg-[#0A0A0A] border-white/5" : "bg-[var(--bg-sidebar)] border-slate-200"
     } ${hoverBorders[color] || (isDark ? "hover:border-white/10" : "hover:border-slate-300")} group/milestone relative overflow-hidden`}>
       
       {/* Left Beam - Extended and Joined to Divider */}
@@ -38,24 +38,24 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
 
       <div className="absolute top-0 right-0 w-24 h-24 bg-white/[0.01] rounded-bl-2xl pointer-events-none transition-colors"></div>
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10 pl-2">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10 pl-1.5">
 
         {/* Left Side */}
-        <div className="flex items-center space-x-5">
+        <div className="flex items-center space-x-4">
           <div
-            className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg border transition-all duration-500
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm border transition-all duration-500
               ${data.completeFlag
                 ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20"
                 : isDark 
                   ? "bg-white/[0.01] text-slate-700 border-white/5 group-hover/milestone:border-white/20"
-                  : "bg-slate-50 text-slate-400 border-slate-200 group-hover/milestone:border-slate-300"}
+                  : "bg-[var(--bg-main)] text-slate-400 border-slate-200 group-hover/milestone:border-slate-300"}
             `}
           >
             {data.completeFlag ? "✓" : "○"}
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg text-[var(--text-main)] tracking-tight mb-1 transition-colors duration-500">{data.title}</h4>
+            <h4 className="font-bold text-base text-[var(--text-main)] tracking-tight mb-0.5 transition-colors duration-500">{data.title}</h4>
             <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-600 flex flex-wrap items-center gap-3 uppercase tracking-wider">
               <span className="flex items-center">
                 <svg className="w-3 h-3 mr-1.5 text-slate-400 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -67,17 +67,17 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
         </div>
 
         {/* Right Buttons */}
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end mt-3 sm:mt-0">
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end mt-2 sm:mt-0">
           <button
             onClick={() => onTogglePhaseComplete(data.index)}
-            className={`h-9 px-5 rounded-md text-[10px] font-semibold uppercase tracking-widest transition-all border 
+            className={`h-8 px-3.5 rounded-md text-[9px] font-semibold uppercase tracking-widest transition-all border 
               ${data.completeFlag
                 ? isDark
                   ? "bg-white/[0.03] text-slate-400 border-white/10 hover:bg-white/[0.05]"
-                  : "bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100"
+                  : "bg-[var(--bg-main)] text-slate-500 border-slate-200 hover:bg-slate-200/50"
                 : isDark
                   ? "bg-white/[0.03] text-slate-500 border-white/5 hover:bg-white/[0.05] hover:text-white"
-                  : "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200 hover:text-slate-800"}
+                  : "bg-slate-200/40 text-slate-600 border-slate-200 hover:bg-slate-200/70 hover:text-slate-800"}
             `}
           >
             {data.completeFlag ? "Reset" : "Finalize"}
@@ -85,10 +85,10 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
 
           <button
             onClick={() => setOpen(!open)}
-            className={`w-8 h-8 flex items-center justify-center rounded-md text-slate-500 transition-all duration-500 ${
+            className={`w-7 h-7 flex items-center justify-center rounded-md text-slate-500 transition-all duration-500 ${
               isDark
                 ? "bg-white/[0.01] border border-white/5 hover:text-white hover:bg-white/[0.03]"
-                : "bg-slate-50 border border-slate-200 hover:text-slate-800 hover:bg-slate-100"
+                : "bg-[var(--bg-main)] border border-slate-200 hover:text-slate-800 hover:bg-slate-200/50"
             }`}
           >
             {open ? (
@@ -108,14 +108,14 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 relative z-10"
+            className="mt-4 relative z-10"
           >
             {/* Divider surgically joined to the beam */}
-            <div className={`h-[1px] w-auto -mx-4 md:-mx-5 mb-6 opacity-40 ${
+            <div className={`h-[1px] w-auto -mx-3 md:-mx-4 mb-4 opacity-40 ${
               isDark ? (colorMap[color]?.split(" ")[0] || "bg-white/10") : "bg-slate-200"
             }`} />
 
-            <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-4">
+            <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
               Detailed Requirements
             </h5>
 
@@ -136,9 +136,9 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className={`mt-6 pt-6 border-t ${isDark ? 'border-white/5' : 'border-slate-150'}`}
+              className={`mt-4 pt-4 border-t ${isDark ? 'border-white/5' : 'border-slate-150'}`}
             >
-              <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-4">
+              <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
                 Core Protocols
               </h5>
 
@@ -146,10 +146,10 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
                 {data.proTips?.map((tip, i) => (
                   <motion.div
                     key={i}
-                    className={`p-2 px-4 rounded-lg text-[10px] flex items-center leading-relaxed font-medium tracking-wide border ${
+                    className={`p-1.5 px-3 rounded-lg text-[9px] flex items-center leading-relaxed font-medium tracking-wide border ${
                       isDark 
                         ? "bg-white/[0.01] border-white/[0.03] text-slate-400" 
-                        : "bg-slate-50 border-slate-100 text-slate-600"
+                        : "bg-[var(--bg-main)] border-slate-100 text-slate-600"
                     }`}
                   >
                     <div className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 mr-3 flex-shrink-0"></div>
@@ -164,14 +164,14 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="mt-6 grid xl:grid-cols-2 gap-3"
+              className="mt-4 grid xl:grid-cols-2 gap-3"
             >
-              <div className={`p-5 rounded-xl border group/proj transition-all duration-500 ${
+              <div className={`p-4 rounded-xl border group/proj transition-all duration-500 ${
                 isDark 
                   ? "bg-white/[0.01] border-white/5 hover:border-white/10" 
-                  : "bg-slate-50/50 border-slate-200 hover:border-slate-300"
+                  : "bg-[var(--bg-main)]/50 border-slate-200 hover:border-slate-300"
               }`}>
-                <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-4">
+                <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
                   Artifact Development
                 </h5>
                 <ul className="space-y-2 text-[9px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-600">
@@ -184,12 +184,12 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
                 </ul>
               </div>
 
-              <div className={`p-5 rounded-xl border group/yt transition-all duration-500 ${
+              <div className={`p-4 rounded-xl border group/yt transition-all duration-500 ${
                 isDark 
                   ? "bg-white/[0.01] border-white/5 hover:border-white/10" 
-                  : "bg-slate-50/50 border-slate-200 hover:border-slate-300"
+                  : "bg-[var(--bg-main)]/50 border-slate-200 hover:border-slate-300"
               }`}>
-                <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-4">
+                <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
                   Intelligence Sync
                 </h5>
                 <ul className="space-y-2 text-[11px] text-slate-500 dark:text-slate-600 font-medium tracking-wide">

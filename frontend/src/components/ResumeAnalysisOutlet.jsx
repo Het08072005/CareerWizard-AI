@@ -209,7 +209,7 @@ const ResumeAnalysisOutlet = () => {
             className={`h-14 border rounded-xl px-6 flex justify-between items-center cursor-pointer transition-all duration-700 relative overflow-hidden group/box shadow-md ${
               isDark
                 ? 'border-white/5 bg-[#080808] hover:border-cyan-500/30'
-                : 'border-slate-200 bg-white hover:border-emerald-500/30'
+                : 'border-slate-200 bg-[var(--bg-sidebar)] hover:border-emerald-500/30'
             } ${isHovering ? (isDark ? 'border-cyan-400 bg-cyan-400/[0.02]' : 'border-emerald-400 bg-emerald-400/[0.02]') : ''}`}
             onClick={handleUploadClick} onDrop={handleDrop} onDragOver={(e) => { e.preventDefault(); setIsHovering(true); }} onDragLeave={() => setIsHovering(false)}
           >
@@ -231,7 +231,7 @@ const ResumeAnalysisOutlet = () => {
               className={`w-full p-4 rounded-xl resize-none font-medium text-[13px] transition-all duration-700 outline-none h-14 focus:h-24 ${
                 isDark
                   ? 'bg-[#080808] border-white/5 text-slate-300 placeholder-slate-800 focus:border-cyan-500/30'
-                  : 'bg-white border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500/30'
+                  : 'bg-[var(--bg-sidebar)] border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500/30'
               }`}
               placeholder="Or paste resume text here..."
               value={pastedText} onChange={(e) => setPastedText(e.target.value)}

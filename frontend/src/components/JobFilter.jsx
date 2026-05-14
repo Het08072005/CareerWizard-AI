@@ -41,7 +41,7 @@ const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilte
               className={`w-full h-10 rounded-xl pl-11 pr-4 outline-none transition-all duration-700 font-medium text-[14px] border ${
                 isDark 
                   ? 'bg-white/[0.02] border-white/5 focus:border-cyan-500/30 text-white placeholder-slate-700' 
-                  : 'bg-white border-slate-200 focus:border-emerald-500/30 text-slate-800 placeholder-slate-400'
+                  : 'bg-[var(--bg-sidebar)] border-slate-200 focus:border-emerald-500/30 text-slate-800 placeholder-slate-400'
               }`}
               value={filters.search}
               onChange={(e) => onFilterChange('search', e.target.value)}
@@ -64,7 +64,7 @@ const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilte
                 ? isDark ? 'bg-cyan-500 text-black border-cyan-500' : 'bg-[#16a34a] text-white border-[#16a34a]' 
                 : isDark 
                   ? 'bg-white/[0.02] border-white/5 text-slate-400 hover:border-white/20 hover:text-white' 
-                  : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-950'
+                  : 'bg-[var(--bg-sidebar)] border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-950'
             }`}
           >
             <AdjustmentsHorizontalIcon size={16} className={activeFilterCount > 0 ? 'animate-pulse' : ''} />

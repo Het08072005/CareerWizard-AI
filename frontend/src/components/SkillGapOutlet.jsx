@@ -39,12 +39,22 @@ const SkillGapOutlet = () => {
     }
     setCurrentRoleKey(key);
     setView("details");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const mainEl = document.querySelector('main');
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const goBack = () => {
     setView("hub");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const mainEl = document.querySelector('main');
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const containerVariants = {
@@ -66,13 +76,14 @@ const SkillGapOutlet = () => {
   };
 
   return (
-    <div className="w-full min-h-screen relative overflow-hidden font-sans bg-[var(--bg-main)] text-[var(--text-main)] p-6 md:px-12 py-10 transition-colors duration-500">
+    <div className="w-full min-h-screen relative overflow-hidden font-sans bg-[var(--bg-main)] text-[var(--text-main)] p-4 md:px-8 py-5 transition-colors duration-500">
       {/* ARCHITECTURAL BACKGROUND ELEMENTS */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
       <div className={`absolute top-0 right-0 w-[500px] h-[500px] ${isDark ? 'bg-cyan-500/5' : 'hidden'} rounded-full blur-[120px] pointer-events-none`} />
       <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] ${isDark ? 'bg-indigo-500/5' : 'hidden'} rounded-full blur-[100px] pointer-events-none`} />
 
       <motion.div
+        key={view}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -104,56 +115,60 @@ const SkillGapOutlet = () => {
                   <motion.div
                     key={r.key}
                     variants={itemVariants}
-                    whileHover={{ y: -8, scale: 1.02 }}
+                    whileHover={{ y: -4, scale: 1.01 }}
                     onClick={() => openRole(r.key)}
-                    className={`group relative border rounded-2xl p-8 transition-all duration-700 cursor-pointer overflow-hidden shadow-md ${
+                    className={`group relative border rounded-xl p-5 transition-all duration-700 cursor-pointer overflow-hidden shadow-sm ${
                       isDark 
-                        ? 'bg-[#080808] border-white/5 hover:border-white/20 hover:shadow-2xl' 
-                        : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-lg'
+                        ? 'bg-[#080808] border-white/5 hover:border-white/10 hover:shadow-xl' 
+                        : 'bg-[var(--bg-sidebar)] border-slate-200/60 hover:border-slate-300 hover:shadow-md'
                     }`}
                   >
-                    <div className={`absolute top-0 left-0 w-full h-[1px] ${isDark ? 'bg-white/5 group-hover:bg-cyan-500/20' : 'bg-slate-200 group-hover:bg-emerald-500/20'} transition-all duration-700`} />
-                    <div className={`absolute inset-0 bg-gradient-to-br from-${isDark ? 'cyan' : 'emerald'}-500/[0.015] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
+                    <div className={`absolute top-0 left-0 w-full h-[1px] ${isDark ? 'bg-white/5 group-hover:bg-cyan-500/15' : 'bg-slate-150 group-hover:bg-emerald-500/15'} transition-all duration-700`} />
+                    <div className={`absolute inset-0 bg-gradient-to-br from-${isDark ? 'cyan' : 'emerald'}-500/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
 
-                    <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-10 transition-all duration-700 border ${
-                      isDark 
-                        ? 'bg-white/[0.02] border-white/5 group-hover:border-cyan-500/30' 
-                        : 'bg-slate-50 border-slate-200 group-hover:border-emerald-500/30'
-                    }`}>
-                      <IconComponent size={28} className={`transition-colors duration-700 ${
-                        isDark ? 'text-slate-500 group-hover:text-cyan-400' : 'text-slate-400 group-hover:text-emerald-600'
-                      }`} />
+                    {/* Header Row: Icon & Title */}
+                    <div className="flex items-center gap-3.5 mb-4">
+                      <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-700 border ${
+                        isDark 
+                          ? 'bg-white/[0.02] border-white/5 group-hover:border-cyan-500/30' 
+                          : 'bg-slate-50 border-slate-200 group-hover:border-emerald-500/30'
+                      }`}>
+                        <IconComponent size={20} className={`transition-colors duration-700 ${
+                          isDark ? 'text-slate-500 group-hover:text-cyan-400' : 'text-slate-400 group-hover:text-emerald-600'
+                        }`} />
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <h3 className={`text-[16px] font-bold tracking-tight transition-colors duration-700 truncate ${
+                          isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-800 group-hover:text-emerald-600'
+                        }`}>{r.title}</h3>
+                        <p className="text-[10px] text-[var(--text-muted)] opacity-75 font-semibold">
+                          Career Roadmap
+                        </p>
+                      </div>
                     </div>
-
-                    <h3 className={`text-3xl font-semibold tracking-tight mb-4 transition-colors duration-700 ${
-                      isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-800 group-hover:text-emerald-600'
-                    }`}>{r.title}</h3>
                     
-                    <p className="text-[13px] text-[var(--text-muted)] opacity-85 font-medium tracking-normal leading-relaxed italic mb-8 h-10 line-clamp-2">
+                    <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal leading-relaxed mb-4 h-9 line-clamp-2">
                       {r.path}
                     </p>
 
-                    <div className={`flex items-center justify-between mb-10 pt-6 border-t ${isDark ? 'border-white/5' : 'border-slate-200'}`}>
-                      <div className={`px-3 py-1.5 rounded-lg border flex flex-col items-start transition-all duration-700 ${
-                        isDark ? 'border-white/5 bg-white/[0.01] group-hover:border-emerald-500/20' : 'border-slate-200 bg-slate-50 group-hover:border-emerald-500/45'
-                      }`}>
-                        <span className="text-[9px] font-semibold tracking-wider text-slate-500 dark:text-slate-600 mb-1 uppercase">Estimated Salary</span>
-                        <span className="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 tracking-wide">{r.salary}</span>
+                    <div className={`flex items-center justify-between mb-5 pt-3 border-t ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
+                      <div className="flex flex-col">
+                        <span className="text-[8px] font-semibold tracking-wider text-slate-500 dark:text-slate-600 uppercase mb-0.5">Est. Salary</span>
+                        <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wide">{r.salary}</span>
                       </div>
-                      <div className={`px-3 py-1.5 rounded-lg border flex flex-col items-end transition-all duration-700 ${
-                        isDark ? 'border-white/5 bg-white/[0.01] group-hover:border-amber-500/20' : 'border-slate-200 bg-slate-50 group-hover:border-amber-500/45'
-                      }`}>
-                        <span className="text-[9px] font-semibold tracking-wider text-slate-500 dark:text-slate-600 mb-1 uppercase">Market Demand</span>
-                        <span className="text-[12px] font-semibold text-amber-600 dark:text-amber-400 tracking-wide uppercase">{r.demand}</span>
+                      <div className="flex flex-col items-end">
+                        <span className="text-[8px] font-semibold tracking-wider text-slate-500 dark:text-slate-600 uppercase mb-0.5">Market Demand</span>
+                        <span className="text-[11px] font-bold text-amber-600 dark:text-amber-450 tracking-wide uppercase">{r.demand}</span>
                       </div>
                     </div>
 
                     <button
                       onClick={(e) => { e.stopPropagation(); openRole(r.key); }}
-                      className={`w-full h-12 text-[11px] font-semibold uppercase tracking-widest rounded-xl transition-all duration-500 shadow-sm relative z-20 ${
+                      className={`w-full h-10 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all duration-500 shadow-sm relative z-20 ${
                         isDark 
-                          ? 'bg-white text-black hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]' 
-                          : 'bg-[#0f172a] text-white hover:bg-emerald-600 hover:shadow-[0_0_20px_rgba(22,163,74,0.4)]'
+                          ? 'bg-white text-black hover:bg-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]' 
+                          : 'bg-[#0f172a] text-white hover:bg-emerald-600 hover:shadow-[0_0_15px_rgba(22,163,74,0.3)]'
                       }`}
                     >
                       Start Now
@@ -167,32 +182,39 @@ const SkillGapOutlet = () => {
                 <motion.div
                   key="interview"
                   variants={itemVariants}
-                  whileHover={{ y: -8, scale: 1.02 }}
+                  whileHover={{ y: -4, scale: 1.01 }}
                   onClick={() => openRole("interview")}
-                  className={`group relative border rounded-2xl p-8 transition-all duration-700 cursor-pointer overflow-hidden shadow-md ${
+                  className={`group relative border rounded-xl p-5 transition-all duration-700 cursor-pointer overflow-hidden shadow-sm ${
                     isDark 
-                      ? 'bg-[#080808] border-indigo-500/20 hover:border-indigo-500/40 hover:shadow-2xl' 
-                      : 'bg-white border-indigo-200 hover:border-indigo-300 hover:shadow-lg'
+                      ? 'bg-[#080808] border-indigo-500/20 hover:border-indigo-500/40 hover:shadow-xl' 
+                      : 'bg-[var(--bg-sidebar)] border-indigo-200/60 hover:border-indigo-300 hover:shadow-md'
                   }`}
                 >
                   <div className={`absolute top-0 left-0 w-full h-[1px] ${isDark ? 'bg-indigo-500/30' : 'bg-indigo-300'}`} />
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.015] to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.01] to-transparent pointer-events-none" />
 
-                  <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-10 transition-all duration-700 border ${
-                    isDark ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
-                  }`}>
-                    <BriefcaseIcon size={28} className="text-indigo-500" />
+                  {/* Header Row: Icon & Title */}
+                  <div className="flex items-center gap-3.5 mb-4">
+                    <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-700 border ${
+                      isDark ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+                    }`}>
+                      <BriefcaseIcon size={20} className="text-indigo-500" />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-[16px] font-bold text-[var(--text-main)] tracking-tight truncate">Master the Interview</h3>
+                      <p className="text-[10px] text-indigo-500 font-bold tracking-wider uppercase">Preparation Set</p>
+                    </div>
                   </div>
 
-                  <h3 className="text-3xl font-semibold text-[var(--text-main)] tracking-tight mb-2">Master the Interview</h3>
-                  <p className="text-[13px] text-[var(--text-muted)] opacity-85 font-medium tracking-normal leading-relaxed italic mb-8">
+                  <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal leading-relaxed mb-4 h-9 line-clamp-2">
                     Crush technical, system design, and behavioral interviews with curated prep sets.
                   </p>
 
-                  <ul className="space-y-4 mb-10">
-                    {["Real-world Scenarios", "System Design Patterns", "Behavioral Frameworks"].map((item, i) => (
-                      <li key={i} className="flex items-center text-[11px] font-medium tracking-wide text-[var(--text-muted)] opacity-90">
-                        <CheckIcon size={14} className="text-emerald-500 mr-3 opacity-85" />
+                  <ul className="space-y-2 mb-5">
+                    {["Real-world Scenarios", "System Design Patterns"].map((item, i) => (
+                      <li key={i} className="flex items-center text-[10px] font-medium tracking-wide text-[var(--text-muted)] opacity-90">
+                        <CheckIcon size={12} className="text-emerald-500 mr-2 opacity-85" />
                         {item}
                       </li>
                     ))}
@@ -200,10 +222,10 @@ const SkillGapOutlet = () => {
 
                   <button
                     onClick={(e) => { e.stopPropagation(); openRole("interview"); }}
-                    className={`w-full h-12 text-[11px] font-semibold uppercase tracking-widest rounded-xl transition-all duration-500 shadow-sm relative z-20 ${
+                    className={`w-full h-10 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all duration-500 shadow-sm relative z-20 ${
                       isDark
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-400 hover:shadow-[0_0_20px_rgba(129,140,248,0.4)]'
-                        : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-[0_0_20px_rgba(79,70,229,0.4)]'
+                        ? 'bg-indigo-600 text-white hover:bg-indigo-400 hover:shadow-[0_0_15px_rgba(129,140,248,0.3)]'
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-[0_0_15px_rgba(79,70,229,0.3)]'
                     }`}
                   >
                     Start Preparation
@@ -215,7 +237,7 @@ const SkillGapOutlet = () => {
             {/* Premium Info Tip boxes */}
             <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 pt-10 border-t ${isDark ? 'border-white/5' : 'border-slate-200'}`}>
               <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-sm ${
-                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-white border-slate-200 hover:border-slate-300'
+                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[var(--bg-sidebar)] border-slate-200 hover:border-slate-300'
               }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-indigo-500/30 group-hover:bg-indigo-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
@@ -232,7 +254,7 @@ const SkillGapOutlet = () => {
               </motion.div>
 
               <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-sm ${
-                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-white border-slate-200 hover:border-slate-300'
+                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[var(--bg-sidebar)] border-slate-200 hover:border-slate-300'
               }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-cyan-500/30 group-hover:bg-cyan-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
@@ -249,7 +271,7 @@ const SkillGapOutlet = () => {
               </motion.div>
 
               <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-sm ${
-                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-white border-slate-200 hover:border-slate-300'
+                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[var(--bg-sidebar)] border-slate-200 hover:border-slate-300'
               }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-emerald-500/30 group-hover:bg-emerald-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
@@ -279,7 +301,7 @@ const SkillGapOutlet = () => {
               />
             ) : (
               <div className={`flex flex-col items-center justify-center py-20 border rounded-3xl ${
-                isDark ? 'bg-[#080808] border-white/5' : 'bg-white border-slate-200'
+                isDark ? 'bg-[#080808] border-white/5' : 'bg-[var(--bg-sidebar)] border-slate-200'
               }`}>
                 <p className="text-[var(--text-muted)] font-bold uppercase tracking-widest text-sm mb-6">Roadmap content not found</p>
                 <button
