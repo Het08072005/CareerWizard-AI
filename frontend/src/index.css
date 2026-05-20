@@ -30,22 +30,24 @@
 /* Light Mode Theme matching career.html exactly */
 html.light {
   --bg-main: #f0eeea;
-  --bg-sidebar: #f9f8f4;
-  --bg-card: #f9f8f4;
+  --bg-sidebar: #fcfbf8;
+  --bg-card: #fcfbf8;
   --border-color: #e0ddd5;
   --text-main: #1a1916;
   --text-muted: #8a877e;
 
-  --glass-bg: rgba(249, 248, 244, 0.8);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(252, 251, 248, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.05);
 }
 
 /* Centralized standardized Brand Logo - Original High-Tech Style */
 .cw-brand-logo {
   font-family: var(--font-primary) !important;
-  font-weight: 300 !important; /* light weight */
+  font-weight: 300 !important;
+  /* light weight */
   font-size: 22px !important;
-  letter-spacing: -0.05em !important; /* tight tracking */
+  letter-spacing: -0.05em !important;
+  /* tight tracking */
   display: inline-flex;
   align-items: center;
   transition: all 0.3s ease;
@@ -53,27 +55,34 @@ html.light {
 }
 
 .cw-brand-logo .accent {
-  font-weight: 600 !important; /* semibold */
+  font-weight: 600 !important;
+  /* semibold */
   letter-spacing: -0.02em !important;
   margin-left: 1px;
 }
 
 /* Color in Light Mode */
 html.light .cw-brand-logo {
-  color: #1e293b !important; /* slate-800 */
+  color: #1e293b !important;
+  /* slate-800 */
 }
+
 html.light .cw-brand-logo .accent {
-  color: #16a34a !important; /* emerald-600 */
+  color: #16a34a !important;
+  /* emerald-600 */
 }
 
 /* Color in Dark Mode or default (Original layout style) */
 html.dark .cw-brand-logo,
 .cw-brand-logo {
-  color: #94a3b8 !important; /* slate-400 */
+  color: #94a3b8 !important;
+  /* slate-400 */
 }
+
 html.dark .cw-brand-logo .accent,
 .cw-brand-logo .accent {
-  color: #ffffff !important; /* white */
+  color: #ffffff !important;
+  /* white */
 }
 
 /* Base resets depending on theme */
@@ -169,6 +178,13 @@ body {
   backdrop-filter: blur(40px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+html.light .glass-card {
+  background: #fcfbf8;
+  backdrop-filter: none;
+  border: 1px solid #e0ddd5;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
 }
 
 .text-editorial {
@@ -268,6 +284,12 @@ body {
   backdrop-filter: blur(10px);
 }
 
+html.light .btn-action {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #000000;
+}
+
 .btn-action::before {
   content: '';
   position: absolute;
@@ -282,6 +304,12 @@ body {
   transform: translateY(-3px) scale(1.02);
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px 2px rgba(0, 242, 255, 0.15);
+}
+
+html.light .btn-action:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .btn-hero {
@@ -331,6 +359,11 @@ body {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s;
+}
+
+html.light .input-glass {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 .input-glass:focus {

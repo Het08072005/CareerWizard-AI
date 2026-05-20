@@ -89,23 +89,23 @@ export default function Navbar() {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 top-12 w-56 glass-card rounded-2xl py-2 overflow-hidden animate-reveal-up border border-white/10 z-[1000] bg-black/90 backdrop-blur-2xl">
-                    <div className="px-4 py-3 border-b border-white/5">
+                  <div className={`absolute right-0 top-12 w-56 glass-card rounded-2xl py-2 overflow-hidden animate-reveal-up z-[1000] ${isDark ? 'border-white/10 bg-black/90' : 'border-[#e0ddd5] bg-[#fcfbf8] shadow-xl'}`}>
+                    <div className={`px-4 py-3 border-b ${isDark ? 'border-white/5' : 'border-[#e0ddd5]'}`}>
                       <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black">Logged in as</p>
-                      <p className="text-sm font-bold text-white truncate">{user?.name || 'System User'}</p>
+                      <p className={`text-sm font-bold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>{user?.name || 'System User'}</p>
                     </div>
-                    <button onClick={() => { navigate("/profile"); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors">Account Config</button>
-                    <button onClick={() => { navigate("/internship"); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors">My Internship</button>
-                    <button onClick={() => { navigate("/overview"); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors">Core Interface</button>
+                    <button onClick={() => { navigate("/profile"); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${isDark ? 'text-slate-300 hover:bg-white/5 hover:text-cyan-400' : 'text-slate-700 hover:bg-black/5 hover:text-emerald-600'}`}>Account Config</button>
+                    <button onClick={() => { navigate("/internship"); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${isDark ? 'text-slate-300 hover:bg-white/5 hover:text-cyan-400' : 'text-slate-700 hover:bg-black/5 hover:text-emerald-600'}`}>My Internship</button>
+                    <button onClick={() => { navigate("/overview"); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${isDark ? 'text-slate-300 hover:bg-white/5 hover:text-cyan-400' : 'text-slate-700 hover:bg-black/5 hover:text-emerald-600'}`}>Core Interface</button>
 
                     {/* Light/Dark Toggle Option in user menu */}
-                    <button onClick={() => { toggleTheme(); setIsDropdownOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-400 transition-colors flex items-center justify-between">
+                    <button onClick={() => { toggleTheme(); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center justify-between ${isDark ? 'text-slate-300 hover:bg-white/5 hover:text-cyan-400' : 'text-slate-700 hover:bg-black/5 hover:text-emerald-600'}`}>
                       <span>Toggle Theme</span>
-                      <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 bg-white/10 rounded">{isDark ? 'Dark' : 'Light'}</span>
+                      <span className={`text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded ${isDark ? 'bg-white/10' : 'bg-black/10'}`}>{isDark ? 'Dark' : 'Light'}</span>
                     </button>
 
-                    <div className="border-t border-white/5 mt-1 pt-1">
-                      <button onClick={handleLogout} className="w-full text-left px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-500/5 transition-colors">Disconnect</button>
+                    <div className={`border-t mt-1 pt-1 ${isDark ? 'border-white/5' : 'border-[#e0ddd5]'}`}>
+                      <button onClick={handleLogout} className="w-full text-left px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors">Logout</button>
                     </div>
                   </div>
                 )}

@@ -3,7 +3,8 @@
 :root {
   --cw-white: var(--bg-sidebar);
   --cw-bg: var(--bg-main);
-  --cw-bg2: var(--bg-main); /* slightly darker than main bg in light mode, or same */
+  --cw-bg2: var(--bg-main);
+  /* slightly darker than main bg in light mode, or same */
   --cw-surface: var(--bg-sidebar);
   --cw-border: var(--border-color);
   --cw-text: var(--text-main);
@@ -45,10 +46,10 @@
 
 /* Light theme values */
 html.light {
-  --cw-white: #f9f8f4;
+  --cw-white: #fcfbf8;
   --cw-bg: #f0eeea;
   --cw-bg2: #e8e6e0;
-  --cw-surface: #f9f8f4;
+  --cw-surface: #fcfbf8;
   --cw-border: #e0ddd5;
   --cw-border2: #ccc9be;
   --cw-text: #1a1916;
@@ -69,7 +70,7 @@ html.dark {
   --cw-text2: #e2e8f0;
   --cw-muted: #94a3b8;
   --cw-muted2: #64748b;
-  
+
   --cw-green: #4ade80;
   --cw-green-mid: #22c55e;
   --cw-amber: #fbbf24;
@@ -331,10 +332,13 @@ html.dark {
 }
 
 @keyframes cw-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.4;
     transform: scale(0.75);
@@ -385,7 +389,7 @@ html.dark {
   border: 1px solid var(--cw-border);
   border-radius: var(--cw-radius-lg);
   padding: 22px 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   transition: all 0.3s ease;
 }
 
@@ -769,7 +773,7 @@ html.dark {
   border-radius: var(--cw-radius-lg);
   padding: 24px 28px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
   position: relative;
   overflow: hidden;
 }
@@ -802,7 +806,7 @@ html.dark {
 .cw-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -817,7 +821,7 @@ html.dark {
   border-radius: var(--cw-radius-lg);
   width: 100%;
   max-width: 580px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   animation: cw-zoom-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -827,6 +831,7 @@ html.dark {
     transform: scale(0.95);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;

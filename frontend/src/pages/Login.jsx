@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { login as loginService } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { ThemeContext } from "../context/ThemeContext";
 import { ChevronRightIcon } from "../components/ui/Icons";
 
 export default function Login() {
@@ -11,6 +12,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+  const { isDark } = useContext(ThemeContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,41 +30,41 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-slate-200 flex items-center justify-center p-6 pt-32 relative overflow-hidden font-sans">
-      <div className="nebula-bg"></div>
+    <div className={`min-h-screen flex items-center justify-center p-6 pt-32 relative overflow-hidden ${isDark ? 'bg-black text-slate-200' : 'bg-[#f0eeea] text-slate-900'}`}>
+      {isDark && <div className="nebula-bg"></div>}
 
       <div className="w-full max-w-[400px] relative z-10 animate-reveal-up">
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white tracking-tight font-display mb-2 uppercase">System Login</h2>
+          <h2 className={`text-3xl font-bold tracking-tight mb-2 uppercase ${isDark ? 'text-white' : 'text-black'}`}>Login</h2>
           <p className="text-slate-500 font-medium text-xs tracking-wide">Enter credentials to proceed.</p>
         </div>
 
         {/* Form Card */}
-        <div className="glass-card p-10 md:p-12 rounded-3xl relative overflow-hidden transition-all duration-500 hover:border-white/20">
+        <div className={`glass-card p-10 md:p-12 rounded-3xl relative overflow-hidden transition-all duration-500 ${isDark ? 'hover:border-white/20' : 'hover:border-black/10'}`}>
           <div className="shimmer-sweep opacity-30"></div>
 
           <form className="space-y-8 relative z-10" onSubmit={handleLogin}>
             <div className="space-y-2">
-              <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Secure Email</label>
+              <label className={`block text-[9px] font-bold uppercase tracking-[0.2em] ml-1 ${isDark ? 'text-slate-500' : 'text-black'}`}>Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full input-glass px-6 py-4 rounded-xl text-white font-medium focus:outline-none placeholder-slate-800 text-sm transition-all"
-                placeholder="identity@wizard.system"
+                className={`w-full input-glass px-6 py-4 rounded-xl font-medium focus:outline-none text-sm transition-all ${isDark ? 'text-white placeholder-slate-800 focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,242,255,0.1)]' : 'text-black placeholder-slate-400 focus:border-emerald-500 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)]'}`}
+                placeholder="you@example.com"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Access Key</label>
+              <label className={`block text-[9px] font-bold uppercase tracking-[0.2em] ml-1 ${isDark ? 'text-slate-500' : 'text-black'}`}>Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full input-glass px-6 py-4 rounded-xl text-white font-medium focus:outline-none placeholder-slate-800 text-sm transition-all"
+                className={`w-full input-glass px-6 py-4 rounded-xl font-medium focus:outline-none text-sm transition-all ${isDark ? 'text-white placeholder-slate-800 focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,242,255,0.1)]' : 'text-black placeholder-slate-400 focus:border-emerald-500 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)]'}`}
                 placeholder="••••••••"
               />
             </div>
@@ -77,7 +79,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-action py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center group"
+              className={`w-full btn-action py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center group ${isDark ? '' : 'before:bg-gradient-to-r before:from-emerald-400 before:to-emerald-600 hover:border-emerald-500'}`}
             >
               {isLoading ? (
                 <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -92,7 +94,7 @@ export default function Login() {
 
         {/* Footer Link */}
         <p className="text-center mt-8 text-[11px] text-slate-500 font-medium tracking-wide">
-          New operative? <Link to="/signup" className="text-white font-bold hover:text-cyan-400 transition-colors">Initialize Account</Link>
+          New operative? <Link to="/signup" className={`font-bold transition-colors ${isDark ? 'text-white hover:text-cyan-400' : 'text-slate-900 hover:text-emerald-600'}`}>Create Account</Link>
         </p>
       </div>
     </div>
