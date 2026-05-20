@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerWizard AI – My Internship</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #22c55e;
+    --green-dark: #16a34a;
+    --green-light: #dcfce7;
+    --green-pale: #f0fdf4;
+    --purple: #7c3aed;
+    --purple-light: #ede9fe;
+    --blue: #3b82f6;
+    --blue-light: #dbeafe;
+    --orange: #f97316;
+    --orange-light: #ffedd5;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --yellow-light: #fef9c3;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --sidebar-w: 232px;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-heading: 'Rubik', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--gray-100);
+    color: var(--gray-800);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: #fff;
+    border-right: 1px solid var(--gray-200);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 20px 18px 12px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .logo-text {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--gray-900);
+    letter-spacing: -0.3px;
+  }
+  .logo-text span { color: var(--green); }
+
+  .pro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 6px;
+    font-family: var(--font-heading);
+  }
+  .pro-badge::before { content: '⚡'; font-size: 10px; }
+
+  .sidebar-section { padding: 16px 10px 8px; }
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--gray-600);
+    font-weight: 500;
+    font-size: 13.5px;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--gray-100); color: var(--gray-900); }
+  .nav-item.active {
+    background: var(--green-pale);
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .sidebar-user {
+    margin-top: auto;
+    border-top: 1px solid var(--gray-100);
+    padding: 14px 12px;
+  }
+  .user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 34px; height: 34px;
+    background: var(--green-dark);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .user-name { font-weight: 600; font-size: 13px; color: var(--gray-800); }
+  .user-sub { font-size: 11px; color: var(--gray-400); }
+  .switch-admin {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--gray-500);
+    margin-top: 10px;
+    padding: 0 2px;
+    cursor: pointer;
+  }
+  .switch-admin:hover { color: var(--green-dark); }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: 52px;
+    background: #fff;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    z-index: 90;
+  }
+  .breadcrumb {
+    font-size: 13px;
+    color: var(--gray-400);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-heading);
+    font-weight: 500;
+  }
+  .breadcrumb span { color: var(--gray-700); }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--gray-200);
+    background: #fff;
+    color: var(--gray-700);
+    font-family: var(--font-heading);
+    transition: all 0.15s;
+  }
+  .topbar-btn.active {
+    background: var(--green-pale);
+    border-color: var(--green);
+    color: var(--green-dark);
+  }
+  .topbar-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .icon-btn {
+    width: 34px; height: 34px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--gray-500);
+    background: #fff;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { background: var(--gray-100); }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    margin-top: 52px;
+    flex: 1;
+    padding: 28px 32px;
+    max-width: 1200px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .page-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--gray-900);
+    letter-spacing: -0.4px;
+  }
+  .page-sub { font-size: 13px; color: var(--gray-500); margin-top: 3px; }
+
+  /* ── TRACK INFO BANNER ── */
+  .track-banner {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+    border-radius: 16px;
+    padding: 24px 28px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .track-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .track-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: 80px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .track-info h2 {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .track-info p { font-size: 13px; opacity: 0.8; margin-bottom: 14px; }
+  .track-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .track-tag {
+    background: rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+  .track-stats {
+    display: flex;
+    gap: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 700;
+    display: block;
+  }
+  .stat-label { font-size: 11px; opacity: 0.75; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .progress-label {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+  }
+  .progress-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: var(--gray-100);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), #16a34a);
+    border-radius: 20px;
+    width: 33%;
+    transition: width 1s ease;
+  }
+  .progress-pct {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--green-dark);
+    white-space: nowrap;
+  }
+  .progress-days { font-size: 12px; color: var(--gray-400); white-space: nowrap; }
+
+  /* ── TIMELINE ── */
+  .timeline-section { }
+  .timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+  .filter-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--gray-100);
+    padding: 3px;
+    border-radius: 8px;
+  }
+  .filter-tab {
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--gray-500);
+    font-family: var(--font-heading);
+    transition: all 0.15s;
+  }
+  .filter-tab.active {
+    background: #fff;
+    color: var(--gray-800);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* ── DAY CARD ── */
+  .day-card {
+    background: #fff;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .day-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); border-color: var(--gray-300); }
+  .day-card.done { border-left: 4px solid var(--green); }
+  .day-card.active-day { border-left: 4px solid var(--blue); border-color: var(--blue); box-shadow: 0 4px 20px rgba(59,130,246,0.1); }
+  .day-card.locked { opacity: 0.65; }
+
+  .day-card-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    gap: 16px;
+    user-select: none;
+  }
+
+  .day-number-badge {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 15px;
+    position: relative;
+  }
+  .day-number-badge.done { background: var(--green-light); color: var(--green-dark); }
+  .day-number-badge.active { background: var(--blue-light); color: var(--blue); }
+  .day-number-badge.locked { background: var(--gray-100); color: var(--gray-400); }
+  .day-number-badge.learning { background: var(--purple-light); color: var(--purple); }
+  .done-check {
+    position: absolute;
+    bottom: -4px; right: -4px;
+    width: 18px; height: 18px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: #fff;
+    border: 2px solid #fff;
+  }
+
+  .day-meta { flex: 1; min-width: 0; }
+  .day-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  .day-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--gray-900);
+  }
+  .day-type-pill {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .pill-task { background: var(--blue-light); color: var(--blue); }
+  .pill-learn { background: var(--purple-light); color: var(--purple); }
+  .pill-project { background: var(--orange-light); color: var(--orange); }
+  .pill-quiz { background: var(--yellow-light); color: #92400e; }
+
+  .day-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .day-tag {
+    font-size: 11.5px;
+    color: var(--gray-500);
+    background: var(--gray-50);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--gray-100);
+  }
+
+  .day-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .day-score {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green-dark);
+    min-width: 32px;
+    text-align: center;
+  }
+  .score-label { font-size: 10px; color: var(--gray-400); font-weight: 500; text-align: center; }
+  .status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: var(--font-heading);
+  }
+  .badge-done { background: var(--green-light); color: var(--green-dark); }
+  .badge-start { background: var(--blue-light); color: var(--blue); }
+  .badge-locked {
+    background: var(--gray-100);
+    color: var(--gray-400);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .chevron {
+    font-size: 18px;
+    color: var(--gray-400);
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* ── DAY CONTENT (expanded) ── */
+  .day-content {
+    display: none;
+    border-top: 1.5px solid var(--gray-100);
+    padding: 24px;
+    background: var(--gray-50);
+  }
+  .day-content.open { display: block; }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+
+  /* Overview / description */
+  .content-overview {
+    background: #fff;
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 16px;
+  }
+  .content-overview h4 {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .content-overview p {
+    font-size: 13.5px;
+    color: var(--gray-600);
+    line-height: 1.65;
+  }
+
+  /* Steps */
+  .steps-list { list-style: none; counter-reset: steps; }
+  .steps-list li {
+    counter-increment: steps;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 24px; height: 24px;
+    background: var(--green-dark);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading);
+    margin-top: 1px;
+  }
+  .step-text { font-size: 13.5px; color: var(--gray-700); line-height: 1.5; }
+  .step-text strong { color: var(--gray-900); font-weight: 600; }
+  .step-text code {
+    background: var(--gray-100);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--green-dark);
+    border: 1px solid var(--gray-200);
+  }
+
+  /* Resources panel */
+  .resources-panel { }
+  .res-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 12px;
+  }
+  .res-card h4 {
+    font-family: var(--font-heading);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .yt-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    text-decoration: none;
+    margin-bottom: 7px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .yt-link:hover { background: #fef2f2; border-color: #fca5a5; }
+  .yt-icon {
+    width: 30px; height: 22px;
+    background: #ff0000;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .yt-icon::after { content: '▶'; color: #fff; font-size: 9px; }
+  .yt-title { font-size: 12px; font-weight: 500; color: var(--gray-700); line-height: 1.3; }
+  .yt-channel { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+  .yt-dur {
+    margin-left: auto;
+    font-size: 10.5px;
+    color: var(--gray-400);
+    background: var(--gray-100);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+
+  .doc-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    text-decoration: none;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--blue);
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .doc-link:hover { background: var(--blue-light); border-color: #93c5fd; }
+  .doc-link .doc-icon { font-size: 14px; }
+
+  /* Task submission */
+  .task-submit {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--gray-200);
+  }
+  .task-submit h4 {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .input-field {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--gray-700);
+    font-family: var(--font-body);
+    background: var(--gray-50);
+    outline: none;
+    transition: border-color 0.15s;
+    margin-bottom: 8px;
+  }
+  .input-field:focus { border-color: var(--green); background: #fff; }
+  .input-field::placeholder { color: var(--gray-400); }
+  .submit-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--green-dark);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .submit-btn:hover { background: #166534; transform: translateY(-1px); }
+  .submit-btn.done-submit {
+    background: var(--green-light);
+    color: var(--green-dark);
+    cursor: default;
+    transform: none;
+  }
+
+  /* Certificate Section */
+  .cert-section {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 12px;
+  }
+  .cert-section h4 {
+    font-family: var(--font-heading);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .cert-card {
+    border: 1.5px dashed var(--gray-300);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--gray-50);
+  }
+  .cert-card:hover { border-color: var(--green); background: var(--green-pale); }
+  .cert-icon { font-size: 28px; margin-bottom: 6px; }
+  .cert-title { font-size: 12.5px; font-weight: 600; color: var(--gray-700); font-family: var(--font-heading); }
+  .cert-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+
+  /* Day 1 learning image */
+  .ai-image-block {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid var(--gray-200);
+    position: relative;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    padding: 24px;
+    text-align: center;
+    color: #fff;
+  }
+  .ai-image-block .ai-img-title {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ai-image-block p { font-size: 12px; opacity: 0.7; }
+  .ai-generated-badge {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(255,255,255,0.15);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+  .git-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    padding: 12px 0;
+  }
+  .git-node {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .git-branch-node {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--purple);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .git-arrow { color: rgba(255,255,255,0.4); font-size: 18px; padding: 0 4px; }
+
+  /* Quiz block */
+  .quiz-block {
+    background: var(--yellow-light);
+    border: 1.5px solid #fde68a;
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 14px;
+  }
+  .quiz-block h4 {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .quiz-q { font-size: 13px; color: var(--gray-700); margin-bottom: 8px; font-weight: 500; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 6px; }
+  .quiz-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    border: 1.5px solid #fde68a;
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--gray-700);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--yellow); background: #fefce8; }
+  .quiz-opt.correct { border-color: var(--green); background: var(--green-pale); color: var(--green-dark); }
+  .quiz-opt input[type=radio] { accent-color: var(--green); }
+
+  /* ── TABS for day content ── */
+  .day-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .day-tab {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    color: var(--gray-500);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+  .day-tab.active { color: var(--green-dark); border-bottom-color: var(--green-dark); }
+  .day-tab:hover { color: var(--gray-700); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Locked overlay */
+  .locked-overlay {
+    text-align: center;
+    padding: 32px;
+    color: var(--gray-500);
+  }
+  .locked-overlay .lock-icon { font-size: 36px; margin-bottom: 10px; }
+  .locked-overlay h4 {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 4px;
+  }
+  .locked-overlay p { font-size: 13px; }
+
+  /* Info chips */
+  .info-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+    font-family: var(--font-heading);
+  }
+  .chip-green { background: var(--green-light); color: var(--green-dark); }
+  .chip-blue { background: var(--blue-light); color: var(--blue); }
+  .chip-purple { background: var(--purple-light); color: var(--purple); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .content-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Career<span>Wizard</span> AI</div>
+    <div class="pro-badge">PRO PLAN</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">MAIN</div>
+    <a class="nav-item" href="#"><span class="icon">🏠</span> Dashboard</a>
+    <a class="nav-item active" href="#"><span class="icon">🎓</span> My Internship</a>
+    <a class="nav-item" href="#"><span class="icon">✅</span> My Tasks</a>
+    <a class="nav-item" href="#"><span class="icon">📚</span> Daily Learning</a>
+    <a class="nav-item" href="#"><span class="icon">📊</span> Progress Summary</a>
+    <a class="nav-item" href="#"><span class="icon">💼</span> My Projects</a>
+    <a class="nav-item" href="#"><span class="icon">📥</span> Resources</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">PREPARE</div>
+    <a class="nav-item" href="#"><span class="icon">🔍</span> Job Matches</a>
+    <a class="nav-item" href="#"><span class="icon">🗺️</span> Roadmap</a>
+    <a class="nav-item" href="#"><span class="icon">🎤</span> Interview Prep</a>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="user-row">
+      <div class="user-avatar">H</div>
+      <div>
+        <div class="user-name">Het Panchal</div>
+        <div class="user-sub">Pro · CE Final Year</div>
+      </div>
+    </div>
+    <div class="switch-admin">🛡 Switch to Admin View</div>
+  </div>
+</aside>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="breadcrumb">Platform / <span>My Internship</span></div>
+  <div class="topbar-actions">
+    <div class="topbar-btn active"><span class="dot"></span> My Internship</div>
+    <div class="icon-btn">🔔</div>
+    <div class="icon-btn">❓</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">My Internship</div>
+      <div class="page-sub">Complete all days in order. Learning days build your foundation — task days test your skills.</div>
+    </div>
+  </div>
+
+  <!-- Track Banner -->
+  <div class="track-banner">
+    <div class="track-info">
+      <h2>🚀 Full-Stack Web Dev Track</h2>
+      <p>15-Day Intensive Internship · Batch #12 · Starts Jun 1, 2025</p>
+      <div class="track-tags">
+        <span class="track-tag">HTML/CSS</span>
+        <span class="track-tag">JavaScript</span>
+        <span class="track-tag">React</span>
+        <span class="track-tag">Node.js</span>
+        <span class="track-tag">PostgreSQL</span>
+        <span class="track-tag">Docker</span>
+        <span class="track-tag">CI/CD</span>
+      </div>
+    </div>
+    <div class="track-stats">
+      <div class="stat-item">
+        <span class="stat-num">5</span>
+        <span class="stat-label">Days Done</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">90.2</span>
+        <span class="stat-label">Avg Score</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">10</span>
+        <span class="stat-label">Days Left</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="progress-label">Overall Progress</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" style="width:33%"></div>
+    </div>
+    <div class="progress-pct">33%</div>
+    <div class="progress-days">Day 5 of 15</div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <div class="timeline-header">
+      <div class="section-title">Internship Timeline</div>
+      <div class="filter-tabs">
+        <div class="filter-tab active">All Days</div>
+        <div class="filter-tab">Learning</div>
+        <div class="filter-tab">Tasks</div>
+        <div class="filter-tab">Projects</div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 1 ══════════════ -->
+    <div class="day-card done" id="card-1">
+      <div class="day-card-header" onclick="toggleDay(1)">
+        <div class="day-number-badge done">
+          D1
+          <div class="done-check">✓</div>
+        </div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">Git Setup + Version Control Fundamentals</span>
+            <span class="day-type-pill pill-learn">Learning</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">Git</span>
+            <span class="day-tag">GitHub</span>
+            <span class="day-tag">Terminal</span>
+            <span class="day-tag">Version Control</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div>
+            <div class="day-score">96</div>
+            <div class="score-label">score</div>
+          </div>
+          <div class="status-badge badge-done">DONE</div>
+          <div class="chevron open" id="chev-1">⌄</div>
+        </div>
+      </div>
+
+      <div class="day-content open" id="content-1">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="switchTab(1,'overview')">📖 Overview</div>
+          <div class="day-tab" onclick="switchTab(1,'steps')">🛠 Setup Steps</div>
+          <div class="day-tab" onclick="switchTab(1,'resources')">🎥 Resources</div>
+          <div class="day-tab" onclick="switchTab(1,'quiz')">⚡ Quiz</div>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div class="tab-panel active" id="tab-1-overview">
+          <div class="content-grid">
+            <div>
+              <div class="content-overview">
+                <h4>📋 What You'll Learn Today</h4>
+                <p>Today is a <strong>Learning Day</strong> — no coding task, just building your foundation. You'll install Git, configure your GitHub account, understand branching, and make your first real commit. By end of day you'll have a live GitHub profile with your first repo.</p>
+                <br>
+                <p>Git is the #1 tool every developer uses daily. Every company, every open-source project, every internship assumes you know it. This day makes sure you're not faking it.</p>
+              </div>
+
+              <!-- Visual AI-generated diagram -->
+              <div class="ai-image-block">
+                <div class="ai-generated-badge">✨ AI Generated Visual</div>
+                <div class="ai-img-title">Git Branching Model</div>
+                <p>How commits, branches and merges work</p>
+                <div class="git-diagram">
+                  <div class="git-node">C1</div>
+                  <span class="git-arrow">→</span>
+                  <div class="git-node">C2</div>
+                  <span class="git-arrow">→</span>
+                  <div class="git-node">C3</div>
+                  <span class="git-arrow">⤵</span>
+                  <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+                    <div style="display:flex;gap:4px;align-items:center">
+                      <span class="git-arrow">→</span>
+                      <div class="git-branch-node">feat</div>
+                      <span class="git-arrow">→</span>
+                      <div class="git-branch-node">C4</div>
+                    </div>
+                    <div style="display:flex;gap:4px;align-items:center">
+                      <span class="git-arrow">→</span>
+                      <div class="git-node" style="background:#f59e0b;width:38px;height:38px;font-size:9px">main</div>
+                      <span class="git-arrow">←</span>
+                      <div class="git-node" style="background:#ef4444;width:38px;height:38px;font-size:9px">merge</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-chip chip-green" style="margin-bottom:10px">⏱ Estimated Time: 3–4 hours</div>
+              &nbsp;
+              <div class="info-chip chip-purple">📌 No submission today — just complete & mark done</div>
+            </div>
+
+            <div class="resources-panel">
+              <div class="res-card">
+                <h4>🎥 YouTube Resources</h4>
+                <div class="yt-link">
+                  <div class="yt-icon"></div>
+                  <div>
+                    <div class="yt-title">Git & GitHub Full Course for Beginners</div>
+                    <div class="yt-channel">Traversy Media</div>
+                  </div>
+                  <div class="yt-dur">1h 8m</div>
+                </div>
+                <div class="yt-link">
+                  <div class="yt-icon"></div>
+                  <div>
+                    <div class="yt-title">Git Tutorial for Beginners – Git & GitHub Fundamentals</div>
+                    <div class="yt-channel">freeCodeCamp.org</div>
+                  </div>
+                  <div class="yt-dur">1h 40m</div>
+                </div>
+                <div class="yt-link">
+                  <div class="yt-icon"></div>
+                  <div>
+                    <div class="yt-title">13 Advanced (but useful) Git Techniques</div>
+                    <div class="yt-channel">Fireship</div>
+                  </div>
+                  <div class="yt-dur">8m</div>
+                </div>
+              </div>
+
+              <div class="res-card">
+                <h4>📄 Docs & Reading</h4>
+                <div class="doc-link">🌐 Official Git Documentation (git-scm.com)</div>
+                <div class="doc-link">📘 GitHub Quickstart Guide</div>
+                <div class="doc-link">📋 Git Cheat Sheet – GitHub Education</div>
+                <div class="doc-link">🧪 Learn Git Branching (interactive)</div>
+              </div>
+
+              <div class="cert-section">
+                <h4>🏅 Linked Certificate</h4>
+                <div class="cert-card">
+                  <div class="cert-icon">🎓</div>
+                  <div class="cert-title">Git & Version Control Basics</div>
+                  <div class="cert-sub">Upload your certificate here after course</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEPS TAB -->
+        <div class="tab-panel" id="tab-1-steps">
+          <div class="content-overview">
+            <h4>🛠 Step-by-Step Setup Guide</h4>
+            <p>Follow these exact steps. Don't skip. Each step builds on the previous.</p>
+          </div>
+          <ol class="steps-list">
+            <li>
+              <div class="step-num">1</div>
+              <div class="step-text"><strong>Install Git</strong> — Go to <code>git-scm.com/downloads</code>, download for your OS (Windows/Mac/Linux). Run installer with default settings.</div>
+            </li>
+            <li>
+              <div class="step-num">2</div>
+              <div class="step-text"><strong>Verify Installation</strong> — Open terminal/cmd and run <code>git --version</code>. You should see something like <code>git version 2.43.0</code>.</div>
+            </li>
+            <li>
+              <div class="step-num">3</div>
+              <div class="step-text"><strong>Configure Identity</strong> — Run <code>git config --global user.name "Your Name"</code> and <code>git config --global user.email "you@email.com"</code>.</div>
+            </li>
+            <li>
+              <div class="step-num">4</div>
+              <div class="step-text"><strong>Create GitHub Account</strong> — Visit <code>github.com</code>, sign up. Choose a professional username — recruiters will see this.</div>
+            </li>
+            <li>
+              <div class="step-num">5</div>
+              <div class="step-text"><strong>Setup SSH Key</strong> — Run <code>ssh-keygen -t ed25519 -C "your@email.com"</code>, then add public key to GitHub Settings → SSH Keys.</div>
+            </li>
+            <li>
+              <div class="step-num">6</div>
+              <div class="step-text"><strong>Create Your First Repo</strong> — On GitHub, click "New Repository". Name it <code>careerwizard-internship</code>. Initialize with README.</div>
+            </li>
+            <li>
+              <div class="step-num">7</div>
+              <div class="step-text"><strong>Clone + First Commit</strong> — <code>git clone [your-repo-url]</code>, create a file, then <code>git add . → git commit -m "Day 1: setup" → git push</code>.</div>
+            </li>
+            <li>
+              <div class="step-num">8</div>
+              <div class="step-text"><strong>Practice Branching</strong> — Create a feature branch: <code>git checkout -b feature/test</code>, make changes, then merge back to main.</div>
+            </li>
+          </ol>
+        </div>
+
+        <!-- RESOURCES TAB -->
+        <div class="tab-panel" id="tab-1-resources">
+          <div style="color:var(--gray-500);font-size:13.5px;padding:8px 0 16px">All resources for Day 1 — Git & Version Control.</div>
+          <div class="content-grid">
+            <div>
+              <div class="res-card">
+                <h4>🎥 Full Video Playlist</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Git & GitHub Full Course</div><div class="yt-channel">Traversy Media</div></div><div class="yt-dur">1h 8m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Git Complete Tutorial</div><div class="yt-channel">freeCodeCamp</div></div><div class="yt-dur">1h 40m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">How Git Works Under the Hood</div><div class="yt-channel">Fireship</div></div><div class="yt-dur">12m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">GitHub Actions in 100 Seconds</div><div class="yt-channel">Fireship</div></div><div class="yt-dur">2m</div></div>
+              </div>
+            </div>
+            <div>
+              <div class="res-card">
+                <h4>📚 Reading & Practice</h4>
+                <div class="doc-link">🌐 git-scm.com/book (Pro Git Book — Free)</div>
+                <div class="doc-link">🎮 learngitbranching.js.org (Interactive)</div>
+                <div class="doc-link">📋 GitHub Docs — Getting Started</div>
+                <div class="doc-link">🧪 Atlassian Git Tutorial</div>
+                <div class="doc-link">💡 Oh My Git! (Visual Game)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUIZ TAB -->
+        <div class="tab-panel" id="tab-1-quiz">
+          <div class="quiz-block">
+            <h4>⚡ Quick Check — Git Fundamentals</h4>
+            <div class="quiz-q">1. What does <code>git pull</code> do?</div>
+            <div class="quiz-opts">
+              <label class="quiz-opt"><input type="radio" name="q1"> Pushes local commits to remote</label>
+              <label class="quiz-opt correct"><input type="radio" name="q1" checked> Fetches and merges remote changes into local branch</label>
+              <label class="quiz-opt"><input type="radio" name="q1"> Creates a new branch</label>
+              <label class="quiz-opt"><input type="radio" name="q1"> Deletes a remote branch</label>
+            </div>
+          </div>
+          <div class="quiz-block" style="margin-top:12px">
+            <h4>⚡ Quick Check — Git Fundamentals</h4>
+            <div class="quiz-q">2. What is the purpose of <code>.gitignore</code>?</div>
+            <div class="quiz-opts">
+              <label class="quiz-opt"><input type="radio" name="q2"> To list all tracked files</label>
+              <label class="quiz-opt"><input type="radio" name="q2"> To store commit messages</label>
+              <label class="quiz-opt correct"><input type="radio" name="q2"> To specify files/folders Git should not track</label>
+              <label class="quiz-opt"><input type="radio" name="q2"> To define merge strategies</label>
+            </div>
+          </div>
+          <button class="submit-btn done-submit" style="max-width:220px;margin-top:14px">✓ Quiz Submitted — 2/2 Correct</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 2 ══════════════ -->
+    <div class="day-card done" id="card-2">
+      <div class="day-card-header" onclick="toggleDay(2)">
+        <div class="day-number-badge done">D2<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">HTML/CSS Responsive Landing Page</span>
+            <span class="day-type-pill pill-task">Task</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">HTML5</span>
+            <span class="day-tag">CSS3</span>
+            <span class="day-tag">Flexbox</span>
+            <span class="day-tag">Responsive</span>
+            <span class="day-tag">webdev · Phase 1 · Beginner</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div><div class="day-score">92</div><div class="score-label">score</div></div>
+          <div class="status-badge badge-done">DONE</div>
+          <div class="chevron" id="chev-2">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-2">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="switchTab(2,'overview')">📖 Overview</div>
+          <div class="day-tab" onclick="switchTab(2,'steps')">🛠 Task Brief</div>
+          <div class="day-tab" onclick="switchTab(2,'resources')">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="tab-2-overview">
+          <div class="content-grid">
+            <div>
+              <div class="content-overview">
+                <h4>📋 Task Description</h4>
+                <p>Build a fully responsive landing page for any product of your choice. The page must work on mobile, tablet, and desktop without any horizontal scroll. Use only HTML and CSS (no JavaScript, no frameworks).</p>
+                <br>
+                <p><strong>Requirements:</strong> Navbar, Hero section with CTA, Features grid (3 columns), Testimonials, Footer. All responsive using Flexbox or Grid.</p>
+              </div>
+              <div class="info-chip chip-green" style="margin-bottom:10px">⏱ Estimated: 4–6 hours</div>
+              &nbsp;
+              <div class="info-chip chip-blue">📤 Submit GitHub repo link</div>
+            </div>
+            <div class="resources-panel">
+              <div class="res-card">
+                <h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">HTML & CSS Full Course – Beginner to Pro</div><div class="yt-channel">Dave Gray</div></div><div class="yt-dur">11h</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">CSS Flexbox Crash Course</div><div class="yt-channel">Traversy Media</div></div><div class="yt-dur">40m</div></div>
+              </div>
+              <div class="task-submit">
+                <h4>📤 Your Submission</h4>
+                <input class="input-field" placeholder="GitHub repo link" value="https://github.com/hetpanchal/landing-page-day2" readonly>
+                <button class="submit-btn done-submit">✓ Submitted · Score: 92/100</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="tab-2-steps">
+          <ol class="steps-list">
+            <li><div class="step-num">1</div><div class="step-text">Create a new folder <code>day2-landing</code> and initialize with <code>git init</code>.</div></li>
+            <li><div class="step-num">2</div><div class="step-text">Build <code>index.html</code> with semantic tags: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>.</div></li>
+            <li><div class="step-num">3</div><div class="step-text">Add <code>styles.css</code> — use CSS variables for colors. Implement Flexbox navbar and CSS Grid for features section.</div></li>
+            <li><div class="step-num">4</div><div class="step-text">Add <code>@media</code> queries: <code>max-width: 768px</code> for tablet, <code>max-width: 480px</code> for mobile. Test in browser DevTools.</div></li>
+            <li><div class="step-num">5</div><div class="step-text">Push to GitHub. Enable GitHub Pages under repo Settings → Pages → Deploy from main branch.</div></li>
+            <li><div class="step-num">6</div><div class="step-text">Submit the GitHub repo link and the live Pages URL in the submission box.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="tab-2-resources">
+          <div class="res-card">
+            <h4>🎥 All Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Build a Responsive Website from Scratch</div><div class="yt-channel">Kevin Powell</div></div><div class="yt-dur">2h 20m</div></div>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">CSS Grid in 20 Minutes</div><div class="yt-channel">Traversy Media</div></div><div class="yt-dur">20m</div></div>
+            <div class="doc-link">📄 MDN – Flexbox Guide</div>
+            <div class="doc-link">📄 CSS Tricks – Complete Guide to Grid</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 3 ══════════════ -->
+    <div class="day-card done" id="card-3">
+      <div class="day-card-header" onclick="toggleDay(3)">
+        <div class="day-number-badge done">D3<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">JavaScript Fetch API + DOM Manipulation</span>
+            <span class="day-type-pill pill-task">Task</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">JS</span><span class="day-tag">Fetch</span><span class="day-tag">DOM</span><span class="day-tag">API</span><span class="day-tag">Async/Await</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div><div class="day-score">88</div><div class="score-label">score</div></div>
+          <div class="status-badge badge-done">DONE</div>
+          <div class="chevron" id="chev-3">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-3">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="switchTab(3,'overview')">📖 Overview</div>
+          <div class="day-tab" onclick="switchTab(3,'steps')">🛠 Task Brief</div>
+          <div class="day-tab" onclick="switchTab(3,'resources')">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="tab-3-overview">
+          <div class="content-grid">
+            <div>
+              <div class="content-overview">
+                <h4>📋 Task Description</h4>
+                <p>Build a "Country Explorer" app that fetches data from the public REST Countries API and displays cards with flag, country name, population, and capital. Add search + filter by region functionality.</p>
+                <br>
+                <p>This teaches async JavaScript, DOM creation, error handling, and working with real APIs — skills used in every modern web app.</p>
+              </div>
+              <div class="info-chip chip-green">⏱ 5–7 hours</div>
+            </div>
+            <div class="resources-panel">
+              <div class="res-card">
+                <h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">JavaScript Fetch API Explained</div><div class="yt-channel">Web Dev Simplified</div></div><div class="yt-dur">16m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Async JS – Callbacks, Promises, Async/Await</div><div class="yt-channel">Traversy Media</div></div><div class="yt-dur">25m</div></div>
+              </div>
+              <div class="task-submit">
+                <h4>📤 Your Submission</h4>
+                <input class="input-field" value="https://github.com/hetpanchal/country-explorer" readonly>
+                <button class="submit-btn done-submit">✓ Submitted · Score: 88/100</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="tab-3-steps">
+          <ol class="steps-list">
+            <li><div class="step-num">1</div><div class="step-text">Study REST Countries API: <code>restcountries.com/v3.1/all</code> — look at the JSON structure in browser.</div></li>
+            <li><div class="step-num">2</div><div class="step-text">Use <code>fetch(url).then().catch()</code> OR <code>async/await</code> pattern to pull data.</div></li>
+            <li><div class="step-num">3</div><div class="step-text">Dynamically create country cards with <code>document.createElement</code> and insert into DOM.</div></li>
+            <li><div class="step-num">4</div><div class="step-text">Add a search <code>&lt;input&gt;</code> that filters cards by country name in real time using <code>.filter()</code>.</div></li>
+            <li><div class="step-num">5</div><div class="step-text">Add a <code>&lt;select&gt;</code> dropdown for region filter (Africa, Americas, Asia, Europe, Oceania).</div></li>
+            <li><div class="step-num">6</div><div class="step-text">Handle loading state (spinner) and error state (no results message) gracefully.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="tab-3-resources">
+          <div class="res-card">
+            <h4>📚 All Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Fetch API Crash Course</div><div class="yt-channel">Web Dev Simplified</div></div><div class="yt-dur">16m</div></div>
+            <div class="doc-link">📄 MDN – Fetch API</div>
+            <div class="doc-link">📄 restcountries.com – API Docs</div>
+            <div class="doc-link">📄 JavaScript.info – Async/Await</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 4 ══════════════ -->
+    <div class="day-card done" id="card-4">
+      <div class="day-card-header" onclick="toggleDay(4)">
+        <div class="day-number-badge done">D4<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">React Components + State Management</span>
+            <span class="day-type-pill pill-task">Task</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">React</span><span class="day-tag">useState</span><span class="day-tag">useEffect</span><span class="day-tag">Components</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div><div class="day-score">91</div><div class="score-label">score</div></div>
+          <div class="status-badge badge-done">DONE</div>
+          <div class="chevron" id="chev-4">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-4">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="switchTab(4,'overview')">📖 Overview</div>
+          <div class="day-tab" onclick="switchTab(4,'resources')">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="tab-4-overview">
+          <div class="content-grid">
+            <div>
+              <div class="content-overview">
+                <h4>📋 Task Description</h4>
+                <p>Build a <strong>Task Manager</strong> app in React with full CRUD (create, read, update, delete). Use <code>useState</code> for state and <code>useEffect</code> to persist data to localStorage. Break it into at least 5 components.</p>
+              </div>
+              <div class="info-chip chip-green">⏱ 5–7 hours</div>
+            </div>
+            <div class="resources-panel">
+              <div class="res-card">
+                <h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">React JS Full Course for Beginners</div><div class="yt-channel">Dave Gray</div></div><div class="yt-dur">9h</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">React Hooks Explained</div><div class="yt-channel">Web Dev Simplified</div></div><div class="yt-dur">36m</div></div>
+              </div>
+              <div class="task-submit">
+                <h4>📤 Submitted</h4>
+                <input class="input-field" value="https://github.com/hetpanchal/react-task-manager" readonly>
+                <button class="submit-btn done-submit">✓ Submitted · Score: 91/100</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="tab-4-resources">
+          <div class="res-card"><h4>📚 Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">React Full Course</div><div class="yt-channel">Dave Gray</div></div><div class="yt-dur">9h</div></div>
+            <div class="doc-link">📄 React Official Docs – react.dev</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 5 ══════════════ -->
+    <div class="day-card done" id="card-5">
+      <div class="day-card-header" onclick="toggleDay(5)">
+        <div class="day-number-badge done">D5<div class="done-check">✓</div></div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">Node.js + Express REST API</span>
+            <span class="day-type-pill pill-task">Task</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">Node.js</span><span class="day-tag">Express</span><span class="day-tag">REST</span><span class="day-tag">API</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div><div class="day-score">85</div><div class="score-label">score</div></div>
+          <div class="status-badge badge-done">DONE</div>
+          <div class="chevron" id="chev-5">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-5">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="switchTab(5,'overview')">📖 Overview</div>
+          <div class="day-tab" onclick="switchTab(5,'resources')">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="tab-5-overview">
+          <div class="content-grid">
+            <div>
+              <div class="content-overview">
+                <h4>📋 Task Description</h4>
+                <p>Build a REST API with Node.js + Express for a simple blog. CRUD routes for posts and comments. Test with Postman or Thunder Client. No database yet — use in-memory array.</p>
+              </div>
+              <div class="info-chip chip-green">⏱ 5–8 hours</div>
+            </div>
+            <div class="resources-panel">
+              <div class="res-card">
+                <h4>🎥 Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Node.js & Express JS Full Course</div><div class="yt-channel">Dave Gray</div></div><div class="yt-dur">8h</div></div>
+              </div>
+              <div class="task-submit">
+                <h4>📤 Submitted</h4>
+                <input class="input-field" value="https://github.com/hetpanchal/express-blog-api" readonly>
+                <button class="submit-btn done-submit">✓ Submitted · Score: 85/100</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="tab-5-resources">
+          <div class="res-card"><h4>📚 Resources</h4>
+            <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">Node.js Crash Course</div><div class="yt-channel">Traversy Media</div></div><div class="yt-dur">1h 30m</div></div>
+            <div class="doc-link">📄 Express.js Official Docs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 6 (CURRENT) ══════════════ -->
+    <div class="day-card active-day" id="card-6">
+      <div class="day-card-header" onclick="toggleDay(6)">
+        <div class="day-number-badge active">D6</div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">PostgreSQL Setup + Indexing & Query Optimization</span>
+            <span class="day-type-pill pill-learn">Learning</span>
+            <span style="background:#dbeafe;color:#1d4ed8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">📍 TODAY</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">PostgreSQL</span><span class="day-tag">SQL</span><span class="day-tag">Indexing</span><span class="day-tag">Query Opt</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div class="status-badge badge-start">START →</div>
+          <div class="chevron open" id="chev-6">⌄</div>
+        </div>
+      </div>
+      <div class="day-content open" id="content-6">
+        <div class="day-tabs">
+          <div class="day-tab active" onclick="switchTab(6,'overview')">📖 Overview</div>
+          <div class="day-tab" onclick="switchTab(6,'steps')">🛠 Setup Guide</div>
+          <div class="day-tab" onclick="switchTab(6,'resources')">🎥 Resources</div>
+        </div>
+        <div class="tab-panel active" id="tab-6-overview">
+          <div class="content-grid">
+            <div>
+              <div class="content-overview">
+                <h4>📋 What You'll Learn Today (Learning Day)</h4>
+                <p>Today is a <strong>Learning Day</strong> — no task submission. Install PostgreSQL, learn the basics of SQL, understand indexing, and practice writing optimized queries. This builds your foundation for Day 7's database integration task.</p>
+                <br>
+                <p>⚠️ <strong>AI flagged a skill gap:</strong> Your previous PostgreSQL score was 78. Today's learning directly covers <em>Indexing & Query Optimization</em> which will appear in Day 8's database task.</p>
+              </div>
+              <div class="info-chip chip-purple" style="margin-bottom:10px">📌 Learning Day — No submission required</div>
+              &nbsp;
+              <div class="info-chip chip-green">⏱ Estimated: 3–4 hours</div>
+            </div>
+            <div class="resources-panel">
+              <div class="res-card">
+                <h4>🎥 YouTube Resources</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">PostgreSQL Tutorial – Full Course for Beginners</div><div class="yt-channel">freeCodeCamp</div></div><div class="yt-dur">4h 20m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">SQL Indexing and Query Optimization Explained</div><div class="yt-channel">Hussein Nasser</div></div><div class="yt-dur">1h 12m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">EXPLAIN ANALYZE in PostgreSQL</div><div class="yt-channel">Hussein Nasser</div></div><div class="yt-dur">22m</div></div>
+              </div>
+              <div class="res-card">
+                <h4>📄 Reading</h4>
+                <div class="doc-link">📄 PostgreSQL Official Docs – Indexes</div>
+                <div class="doc-link">📄 Use the Index, Luke (free ebook)</div>
+                <div class="doc-link">🎮 pgexercises.com (Interactive SQL)</div>
+              </div>
+              <div class="task-submit">
+                <h4>✅ Mark as Done</h4>
+                <p style="font-size:12px;color:var(--gray-500);margin-bottom:10px">Click when you've completed today's learning</p>
+                <button class="submit-btn" onclick="this.className='submit-btn done-submit';this.textContent='✓ Day 6 Marked Complete'">Mark Day 6 Complete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="tab-6-steps">
+          <ol class="steps-list">
+            <li><div class="step-num">1</div><div class="step-text"><strong>Install PostgreSQL</strong> — Download from <code>postgresql.org/download</code>. Remember your superuser password. Also install <strong>pgAdmin 4</strong> for GUI.</div></li>
+            <li><div class="step-num">2</div><div class="step-text"><strong>Connect via terminal</strong> — Run <code>psql -U postgres</code>. Create a test database: <code>CREATE DATABASE careerwizard;</code></div></li>
+            <li><div class="step-num">3</div><div class="step-text"><strong>Create tables + insert data</strong> — Practice <code>CREATE TABLE</code>, <code>INSERT INTO</code>, <code>SELECT</code>, <code>WHERE</code>, <code>JOIN</code>.</div></li>
+            <li><div class="step-num">4</div><div class="step-text"><strong>Learn Indexes</strong> — Run <code>CREATE INDEX idx_user_email ON users(email);</code> and see the difference with <code>EXPLAIN ANALYZE</code>.</div></li>
+            <li><div class="step-num">5</div><div class="step-text"><strong>Practice Query Optimization</strong> — Avoid <code>SELECT *</code>. Use specific columns. Understand sequential scan vs index scan.</div></li>
+            <li><div class="step-num">6</div><div class="step-text"><strong>pgexercises.com</strong> — Complete at least 20 exercises to solidify your SQL knowledge before Day 7.</div></li>
+          </ol>
+        </div>
+        <div class="tab-panel" id="tab-6-resources">
+          <div class="content-grid">
+            <div>
+              <div class="res-card">
+                <h4>🎥 Videos</h4>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">PostgreSQL Tutorial Full Course</div><div class="yt-channel">freeCodeCamp</div></div><div class="yt-dur">4h 20m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">SQL Indexing Explained</div><div class="yt-channel">Hussein Nasser</div></div><div class="yt-dur">1h 12m</div></div>
+                <div class="yt-link"><div class="yt-icon"></div><div><div class="yt-title">PostgreSQL in 100 Seconds</div><div class="yt-channel">Fireship</div></div><div class="yt-dur">2m</div></div>
+              </div>
+            </div>
+            <div>
+              <div class="res-card">
+                <h4>📚 Docs & Practice</h4>
+                <div class="doc-link">🌐 postgresql.org/docs</div>
+                <div class="doc-link">🎮 pgexercises.com</div>
+                <div class="doc-link">📖 Use the Index, Luke</div>
+                <div class="doc-link">📄 SQL Zoo – Interactive Tutorial</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 7 ══════════════ -->
+    <div class="day-card" id="card-7">
+      <div class="day-card-header" onclick="toggleDay(7)">
+        <div class="day-number-badge locked">D7</div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">Full-Stack CRUD App with PostgreSQL</span>
+            <span class="day-type-pill pill-task">Task</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">Node.js</span><span class="day-tag">Express</span><span class="day-tag">PostgreSQL</span><span class="day-tag">Full-Stack</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div class="status-badge badge-locked">🔒 Locked</div>
+          <div class="chevron" id="chev-7">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-7">
+        <div class="locked-overlay">
+          <div class="lock-icon">🔒</div>
+          <h4>Complete Day 6 to Unlock</h4>
+          <p>Finish today's learning day to access Day 7's task brief and resources.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 8 ══════════════ -->
+    <div class="day-card locked" id="card-8">
+      <div class="day-card-header" onclick="toggleDay(8)">
+        <div class="day-number-badge locked">D8</div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">Authentication – JWT + bcrypt</span>
+            <span class="day-type-pill pill-task">Task</span>
+          </div>
+          <div class="day-tags">
+            <span class="day-tag">JWT</span><span class="day-tag">bcrypt</span><span class="day-tag">Auth</span><span class="day-tag">Middleware</span>
+          </div>
+        </div>
+        <div class="day-right">
+          <div class="status-badge badge-locked">🔒 Locked</div>
+          <div class="chevron" id="chev-8">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-8">
+        <div class="locked-overlay"><div class="lock-icon">🔒</div><h4>Locked</h4><p>Complete previous days to unlock.</p></div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 9 ══════════════ -->
+    <div class="day-card locked" id="card-9">
+      <div class="day-card-header" onclick="toggleDay(9)">
+        <div class="day-number-badge learning">D9</div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">Docker + Containerization Fundamentals</span>
+            <span class="day-type-pill pill-learn">Learning</span>
+          </div>
+          <div class="day-tags"><span class="day-tag">Docker</span><span class="day-tag">Containers</span><span class="day-tag">DevOps</span></div>
+        </div>
+        <div class="day-right">
+          <div class="status-badge badge-locked">🔒 Locked</div>
+          <div class="chevron" id="chev-9">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-9">
+        <div class="locked-overlay"><div class="lock-icon">🔒</div><h4>Locked</h4><p>Complete previous days to unlock.</p></div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DAY 10 ══════════════ -->
+    <div class="day-card locked" id="card-10">
+      <div class="day-card-header" onclick="toggleDay(10)">
+        <div class="day-number-badge locked">D10</div>
+        <div class="day-meta">
+          <div class="day-title-row">
+            <span class="day-title">React + Node.js Full Integration Project</span>
+            <span class="day-type-pill pill-project">Project</span>
+          </div>
+          <div class="day-tags"><span class="day-tag">React</span><span class="day-tag">Node.js</span><span class="day-tag">PostgreSQL</span><span class="day-tag">Full-Stack</span></div>
+        </div>
+        <div class="day-right">
+          <div class="status-badge badge-locked">🔒 Locked</div>
+          <div class="chevron" id="chev-10">⌄</div>
+        </div>
+      </div>
+      <div class="day-content" id="content-10">
+        <div class="locked-overlay"><div class="lock-icon">🔒</div><h4>Locked</h4><p>Complete previous days to unlock.</p></div>
+      </div>
+    </div>
+
+    <!-- Days 11-15 collapsed -->
+    <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:14px;color:var(--gray-400);font-size:13px;font-family:var(--font-heading);font-weight:500;">
+      <span style="font-size:20px">🔒</span>
+      <div>
+        <div style="color:var(--gray-600);font-weight:600;margin-bottom:2px">Days 11–15 — Advanced + Capstone</div>
+        <div style="font-size:12px">WebSockets, CI/CD, Advanced Docker, Capstone Project, Deployment — unlock as you progress.</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:var(--orange-light);color:var(--orange);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">D11 – D12: Task</span>
+        <span style="background:var(--purple-light);color:var(--purple);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">D13: Learning</span>
+        <span style="background:var(--orange-light);color:var(--orange);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">D14 – D15: Capstone</span>
+      </div>
+    </div>
+
+  </div><!-- /timeline-section -->
+</main>
+
+<script>
+  // Toggle day expand/collapse
+  function toggleDay(id) {
+    const content = document.getElementById('content-' + id);
+    const chev = document.getElementById('chev-' + id);
+    if (!content) return;
+    const isOpen = content.classList.contains('open');
+    if (isOpen) {
+      content.classList.remove('open');
+      if (chev) chev.classList.remove('open');
+    } else {
+      content.classList.add('open');
+      if (chev) chev.classList.add('open');
+    }
+  }
+
+  // Tab switching
+  function switchTab(dayId, tabName) {
+    // Deactivate all tab panels for this day
+    document.querySelectorAll('[id^="tab-' + dayId + '-"]').forEach(p => p.classList.remove('active'));
+    // Activate the selected one
+    const panel = document.getElementById('tab-' + dayId + '-' + tabName);
+    if (panel) panel.classList.add('active');
+
+    // Update tab button styles
+    const content = document.getElementById('content-' + dayId);
+    if (!content) return;
+    content.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+    // Find clicked tab
+    event.target.classList.add('active');
+  }
+
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Progress bar animation on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelector('.progress-bar-fill').style.width = '33%';
+    }, 200);
+  });
+</script>
+</body>
+</html>
