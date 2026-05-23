@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerWizard AI — AI/ML Internship</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0eeea;color:#1a1916;min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+
+:root{
+  --white:#ffffff;--bg:#f0eeea;--bg2:#e6e3de;
+  --surface:#ffffff;--border:#e0ddd5;--border2:#ccc9be;
+  --text:#1a1916;--text2:#48453e;--muted:#8a877e;--muted2:#b8b5ac;
+  --green:#166534;--green-mid:#16a34a;--green-light:#dcfce7;--green-bg:#f0fdf4;
+  --amber:#92400e;--amber-mid:#d97706;--amber-light:#fef3c7;--amber-bg:#fffbeb;
+  --blue:#1e3a8a;--blue-mid:#2563eb;--blue-light:#dbeafe;--blue-bg:#eff6ff;
+  --purple:#4c1d95;--purple-mid:#7c3aed;--purple-light:#ede9fe;--purple-bg:#f5f3ff;
+  --red:#991b1b;--red-mid:#dc2626;--red-light:#fee2e2;--red-bg:#fef2f2;
+  --orange:#9a3412;--orange-mid:#ea580c;--orange-light:#ffedd5;--orange-bg:#fff7ed;
+  --radius-sm:6px;--radius-md:10px;--radius-lg:14px;--radius-xl:20px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 4px 12px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.09),0 4px 8px rgba(0,0,0,.05);
+}
+
+/* SHELL */
+.shell{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;min-width:240px;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:100}
+.s-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.logo-word{font-family:'Fraunces',serif;font-weight:700;font-size:16px;color:var(--text);letter-spacing:-.4px}
+.logo-word span{color:var(--green-mid)}
+.logo-tag{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:2px 8px;background:var(--green-light);border:1px solid #86efac;border-radius:100px;font-size:10px;font-family:'DM Mono',monospace;color:var(--green);font-weight:500}
+.s-nav{padding:14px 10px;flex:1;overflow-y:auto}
+.s-lbl{font-size:9.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:1.2px;font-weight:500;padding:0 8px;margin:12px 0 4px;font-family:'DM Mono',monospace}
+.s-lbl:first-child{margin-top:0}
+.s-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-md);font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;margin-bottom:1px;border:1px solid transparent}
+.s-item i{width:16px;text-align:center;font-size:13px;flex-shrink:0}
+.s-item:hover{background:var(--bg);color:var(--text)}
+.s-item.active{background:var(--green-bg);color:var(--green);border-color:#bbf7d0}
+.s-bottom{padding:12px 10px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:9px;padding:9px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all .15s}
+.user-row:hover{background:var(--bg2)}
+.u-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#166534,#16a34a);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.u-name{font-size:12.5px;font-weight:600;color:var(--text)}
+.u-plan{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+
+/* TOPBAR */
+.topbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:90;flex-shrink:0}
+.tb-left{display:flex;align-items:center;gap:10px}
+.bc{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace}
+.bc span{color:var(--text);font-weight:500}
+.tb-right{display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;font-size:11px;font-weight:500;font-family:'DM Mono',monospace;border:1px solid}
+.chip-green{background:var(--green-bg);color:var(--green);border-color:#86efac}
+.pdot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.icon-btn{width:34px;height:34px;border-radius:var(--radius-md);background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;transition:all .15s;position:relative}
+.icon-btn:hover{background:var(--bg2);color:var(--text2)}
+.nb{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--red-mid);border:1.5px solid var(--white)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:24px}
+
+/* SCREENS */
+.screen{display:none}.screen.active{display:block}
+
+/* DAY NAVIGATOR TOP */
+.day-nav{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:20px;box-shadow:var(--shadow-sm)}
+.day-nav-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.track-info{}
+.track-name-big{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.track-name-big em{color:var(--green-mid);font-style:italic}
+.track-sub{font-size:12px;color:var(--muted);margin-top:3px;font-family:'DM Mono',monospace}
+.day-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* PROGRESS BAR */
+.prog-row{display:flex;justify-content:space-between;margin-bottom:6px}
+.prog-lbl{font-size:11.5px;color:var(--muted)}
+.prog-val{font-size:11.5px;color:var(--green-mid);font-weight:600;font-family:'DM Mono',monospace}
+.prog-track{height:5px;background:var(--bg2);border-radius:100px;overflow:hidden;margin-bottom:14px}
+.prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#166534,#16a34a);transition:width .5s}
+
+/* DAY NODES */
+.day-nodes{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.dn{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;border:1px solid;cursor:pointer;transition:all .18s;position:relative}
+.dn-done{background:var(--green-light);border-color:#86efac;color:var(--green)}
+.dn-today{background:#16a34a;border-color:#16a34a;color:#fff;box-shadow:0 2px 8px rgba(22,163,74,.35)}
+.dn-locked{background:var(--bg);border-color:var(--border);color:var(--muted2)}
+.dn-task{background:var(--amber-light);border-color:#fcd34d;color:var(--amber)}
+.dn-task-done{background:var(--amber-bg);border-color:#fde68a;color:var(--amber)}
+.dn-sep{width:16px;height:1px;background:var(--border2);flex-shrink:0}
+.dn-tooltip{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;font-size:9px;padding:4px 7px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:10}
+.dn:hover .dn-tooltip{opacity:1}
+.phase-lbrow{display:flex;gap:0;margin-top:6px}
+.ph-lbl{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.ph-lbl.cur{color:var(--blue-mid);font-weight:600}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow-sm);margin-bottom:16px}
+.card-title{font-family:'Fraunces',serif;font-weight:600;font-size:15px;color:var(--text);display:flex;align-items:center;gap:7px;margin-bottom:16px}
+.card-title i{font-size:14px;color:var(--muted)}
+
+/* HERO BANNER (day type) */
+.hero-banner{border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:16px;border:1px solid}
+.hero-learn{background:linear-gradient(135deg,var(--blue-bg),var(--green-bg));border-color:#bfdbfe}
+.hero-task{background:linear-gradient(135deg,var(--amber-bg),#fef9c3);border-color:#fde68a}
+.hero-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px}
+.hero-emoji{font-size:36px;flex-shrink:0}
+.hero-head{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px;margin-bottom:4px}
+.hero-sub{font-size:13px;color:var(--text2);line-height:1.6}
+.hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.hero-meta-item{display:flex;align-items:center;gap:5px;font-size:11.5px;font-family:'DM Mono',monospace}
+.hero-meta-item i{font-size:11px}
+.wyl-list{margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,.06)}
+.wyl-lbl{font-size:10.5px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;font-weight:500}
+.wyl-items{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wyl-item{display:flex;align-items:flex-start;gap:6px;font-size:12.5px;color:var(--text2);line-height:1.4}
+.wyl-item i{color:var(--green-mid);font-size:11px;margin-top:2px;flex-shrink:0}
+
+/* SECTION LABEL */
+.sec-lbl{font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-.3px}
+.sec-lbl-sm{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sec-lbl-sm i{font-size:13px;color:var(--muted)}
+
+/* CONCEPT BLOCK */
+.concept-block{background:var(--bg);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:14px;border-left:3px solid var(--blue-mid)}
+.concept-head{font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
+.concept-body{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ANALOGY */
+.analogy-block{background:var(--amber-bg);border:1px solid #fde68a;border-radius:var(--radius-md);padding:14px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.analogy-icon{font-size:20px;flex-shrink:0}
+.analogy-title{font-size:12px;font-weight:600;color:var(--amber);margin-bottom:4px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.analogy-text{font-size:12.5px;color:var(--amber);line-height:1.6}
+
+/* IMAGE BLOCK */
+.img-block{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.img-placeholder{background:linear-gradient(135deg,#e8e6e0,#d4d1c8);height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.img-placeholder i{font-size:32px;color:var(--muted2)}
+.img-placeholder span{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace}
+.img-caption{padding:10px 14px;background:var(--bg);font-size:11.5px;color:var(--text2);font-style:italic;border-top:1px solid var(--border)}
+
+/* VIDEO BLOCK */
+.video-block{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.video-thumb{background:linear-gradient(135deg,#1a1916,#2d2b26);height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;position:relative;overflow:hidden}
+.video-thumb::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(22,163,74,.15),transparent 70%)}
+.play-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;backdrop-filter:blur(4px);transition:all .2s;cursor:pointer}
+.play-btn:hover{background:var(--green-mid);border-color:var(--green-mid);transform:scale(1.08)}
+.video-dur-badge{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:4px}
+.video-info{padding:12px 14px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--border)}
+.yt-icon{width:28px;height:28px;border-radius:6px;background:var(--red-light);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--red-mid);flex-shrink:0}
+.video-title{font-size:12.5px;font-weight:600;color:var(--text)}
+.video-meta{font-size:10.5px;color:var(--muted);margin-top:1px}
+.video-required{margin-left:auto;flex-shrink:0}
+
+/* CODE BLOCK */
+.code-block{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.code-header{background:#1a1916;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.code-lang-badge{display:flex;align-items:center;gap:7px}
+.lang-dot{width:8px;height:8px;border-radius:50%}
+.ld-red{background:#ff5f57}.ld-yellow{background:#febc2e}.ld-green{background:#28c840}
+.code-lang-name{font-size:11px;font-family:'DM Mono',monospace;color:#a8a29e;margin-left:4px}
+.code-title-text{font-size:12px;font-family:'DM Mono',monospace;color:#e7e5e4;font-weight:500}
+.copy-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:4px 9px;font-size:10px;font-family:'DM Mono',monospace;color:#a8a29e;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:rgba(255,255,255,.14);color:#e7e5e4}
+.code-body{background:#1e1e1e;padding:16px 18px;overflow-x:auto}
+.code-body pre{margin:0;font-family:'DM Mono',monospace;font-size:12px;line-height:1.7;color:#d4d4d4;white-space:pre}
+.kw{color:#569cd6}.fn{color:#dcdcaa}.str{color:#ce9178}.cm{color:#6a9955;font-style:italic}.num{color:#b5cea8}.cls{color:#4ec9b0}.op{color:#d4d4d4}
+
+/* CALLOUT */
+.callout{border-radius:var(--radius-md);padding:13px 15px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px;border-left:3px solid}
+.callout-tip{background:var(--green-bg);border-color:var(--green-mid)}
+.callout-warning{background:var(--amber-bg);border-color:var(--amber-mid)}
+.callout-important{background:var(--blue-bg);border-color:var(--blue-mid)}
+.callout-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.callout-tip .callout-icon{color:var(--green-mid)}
+.callout-warning .callout-icon{color:var(--amber-mid)}
+.callout-important .callout-icon{color:var(--blue-mid)}
+.callout-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:4px}
+.callout-tip .callout-label{color:var(--green)}
+.callout-warning .callout-label{color:var(--amber)}
+.callout-important .callout-label{color:var(--blue)}
+.callout-text{font-size:12.5px;line-height:1.6}
+.callout-tip .callout-text{color:#166534}
+.callout-warning .callout-text{color:#713f12}
+.callout-important .callout-text{color:#1e3a8a}
+
+/* KEY POINTS */
+.keypoints-block{background:var(--purple-bg);border:1px solid #c4b5fd;border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:14px}
+.kp-title{font-size:12px;font-weight:600;color:var(--purple);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.kp-list{display:flex;flex-direction:column;gap:7px}
+.kp-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#4c1d95;line-height:1.45}
+.kp-bullet{width:18px;height:18px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.kp-bullet i{font-size:9px;color:#fff}
+
+/* QUIZ */
+.quiz-block{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.quiz-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.quiz-badge{background:#7c3aed;color:#fff;font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:4px;font-weight:500}
+.quiz-q{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:14px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--radius-md);border:1.5px solid var(--border);cursor:pointer;transition:all .18s;background:var(--bg)}
+.quiz-opt:hover{border-color:var(--border2);background:var(--bg2)}
+.quiz-opt.selected{border-color:var(--blue-mid);background:var(--blue-light)}
+.quiz-opt.correct{border-color:var(--green-mid);background:var(--green-light)}
+.quiz-opt.wrong{border-color:var(--red-mid);background:var(--red-light)}
+.opt-letter{width:26px;height:26px;border-radius:7px;background:var(--white);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text2);flex-shrink:0;transition:all .18s}
+.quiz-opt.correct .opt-letter{background:var(--green-mid);border-color:var(--green-mid);color:#fff}
+.quiz-opt.wrong .opt-letter{background:var(--red-mid);border-color:var(--red-mid);color:#fff}
+.quiz-opt.selected .opt-letter{background:var(--blue-mid);border-color:var(--blue-mid);color:#fff}
+.opt-text{font-size:13px;color:var(--text2);line-height:1.4}
+.quiz-explanation{background:var(--green-bg);border:1px solid #86efac;border-radius:var(--radius-md);padding:12px 14px;font-size:12.5px;color:var(--green);line-height:1.6;display:none}
+.quiz-explanation.show{display:block}
+.quiz-submit{padding:9px 18px;border-radius:var(--radius-md);background:var(--green-mid);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s}
+.quiz-submit:hover{background:var(--green);transform:translateY(-1px)}
+
+/* TASK CARDS */
+.task-hero{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;border:1px solid #fde68a;box-shadow:var(--shadow)}
+.task-hero-top{background:linear-gradient(135deg,#1a1916,#292524);padding:22px 24px;position:relative;overflow:hidden}
+.task-hero-top::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(217,119,6,.2),transparent 70%)}
+.task-day-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(217,119,6,.2);border:1px solid rgba(217,119,6,.4);border-radius:100px;padding:4px 11px;font-size:10px;font-family:'DM Mono',monospace;color:#fbbf24;margin-bottom:10px}
+.task-title-big{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-.4px;margin-bottom:6px}
+.task-title-big em{color:#34d399;font-style:italic}
+.task-desc{font-size:13px;color:#a8a29e;line-height:1.65;max-width:600px}
+.task-hero-stats{display:flex;gap:20px;margin-top:14px}
+.th-stat{display:flex;align-items:center;gap:6px;font-size:11.5px;font-family:'DM Mono',monospace;color:#a8a29e}
+.th-stat i{color:#34d399;font-size:11px}
+.task-hero-body{background:var(--amber-bg);padding:18px 22px;border-top:1px solid #fde68a}
+
+/* DIFFICULTY TABS */
+.diff-tabs{display:flex;gap:7px;margin-bottom:14px}
+.diff-tab{padding:8px 16px;border-radius:var(--radius-md);font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);transition:all .15s}
+.diff-tab:hover{background:var(--bg2);color:var(--text2)}
+.diff-tab.active{background:var(--green-mid);border-color:var(--green-mid);color:#fff}
+
+/* DIFF CONTENT */
+.diff-content{display:none}.diff-content.active{display:block}
+.req-box{border-radius:0;padding:14px 16px;margin-bottom:14px;border-left:3px solid}
+.req-box-beg{background:#f0fdf4;border-color:#16a34a}
+.req-box-int{background:#fffbeb;border-color:#d97706}
+.req-box-adv{background:#fef2f2;border-color:#dc2626}
+.req-title{font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.req-box-beg .req-title{color:var(--green)}
+.req-box-int .req-title{color:var(--amber)}
+.req-box-adv .req-title{color:var(--red)}
+.req-list{display:flex;flex-direction:column;gap:7px}
+.req-item{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;line-height:1.45}
+.req-box-beg .req-item{color:#166534}
+.req-box-int .req-item{color:#713f12}
+.req-box-adv .req-item{color:#991b1b}
+.req-item::before{content:"→";font-weight:700;flex-shrink:0;font-size:11px;margin-top:1px}
+
+/* DATASET CARD */
+.dataset-card{background:var(--blue-bg);border:1px solid #93c5fd;border-radius:var(--radius-md);padding:14px 16px;margin-bottom:14px}
+.ds-title{font-size:12px;font-weight:600;color:var(--blue);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ds-cols{display:flex;flex-direction:column;gap:5px}
+.ds-col{font-size:12px;color:var(--blue);display:flex;gap:8px}
+.ds-col-name{font-family:'DM Mono',monospace;font-weight:600;min-width:150px}
+
+/* TAGS */
+.tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{display:inline-flex;align-items:center;padding:3px 9px;border-radius:var(--radius-sm);font-size:11px;font-weight:500;font-family:'DM Mono',monospace;background:var(--bg);color:var(--text2);border:1px solid var(--border)}
+
+/* SUBMIT BOX */
+.submit-box{background:var(--bg);border:1.5px dashed var(--border2);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:14px}
+.submit-lbl{font-size:10.5px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;font-weight:500}
+.input-row{display:flex;gap:8px}
+.text-input{flex:1;padding:9px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);font-family:'DM Mono',monospace;font-size:12px;color:var(--text);outline:none;transition:border-color .15s;min-width:0}
+.text-input:focus{border-color:var(--green-mid);box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+.text-input::placeholder{color:var(--muted2)}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:var(--radius-md);font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--green-mid);color:#fff;border-color:var(--green-mid)}
+.btn-primary:hover{background:var(--green);transform:translateY(-1px);box-shadow:0 4px 12px rgba(22,163,74,.25)}
+.btn-ghost{background:var(--white);color:var(--text2);border-color:var(--border)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:6px 11px;font-size:12px;gap:4px}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--radius-md);background:var(--bg);border:1px solid var(--border);cursor:pointer;transition:all .15s}
+.check-item:hover{border-color:var(--border2);background:var(--bg2)}
+.check-item.checked{background:var(--green-bg);border-color:#86efac}
+.check-box{width:20px;height:20px;border-radius:5px;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;background:var(--white)}
+.check-item.checked .check-box{background:var(--green-mid);border-color:var(--green-mid)}
+.check-box i{font-size:10px;color:#fff;opacity:0;transition:opacity .15s}
+.check-item.checked .check-box i{opacity:1}
+.check-text{font-size:12.5px;color:var(--text2)}
+.check-item.checked .check-text{color:var(--green);text-decoration:line-through;text-decoration-color:#86efac}
+
+/* SCORING */
+.scoring-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.score-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:13px 14px;text-align:center}
+.score-val{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);line-height:1}
+.score-max{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.score-lbl{font-size:11px;color:var(--text2);margin-top:4px;font-weight:500}
+.score-item.pass-score{background:var(--green-bg);border-color:#86efac}
+.score-item.pass-score .score-val{color:var(--green)}
+
+/* COMPLETION BAR */
+.completion-bar{background:var(--green-bg);border:1px solid #86efac;border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.comp-icon{width:40px;height:40px;border-radius:10px;background:var(--green-mid);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0}
+.comp-title{font-size:13.5px;font-weight:600;color:var(--green);margin-bottom:3px}
+.comp-desc{font-size:12px;color:#166534}
+.comp-pct{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--green-mid);margin-left:auto;flex-shrink:0}
+
+/* RESOURCES MINI */
+.res-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:all .15s;margin-bottom:7px}
+.res-item:last-child{margin-bottom:0}
+.res-item:hover{background:var(--white);border-color:var(--border2);box-shadow:var(--shadow-sm)}
+.res-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.res-name{font-size:12.5px;font-weight:600;color:var(--text)}
+.res-meta{font-size:10.5px;color:var(--muted);margin-top:1px}
+.res-arr{margin-left:auto;color:var(--muted2);font-size:12px}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:#1a1916;color:#fff;padding:11px 16px;border-radius:var(--radius-lg);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none;z-index:999;display:flex;align-items:center;gap:8px;max-width:300px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast i{color:#4ade80}
+
+/* COMPLETE BTN */
+.complete-btn{width:100%;padding:12px;border-radius:var(--radius-lg);background:var(--green-mid);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s}
+.complete-btn:hover{background:var(--green);transform:translateY(-1px);box-shadow:0 6px 18px rgba(22,163,74,.3)}
+.complete-btn.done{background:var(--bg);color:var(--green);border:2px solid #86efac}
+
+/* FADE IN */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .35s ease both}
+.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}.d5{animation-delay:.2s}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="logo-word">Career<span>Wizard</span> AI</div>
+      <div class="logo-tag"><i class="fa-solid fa-bolt" style="font-size:9px"></i>AI/ML Internship</div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-lbl">Navigation</div>
+      <div class="s-item" onclick="toast('Dashboard coming soon!')"><i class="fa-solid fa-gauge-high"></i>Dashboard</div>
+      <div class="s-item active" id="nav-intern"><i class="fa-solid fa-certificate"></i>My Internship</div>
+      <div class="s-item" onclick="toast('Jobs unlocked after completion!')"><i class="fa-solid fa-briefcase"></i>Job Matches</div>
+      <div class="s-lbl">Prepare</div>
+      <div class="s-item" onclick="toast('Interview prep module!')"><i class="fa-solid fa-microphone"></i>Interview Prep</div>
+      <div class="s-item" onclick="toast('Mock tests module!')"><i class="fa-solid fa-clipboard-check"></i>Mock Tests</div>
+      <div class="s-lbl">Account</div>
+      <div class="s-item" onclick="toast('Certificates module!')"><i class="fa-solid fa-award"></i>Certificates</div>
+      <div class="s-item" onclick="toast('Settings page!')"><i class="fa-solid fa-gear"></i>Settings</div>
+    </nav>
+    <div class="s-bottom">
+      <div class="user-row">
+        <div class="u-av">H</div>
+        <div>
+          <div class="u-name">Het Panchal</div>
+          <div class="u-plan">Pro · AI/ML Track</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="tb-left">
+        <div class="bc">Internship / <span id="page-title">Day 1 — Learning</span></div>
+      </div>
+      <div class="tb-right">
+        <div class="chip chip-green"><div class="pdot"></div><span id="status-txt">Active · Day 1 of 15</span></div>
+        <div class="icon-btn" onclick="toast('No new notifications')"><i class="fa-solid fa-bell"></i><div class="nb"></div></div>
+        <div class="icon-btn" onclick="toast('Help center!')"><i class="fa-solid fa-circle-question"></i></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- DAY NAVIGATOR -->
+      <div class="day-nav fade">
+        <div class="day-nav-top">
+          <div class="track-info">
+            <div class="track-name-big">AI/ML <em>Internship</em></div>
+            <div class="track-sub">15-Day Track · ₹399 Plan · Intermediate Level</div>
+          </div>
+          <div class="day-chips">
+            <span class="chip chip-green" style="font-size:10px"><i class="fa-solid fa-code" style="font-size:9px"></i>AI/ML Engineering</span>
+            <span class="chip" style="background:var(--blue-bg);color:var(--blue);border-color:#93c5fd;font-size:10px">Phase 1: Foundation</span>
+          </div>
+        </div>
+        <div class="prog-row">
+          <span class="prog-lbl">Progress</span>
+          <span class="prog-val" id="prog-txt">1 / 15 days — 7%</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:7%"></div></div>
+        <div class="day-nodes" id="day-nodes"></div>
+        <div class="phase-lbrow" style="margin-top:6px;display:flex;gap:0">
+          <span class="ph-lbl cur" style="min-width:172px">Phase 1: Foundation ◀&nbsp;</span>
+          <span style="width:16px"></span>
+          <span class="ph-lbl" style="min-width:172px">Phase 2: Build &nbsp;</span>
+          <span style="width:16px"></span>
+          <span class="ph-lbl">Phase 3: Deploy</span>
+        </div>
+      </div>
+
+      <!-- SCREEN: DAY 1 (LEARNING) -->
+      <div class="screen active" id="screen-day1">
+
+        <!-- Hero -->
+        <div class="hero-banner hero-learn fade d1">
+          <div class="hero-top">
+            <div class="hero-emoji">🤖</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span class="chip" style="background:var(--blue-light);color:var(--blue);border-color:#93c5fd;font-size:10px">Day 1</span>
+                <span class="chip chip-green" style="font-size:10px">Learning Day</span>
+                <span class="chip" style="background:var(--bg);color:var(--muted);border-color:var(--border);font-size:10px"><i class="fa-regular fa-clock" style="font-size:9px"></i> 75 min</span>
+              </div>
+              <div class="hero-head">What is Machine Learning?</div>
+              <div class="hero-sub">Understand ML fundamentals, its 3 types, real-world applications, and set up your Python environment for the internship.</div>
+            </div>
+          </div>
+          <div class="wyl-list">
+            <div class="wyl-lbl"><i class="fa-solid fa-graduation-cap" style="margin-right:4px"></i>What you will learn today</div>
+            <div class="wyl-items">
+              <div class="wyl-item"><i class="fa-solid fa-check"></i>What ML is and why it matters in 2025</div>
+              <div class="wyl-item"><i class="fa-solid fa-check"></i>3 types: Supervised, Unsupervised, Reinforcement</div>
+              <div class="wyl-item"><i class="fa-solid fa-check"></i>Real-world ML apps you use daily</div>
+              <div class="wyl-item"><i class="fa-solid fa-check"></i>Setup Python + Jupyter environment</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 1: Concept -->
+        <div class="card fade d2">
+          <div class="sec-lbl">📖 Core Concept</div>
+          <div class="concept-block">
+            <div class="concept-head">ML kya hota hai?</div>
+            <div class="concept-body">Machine Learning ek AI ka part hai jisme computer data se khud seekhta hai bina explicitly program kiye. Traditional programming mein aap rules likhte the — ML mein aap data dete ho aur machine khud rules discover karti hai.<br><br>
+            <strong>Simple example:</strong> Spam filter — aapne manually rules nahi likhe "agar email mein 'lottery' hai toh spam hai." Aapne 10,000 spam emails dikhaye aur model ne khud patterns seekhe.</div>
+          </div>
+
+          <div class="analogy-block">
+            <div class="analogy-icon">🍕</div>
+            <div>
+              <div class="analogy-title">Simple Analogy</div>
+              <div class="analogy-text">Bacche ko pizza pehchanna sikhana — 1000 pizza photos aur 1000 non-pizza photos dikhao. Baccha patterns seekh leta hai (round, cheesy, toppings) bina koi rule bataye. Yahi ML karta hai, but millions of examples ke saath.</div>
+            </div>
+          </div>
+
+          <!-- Image: ML Types -->
+          <div class="img-block">
+            <div class="img-placeholder">
+              <i class="fa-solid fa-diagram-project"></i>
+              <span>ml-types-diagram.png — 3 Types of ML flowchart</span>
+              <span style="font-size:10px;color:var(--muted2)">Upload: r2.careerwizard.ai/aiml/day1/ml-types-diagram.png</span>
+            </div>
+            <div class="img-caption">3 Types of Machine Learning — Supervised, Unsupervised aur Reinforcement ka comparison</div>
+          </div>
+
+          <div class="concept-block" style="border-color:var(--green-mid)">
+            <div class="concept-head">3 Types of ML — Ek Ek Samjho</div>
+            <div class="concept-body">
+              <strong>1. Supervised Learning</strong> — Labelled data dete ho. Model input → output mapping seekhta hai. Example: House price prediction, spam detection, image classification.<br><br>
+              <strong>2. Unsupervised Learning</strong> — Unlabelled data. Model khud groups/patterns dhundta hai. Example: Customer segmentation, anomaly detection, topic modeling.<br><br>
+              <strong>3. Reinforcement Learning</strong> — Agent environment mein actions leta hai, reward/penalty milta hai. Model maximize reward seekhta hai. Example: Chess AI, game bots, robot control.
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Videos -->
+        <div class="card fade d3">
+          <div class="sec-lbl">🎥 Video Resources</div>
+
+          <div class="video-block">
+            <div class="video-thumb" onclick="toast('YouTube pe open ho raha hai: Machine Learning in 100 Seconds')">
+              <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+              <div class="video-dur-badge">1:42</div>
+            </div>
+            <div class="video-info">
+              <div class="yt-icon"><i class="fa-brands fa-youtube"></i></div>
+              <div>
+                <div class="video-title">Machine Learning in 100 Seconds — Fireship</div>
+                <div class="video-meta">YouTube · 2 min · Quick overview</div>
+              </div>
+              <div class="video-required">
+                <span class="chip chip-green" style="font-size:10px">Required</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="video-block">
+            <div class="video-thumb" onclick="toast('YouTube pe open ho raha hai: 3Blue1Brown Neural Networks')">
+              <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+              <div class="video-dur-badge">19:13</div>
+            </div>
+            <div class="video-info">
+              <div class="yt-icon"><i class="fa-brands fa-youtube"></i></div>
+              <div>
+                <div class="video-title">Neural Networks from Scratch — 3Blue1Brown</div>
+                <div class="video-meta">YouTube · 19 min · Deep dive (optional)</div>
+              </div>
+              <div class="video-required">
+                <span class="chip" style="background:var(--bg);color:var(--muted);border-color:var(--border);font-size:10px">Optional</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Code -->
+        <div class="card fade d4">
+          <div class="sec-lbl">💻 Hands-On — Environment Setup</div>
+          <div class="callout callout-important">
+            <i class="fa-solid fa-circle-info callout-icon"></i>
+            <div>
+              <div class="callout-label">Before You Code</div>
+              <div class="callout-text">Python 3.9+ installed hona chahiye. Check karo: <code style="background:rgba(37,99,235,.1);padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px">python --version</code> terminal mein. Agar nahi hai toh python.org se install karo pehle.</div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-lang-badge">
+                <span class="lang-dot ld-red"></span>
+                <span class="lang-dot ld-yellow"></span>
+                <span class="lang-dot ld-green"></span>
+                <span class="code-lang-name">python</span>
+              </div>
+              <span class="code-title-text">Step 1 — Library Installation</span>
+              <button class="copy-btn" onclick="copyCode(this,'pip install numpy pandas matplotlib scikit-learn jupyter')"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <div class="code-body"><pre><span class="cm"># Terminal mein run karo (not in Python file)</span>
+<span class="fn">pip</span> install numpy pandas matplotlib scikit-learn jupyter
+
+<span class="cm"># Verify installation</span>
+<span class="fn">pip</span> list | <span class="fn">grep</span> -E <span class="str">"numpy|pandas|matplotlib|scikit"</span></pre></div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-lang-badge">
+                <span class="lang-dot ld-red"></span>
+                <span class="lang-dot ld-yellow"></span>
+                <span class="lang-dot ld-green"></span>
+                <span class="code-lang-name">python</span>
+              </div>
+              <span class="code-title-text">Step 2 — Test Setup in Jupyter</span>
+              <button class="copy-btn" onclick="copyCode(this,'import numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\nprint(\"All libraries loaded!\")')"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <div class="code-body"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn <span class="kw">import</span> datasets
+
+<span class="cm"># Test karo</span>
+<span class="fn">print</span>(<span class="str">"NumPy version:"</span>, np.__version__)
+<span class="fn">print</span>(<span class="str">"Pandas version:"</span>, pd.__version__)
+<span class="fn">print</span>(<span class="str">"✅ Setup complete! Ready for Day 2."</span>)
+
+<span class="cm"># Jupyter start karo</span>
+<span class="cm"># Terminal mein: jupyter notebook</span></pre></div>
+          </div>
+
+          <!-- Jupyter screenshot placeholder -->
+          <div class="img-block">
+            <div class="img-placeholder" style="height:150px">
+              <i class="fa-solid fa-window-maximize"></i>
+              <span>jupyter-interface-screenshot.png</span>
+              <span style="font-size:10px;color:var(--muted2)">Upload: r2.careerwizard.ai/aiml/day1/jupyter-screenshot.png</span>
+            </div>
+            <div class="img-caption">Jupyter Notebook interface — yahan aapka saara ML code chalega is internship mein</div>
+          </div>
+
+          <div class="callout callout-tip">
+            <i class="fa-solid fa-lightbulb callout-icon"></i>
+            <div>
+              <div class="callout-label">Pro Tip</div>
+              <div class="callout-text">NumPy aur Pandas — yeh 2 libraries practically har ML project mein use hoti hain. Aaj setup ke baad Day 2 mein inhe properly seekhenge. Aaj ka goal sirf: environment ready karo.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Points -->
+        <div class="card fade d5">
+          <div class="sec-lbl">⚡ Key Takeaways — Day 1</div>
+          <div class="keypoints-block">
+            <div class="kp-title"><i class="fa-solid fa-key"></i>Remember These</div>
+            <div class="kp-list">
+              <div class="kp-item"><div class="kp-bullet"><i class="fa-solid fa-check"></i></div>ML = data se patterns seekhna, explicit rules nahi likhne</div>
+              <div class="kp-item"><div class="kp-bullet"><i class="fa-solid fa-check"></i></div>Supervised: labelled data → predict output</div>
+              <div class="kp-item"><div class="kp-bullet"><i class="fa-solid fa-check"></i></div>Unsupervised: unlabelled data → find patterns</div>
+              <div class="kp-item"><div class="kp-bullet"><i class="fa-solid fa-check"></i></div>Reinforcement: reward/penalty se seekhna</div>
+              <div class="kp-item"><div class="kp-bullet"><i class="fa-solid fa-check"></i></div>Python + Jupyter = industry standard ML setup</div>
+            </div>
+          </div>
+
+          <!-- Mini Quiz -->
+          <div class="quiz-block" id="quiz-day1">
+            <div class="quiz-header">
+              <span class="quiz-badge">📝 Mini Quiz</span>
+              <span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">Day 1 Checkpoint</span>
+            </div>
+            <div class="quiz-q">Supervised Learning mein kya hota hai?</div>
+            <div class="quiz-options" id="opts-day1">
+              <div class="quiz-opt" onclick="selectOpt(this,'A','day1')"><div class="opt-letter">A</div><div class="opt-text">Data mein koi labels nahi hote, model khud groups dhundta hai</div></div>
+              <div class="quiz-opt" onclick="selectOpt(this,'B','day1')"><div class="opt-letter">B</div><div class="opt-text">Model labelled examples se input-output mapping seekhta hai</div></div>
+              <div class="quiz-opt" onclick="selectOpt(this,'C','day1')"><div class="opt-letter">C</div><div class="opt-text">Model environment mein actions lekar reward se seekhta hai</div></div>
+              <div class="quiz-opt" onclick="selectOpt(this,'D','day1')"><div class="opt-letter">D</div><div class="opt-text">Koi bhi data ki zarurat nahi hoti model train karne ke liye</div></div>
+            </div>
+            <div id="exp-day1" class="quiz-explanation"><i class="fa-solid fa-check-circle" style="margin-right:6px;color:var(--green-mid)"></i><strong>Correct!</strong> Supervised Learning = labelled data. Jaise spam/not-spam emails — model ne examples dekhe aur seekha ki spam kaise pehchante hain. Unsupervised mein labels nahi hote.</div>
+            <button class="quiz-submit" onclick="submitQuiz('day1','B')"><i class="fa-solid fa-paper-plane"></i> Submit Answer</button>
+          </div>
+
+          <!-- Completion -->
+          <div id="comp-day1" class="completion-bar" style="display:none">
+            <div class="comp-icon"><i class="fa-solid fa-trophy"></i></div>
+            <div>
+              <div class="comp-title">Day 1 Complete! 🎉</div>
+              <div class="comp-desc">Quiz passed · Environment setup done · Ready for Day 2 — NumPy & Pandas</div>
+            </div>
+            <div class="comp-pct">100%</div>
+          </div>
+
+          <button class="complete-btn" id="btn-day1" onclick="completeDay(1)">
+            <i class="fa-solid fa-check-circle"></i> Mark Day 1 as Complete
+          </button>
+        </div>
+
+      </div>
+      <!-- /screen-day1 -->
+
+      <!-- SCREEN: DAY 5 (TASK) -->
+      <div class="screen" id="screen-day5">
+
+        <!-- Task Hero -->
+        <div class="task-hero fade d1">
+          <div class="task-hero-top">
+            <div class="task-day-badge"><i class="fa-solid fa-bolt" style="font-size:9px"></i>Task Day · Day 5 of 15</div>
+            <div class="task-title-big">Task 1 — <em>House Price Predictor</em></div>
+            <div class="task-desc">Apply everything from Day 1–4: NumPy, Pandas, Matplotlib, Seaborn, aur Scikit-Learn. Ek complete ML project banao — data load se le kar model evaluation tak. GitHub pe submit karo.</div>
+            <div class="task-hero-stats">
+              <div class="th-stat"><i class="fa-solid fa-clock"></i>Estimated: 3–4 hours</div>
+              <div class="th-stat"><i class="fa-solid fa-calendar"></i>Due: 11:59 PM Today</div>
+              <div class="th-stat"><i class="fa-solid fa-rotate"></i>Max 2 attempts</div>
+              <div class="th-stat"><i class="fa-solid fa-trophy"></i>Pass score: 60/100</div>
+            </div>
+          </div>
+          <div class="task-hero-body">
+            <div style="font-size:11px;color:var(--amber);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;font-weight:600"><i class="fa-solid fa-book-open" style="margin-right:5px"></i>Pre-Task Reminder</div>
+            <div style="font-size:12.5px;color:var(--amber);line-height:1.6">Day 1–4 mein jo seekha — NumPy, Pandas, Matplotlib/Seaborn, Scikit-Learn pipeline — aaj sab ek saath use hoga. Koi concept bhool gaye? Upar wale din ka content dobara dekh lo <strong>pehle task shuru karne se.</strong></div>
+          </div>
+        </div>
+
+        <!-- Difficulty + Requirements -->
+        <div class="card fade d2">
+          <div class="card-title"><i class="fa-solid fa-sliders"></i>Choose Your Difficulty Level</div>
+          <div class="diff-tabs" id="diff-tabs">
+            <div class="diff-tab" onclick="setDiff(this,'beg')">🟢 Beginner</div>
+            <div class="diff-tab active" onclick="setDiff(this,'int')">🟡 Intermediate</div>
+            <div class="diff-tab" onclick="setDiff(this,'adv')">🔴 Advanced</div>
+          </div>
+
+          <!-- Beginner -->
+          <div class="diff-content" id="diff-beg">
+            <div class="req-box req-box-beg">
+              <div class="req-title">🟢 Beginner Requirements</div>
+              <div class="req-list">
+                <div class="req-item">pandas se CSV file load karo aur explore karo</div>
+                <div class="req-item">df.head(), df.info(), df.describe() run karo</div>
+                <div class="req-item">matplotlib se minimum 2 charts banao (line + bar)</div>
+                <div class="req-item">LinearRegression model train karo</div>
+                <div class="req-item">R2 score aur MSE print karo</div>
+                <div class="req-item">README.md mein project explain karo</div>
+              </div>
+            </div>
+            <div class="tags-row">
+              <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Matplotlib</span><span class="tag">Scikit-Learn</span>
+            </div>
+          </div>
+
+          <!-- Intermediate (default) -->
+          <div class="diff-content active" id="diff-int">
+            <div class="req-box req-box-int">
+              <div class="req-title">🟡 Intermediate Requirements</div>
+              <div class="req-list">
+                <div class="req-item">Kaggle House Prices dataset use karo (link neeche)</div>
+                <div class="req-item">Missing values handle karo (imputation strategy explain karo)</div>
+                <div class="req-item">Seaborn correlation heatmap banao — top features identify karo</div>
+                <div class="req-item">LinearRegression aur Ridge Regression compare karo</div>
+                <div class="req-item">Cross-validation (k=5) se model validate karo</div>
+                <div class="req-item">Feature importance plot banao</div>
+                <div class="req-item">Jupyter notebook properly documented ho — Markdown cells</div>
+              </div>
+            </div>
+            <div class="tags-row">
+              <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Seaborn</span><span class="tag">Scikit-Learn</span><span class="tag">Jupyter</span><span class="tag">Cross-Validation</span>
+            </div>
+          </div>
+
+          <!-- Advanced -->
+          <div class="diff-content" id="diff-adv">
+            <div class="req-box req-box-adv">
+              <div class="req-title">🔴 Advanced Requirements</div>
+              <div class="req-list">
+                <div class="req-item">4 models compare karo: LinearRegression, Ridge, Lasso, RandomForest</div>
+                <div class="req-item">GridSearchCV se hyperparameter tuning karo</div>
+                <div class="req-item">sklearn Pipeline use karo (preprocessing + model together)</div>
+                <div class="req-item">Model joblib se save karo aur load back karo</div>
+                <div class="req-item">Simple Streamlit UI banao — user input le ke price predict kare</div>
+                <div class="req-item">Streamlit Cloud pe deploy karo (free) — live URL submit karo</div>
+              </div>
+            </div>
+            <div class="tags-row">
+              <span class="tag">Python</span><span class="tag">Sklearn Pipeline</span><span class="tag">GridSearchCV</span><span class="tag">Streamlit</span><span class="tag">Joblib</span><span class="tag">Deploy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dataset + Resources -->
+        <div class="grid-2" style="margin-bottom:14px">
+          <div class="card fade d3" style="margin-bottom:0">
+            <div class="card-title"><i class="fa-solid fa-database"></i>Dataset</div>
+            <div class="dataset-card">
+              <div class="ds-title"><i class="fa-solid fa-table"></i>House Prices Dataset</div>
+              <div class="ds-cols">
+                <div class="ds-col"><span class="ds-col-name">GrLivArea</span><span>Living area in sqft</span></div>
+                <div class="ds-col"><span class="ds-col-name">BedroomAbvGr</span><span>Bedroom count</span></div>
+                <div class="ds-col"><span class="ds-col-name">FullBath</span><span>Full bathrooms</span></div>
+                <div class="ds-col"><span class="ds-col-name">YearBuilt</span><span>Construction year</span></div>
+                <div class="ds-col"><span class="ds-col-name">SalePrice</span><span style="color:var(--green);font-weight:600">Target variable</span></div>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm btn-full" onclick="toast('Kaggle dataset page open ho raha hai...')"><i class="fa-brands fa-kaggle"></i> Download from Kaggle</button>
+          </div>
+
+          <div class="card fade d3" style="margin-bottom:0">
+            <div class="card-title"><i class="fa-solid fa-book-open"></i>Task Resources</div>
+            <div class="res-item" onclick="toast('YouTube video open ho raha hai...')">
+              <div class="res-ic" style="background:var(--red-light)"><i class="fa-brands fa-youtube" style="color:var(--red-mid)"></i></div>
+              <div><div class="res-name">House Price Prediction Tutorial</div><div class="res-meta">YouTube · 25 min · Watch first</div></div>
+              <div class="res-arr"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+            </div>
+            <div class="res-item" onclick="toast('Sklearn docs open ho raha hai...')">
+              <div class="res-ic" style="background:var(--blue-bg)"><i class="fa-solid fa-book" style="color:var(--blue-mid)"></i></div>
+              <div><div class="res-name">Sklearn LinearRegression Docs</div><div class="res-meta">Official · Reference</div></div>
+              <div class="res-arr"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+            </div>
+            <div class="res-item" onclick="toast('GitHub starter template clone ho raha hai...')">
+              <div class="res-ic" style="background:var(--bg)"><i class="fa-brands fa-github" style="color:var(--text2)"></i></div>
+              <div><div class="res-name">Starter Code Template</div><div class="res-meta">GitHub · Clone ready · Boilerplate</div></div>
+              <div class="res-arr"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Starter Code -->
+        <div class="card fade d4">
+          <div class="card-title"><i class="fa-solid fa-code"></i>Starter Code — Yahan Se Shuru Karo</div>
+          <div class="callout callout-tip">
+            <i class="fa-solid fa-lightbulb callout-icon"></i>
+            <div>
+              <div class="callout-label">Pro Tip</div>
+              <div class="callout-text">Pehle poora starter code samjho — phir apna code likhna shuru karo. TODOs ko ek ek complete karo. Random.state=42 hamesha daalo reproducibility ke liye.</div>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-lang-badge">
+                <span class="lang-dot ld-red"></span>
+                <span class="lang-dot ld-yellow"></span>
+                <span class="lang-dot ld-green"></span>
+                <span class="code-lang-name">python</span>
+              </div>
+              <span class="code-title-text">house_price_predictor.py — Starter Template</span>
+              <button class="copy-btn" onclick="toast('Code copied!')"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <div class="code-body"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> r2_score, mean_squared_error
+
+<span class="cm"># ── TODO 1: Load dataset ────────────────────────────</span>
+df = pd.read_csv(<span class="str">'house_prices.csv'</span>)
+
+<span class="cm"># ── TODO 2: Explore data ────────────────────────────</span>
+<span class="fn">print</span>(df.head())
+<span class="fn">print</span>(df.info())
+<span class="fn">print</span>(df.describe())
+
+<span class="cm"># ── TODO 3: Handle missing values ───────────────────</span>
+<span class="fn">print</span>(df.isnull().sum())
+<span class="cm"># df.fillna(...) ya df.dropna()</span>
+
+<span class="cm"># ── TODO 4: Visualize (min 2 charts) ────────────────</span>
+<span class="cm"># Chart 1: SalePrice distribution</span>
+<span class="cm"># Chart 2: Correlation heatmap</span>
+
+<span class="cm"># ── TODO 5: Features aur target alag karo ───────────</span>
+X = df[[<span class="str">'GrLivArea'</span>, <span class="str">'BedroomAbvGr'</span>, <span class="str">'FullBath'</span>, <span class="str">'YearBuilt'</span>]]
+y = df[<span class="str">'SalePrice'</span>]
+
+<span class="cm"># ── TODO 6: Train/Test split ─────────────────────── </span>
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>
+)
+
+<span class="cm"># ── TODO 7: Model train karo ─────────────────────── </span>
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+<span class="cm"># ── TODO 8: Evaluate ─────────────────────────────── </span>
+y_pred = model.predict(X_test)
+<span class="fn">print</span>(<span class="str">f"R2 Score: {r2_score(y_test, y_pred):.3f}"</span>)
+<span class="fn">print</span>(<span class="str">f"RMSE: {np.sqrt(mean_squared_error(y_test, y_pred)):.0f}"</span>)
+
+<span class="cm"># ── TODO 9: Predict a new house ─────────────────────</span>
+new_house = [[<span class="num">2200</span>, <span class="num">3</span>, <span class="num">2</span>, <span class="num">2005</span>]]
+price = model.predict(new_house)
+<span class="fn">print</span>(<span class="str">f"Predicted price: ${price[0]:,.0f}"</span>)</pre></div>
+          </div>
+
+          <div class="callout callout-warning">
+            <i class="fa-solid fa-triangle-exclamation callout-icon"></i>
+            <div>
+              <div class="callout-label">Warning</div>
+              <div class="callout-text">GitHub pe CSV file mat daalo agar badi hai (Kaggle dataset &gt;1MB). .gitignore mein <code style="background:rgba(146,64,14,.1);padding:1px 5px;border-radius:3px;font-family:'DM Mono',monospace;font-size:11px">*.csv</code> add karo. README mein download link do.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Scoring -->
+        <div class="card fade d4">
+          <div class="card-title"><i class="fa-solid fa-robot"></i>AI Scoring Breakdown</div>
+          <div class="scoring-grid">
+            <div class="score-item"><div class="score-val">25<span class="score-max">/25</span></div><div class="score-lbl">Correctness</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Task solve hua?</div></div>
+            <div class="score-item"><div class="score-val">25<span class="score-max">/25</span></div><div class="score-lbl">Approach</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Logic sahi hai?</div></div>
+            <div class="score-item"><div class="score-val">25<span class="score-max">/25</span></div><div class="score-lbl">Code Quality</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Clean + comments</div></div>
+            <div class="score-item pass-score"><div class="score-val" style="color:var(--green)">60<span class="score-max" style="color:var(--green-mid)">/100</span></div><div class="score-lbl" style="color:var(--green)">Pass Score</div><div style="font-size:10px;color:var(--green-mid);margin-top:3px">Minimum required</div></div>
+          </div>
+        </div>
+
+        <!-- Pre-submit Checklist -->
+        <div class="card fade d5">
+          <div class="card-title"><i class="fa-solid fa-list-check"></i>Pre-Submit Checklist</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Submit karne se pehle yeh sab check karo:</div>
+          <div class="checklist" id="checklist">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fa-solid fa-check"></i></div><span class="check-text">GitHub repo public hai (private nahi)</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fa-solid fa-check"></i></div><span class="check-text">README.md hai aur project explain karta hai</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fa-solid fa-check"></i></div><span class="check-text">Jupyter notebook mein sare cells run hue hain</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fa-solid fa-check"></i></div><span class="check-text">R2 score print ho raha hai output mein</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fa-solid fa-check"></i></div><span class="check-text">No API keys ya passwords code mein hain</span></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"><i class="fa-solid fa-check"></i></div><span class="check-text">CSV file .gitignore mein add ki hai</span></div>
+          </div>
+
+          <!-- GitHub Submit -->
+          <div class="submit-box">
+            <div class="submit-lbl"><i class="fa-brands fa-github" style="margin-right:5px"></i>Submit Your GitHub Repository</div>
+            <div class="input-row">
+              <input class="text-input" type="url" id="git-url" placeholder="https://github.com/username/house-price-predictor">
+              <button class="btn btn-primary" onclick="submitTask()"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:14px">
+            <button class="btn btn-ghost btn-sm" onclick="toast('AI Help: Ask anything about today task!')"><i class="fa-solid fa-robot"></i> Ask AI Help</button>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Discussion board open! Other interns ke saath discuss karo.')"><i class="fa-solid fa-comments"></i> Discussion</button>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Rubric: Correctness 25 + Approach 25 + Quality 25 + Docs 25')"><i class="fa-solid fa-list-check"></i> View Rubric</button>
+          </div>
+
+          <div class="callout callout-important">
+            <i class="fa-solid fa-circle-info callout-icon"></i>
+            <div>
+              <div class="callout-label">After Submit</div>
+              <div class="callout-text">AI review 2–5 minutes mein complete hoga. Score aur detailed feedback email pe aayega. Pass (60+) toh Day 6 unlock hoga. Fail toh ek aur attempt milega 48 ghante ke andar.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /screen-day5 -->
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toast-msg"></span></div>
+
+<script>
+// STATE
+var state = { currentDay: 1, completedDays: [], quizAnswers: {} }
+
+// BUILD DAY NODES
+function buildNodes() {
+  var c = document.getElementById('day-nodes')
+  c.innerHTML = ''
+  var config = [
+    {d:1,type:'learn',label:'L'},{d:2,type:'learn',label:'L'},
+    {d:3,type:'learn',label:'L'},{d:4,type:'learn',label:'L'},
+    {d:5,type:'task',label:'T'},
+    'sep',
+    {d:6,type:'learn',label:'L'},{d:7,type:'learn',label:'L'},
+    {d:8,type:'learn',label:'L'},{d:9,type:'learn',label:'L'},
+    {d:10,type:'task',label:'T'},
+    'sep',
+    {d:11,type:'learn',label:'L'},{d:12,type:'learn',label:'L'},
+    {d:13,type:'learn',label:'L'},{d:14,type:'learn',label:'L'},
+    {d:15,type:'task',label:'T'}
+  ]
+  config.forEach(function(item) {
+    if (item === 'sep') {
+      var s = document.createElement('div'); s.className = 'dn-sep'; c.appendChild(s); return
+    }
+    var el = document.createElement('div')
+    var isDone = state.completedDays.indexOf(item.d) > -1
+    var isToday = item.d === state.currentDay
+    var cls = 'dn '
+    if (isDone) cls += (item.type === 'task' ? 'dn-task-done' : 'dn-done')
+    else if (isToday) cls += 'dn-today'
+    else if (item.d < state.currentDay) cls += (item.type === 'task' ? 'dn-task-done' : 'dn-done')
+    else cls += (item.type === 'task' ? 'dn-task' : 'dn-locked')
+    el.className = cls
+    el.innerHTML = item.d + '<div class="dn-tooltip">' + (item.type === 'task' ? '⚡ Task' : '📖 Learn') + ' Day ' + item.d + '</div>'
+    el.onclick = (function(day, type) {
+      return function() {
+        if (day === 1) showDay(1)
+        else if (day === 5) showDay(5)
+        else toast((type === 'task' ? 'Task' : 'Learning') + ' Day ' + day + ' — coming soon!')
+      }
+    })(item.d, item.type)
+    c.appendChild(el)
+  })
+}
+
+function showDay(d) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active') })
+  var el = document.getElementById('screen-day' + d)
+  if (el) el.classList.add('active')
+  state.currentDay = d
+  document.getElementById('page-title').textContent = d === 5 ? 'Day 5 — Task Day 🔥' : 'Day ' + d + ' — Learning'
+  document.getElementById('status-txt').textContent = 'Active · Day ' + d + ' of 15'
+  var pct = Math.round(d / 15 * 100)
+  document.getElementById('prog-fill').style.width = pct + '%'
+  document.getElementById('prog-txt').textContent = d + ' / 15 days — ' + pct + '%'
+  buildNodes()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// QUIZ
+var selected = {}
+function selectOpt(el, letter, qid) {
+  document.querySelectorAll('#opts-' + qid + ' .quiz-opt').forEach(function(o) { o.classList.remove('selected') })
+  el.classList.add('selected')
+  selected[qid] = letter
+}
+
+function submitQuiz(qid, correct) {
+  var ans = selected[qid]
+  if (!ans) { toast('Pehle ek option select karo!'); return }
+  var opts = document.querySelectorAll('#opts-' + qid + ' .quiz-opt')
+  opts.forEach(function(o, i) {
+    var letters = ['A','B','C','D']
+    o.onclick = null
+    if (letters[i] === correct) o.classList.add('correct')
+    else if (letters[i] === ans && ans !== correct) o.classList.add('wrong')
+  })
+  var exp = document.getElementById('exp-' + qid)
+  if (exp) exp.classList.add('show')
+  if (ans === correct) toast('Correct! Well done 🎉')
+  else toast('Galat tha — sahi answer highlight ho gaya')
+}
+
+// DIFF TABS (Day 5)
+function setDiff(el, level) {
+  document.querySelectorAll('.diff-tab').forEach(function(t) { t.classList.remove('active') })
+  el.classList.add('active')
+  document.querySelectorAll('.diff-content').forEach(function(c) { c.classList.remove('active') })
+  var target = document.getElementById('diff-' + level)
+  if (target) target.classList.add('active')
+}
+
+// CHECKLIST
+function toggleCheck(el) {
+  el.classList.toggle('checked')
+}
+
+// COMPLETE DAY
+function completeDay(d) {
+  if (state.completedDays.indexOf(d) === -1) state.completedDays.push(d)
+  var btn = document.getElementById('btn-day' + d)
+  var comp = document.getElementById('comp-day' + d)
+  if (btn) { btn.classList.add('done'); btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Day ' + d + ' Completed!' }
+  if (comp) comp.style.display = 'flex'
+  toast('Day ' + d + ' complete! Day ' + (d+1) + ' unlock ho gaya 🎉')
+  buildNodes()
+}
+
+// SUBMIT TASK
+function submitTask() {
+  var url = document.getElementById('git-url').value.trim()
+  if (!url) { toast('GitHub URL paste karo pehle!'); return }
+  if (!url.startsWith('https://github.com/')) { toast('Valid GitHub URL chahiye — https://github.com/...'); return }
+  toast('Submitted! AI review 2-5 min mein complete hoga 🤖')
+  document.getElementById('git-url').value = ''
+}
+
+// COPY CODE
+function copyCode(btn, text) {
+  navigator.clipboard.writeText(text).then(function() {
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!'
+    setTimeout(function() { btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy' }, 2000)
+  }).catch(function() { toast('Code manually copy karo') })
+}
+
+// TOAST
+var toastTimer
+function toast(msg) {
+  var el = document.getElementById('toast')
+  document.getElementById('toast-msg').textContent = msg
+  el.classList.add('show')
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(function() { el.classList.remove('show') }, 2800)
+}
+
+// INIT
+buildNodes()
+</script>
+</body>
+</html>

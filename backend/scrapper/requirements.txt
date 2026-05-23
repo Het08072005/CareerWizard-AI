@@ -1,0 +1,34 @@
+# Job Scraper — Python Dependencies
+# Python 3.11+ required
+
+# Async HTTP client
+aiohttp==3.9.5
+aiohttp[speedups]
+
+# Sync HTTP (fallback / helper calls)
+requests==2.31.0
+
+# HTML parsing
+beautifulsoup4==4.12.3
+lxml==5.2.1
+
+# JavaScript rendering (Playwright)
+playwright==1.44.0
+
+# Utilities (usually in stdlib, listed for explicitness)
+# asyncio    — stdlib
+# json       — stdlib
+# re         — stdlib
+# hashlib    — stdlib
+# logging    — stdlib
+# dataclasses — stdlib
+# datetime   — stdlib
+# urllib     — stdlib
+# html       — stdlib
+# time       — stdlib
+# random     — stdlib
+
+
+
+
+# pip install playwright beautifulsoup4 lxml aiohttp requests fake-useragent pandas
