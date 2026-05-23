@@ -1,53 +1,49 @@
-
 from typing import List, Optional
-from pydantic import BaseModel, field_validator, computed_field
-
-class InterviewAnswer(BaseModel):
-    explanation: str
-    code: Optional[str] = None
+from pydantic import BaseModel, UUID4
+from datetime import datetime
 
 class InterviewCreate(BaseModel):
-    role: str
-    skills: str
-    category: str
-    title: str
+    domain: str
+    sub_domain: Optional[str] = None
     difficulty: str
-    tags: List[str]
-    answer: InterviewAnswer
+    category: str
+    question_text: str
+    model_answer: Optional[str] = None
+    star_example: Optional[str] = None
+    tags: Optional[List[str]] = None
+    companies: Optional[List[str]] = None
 
 class InterviewResponse(BaseModel):
-    id: int
-    role: str
-    skills: str
-    category: str
-    title: str
+    id: UUID4
+    domain: str
+    sub_domain: Optional[str] = None
     difficulty: str
-    tags: List[str]
-    answer_explanation: str
-    answer_code: Optional[str] = None
+    category: str
+    question_text: str
+    model_answer: Optional[str] = None
+    star_example: Optional[str] = None
+    tags: Optional[List[str]] = None
+    companies: Optional[List[str]] = None
+    is_active: bool
+    created_at: datetime
 
     class Config:
         from_attributes = True
-    
-    @computed_field
-    @property
-    def answer(self) -> InterviewAnswer:
-        """Map answer_explanation and answer_code to answer object"""
-        return InterviewAnswer(explanation=self.answer_explanation, code=self.answer_code)
 
+# Also schema for Interview Progress (User-wise)
+class InterviewProgressUpdate(BaseModel):
+    status: str
+    student_notes: Optional[str] = None
 
+class InterviewProgressResponse(BaseModel):
+    id: UUID4
+    student_id: UUID4
+    question_id: UUID4
+    status: str
+    student_notes: Optional[str] = None
+    ai_answer_generated: bool
+    practiced_count: int
+    last_practiced: Optional[datetime] = None
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    class Config:
+        from_attributes = True

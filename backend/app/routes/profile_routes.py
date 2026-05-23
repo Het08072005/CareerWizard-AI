@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from app.models.user_profile import UserProfile
+from app.models.user_profile import StudentProfile
 from app.schemas.profile_schema import ProfileResponse
 from app.core.auth import get_current_user, get_db
 from app.services.ai_service import improve_text
@@ -17,11 +17,11 @@ router = APIRouter(prefix="/profile", tags=["Profile"])
 @router.get("/", response_model=ProfileResponse)
 def get_profile(current_user=Depends(get_current_user), db: Session = Depends(get_db)):
 
-    profile = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).first()
+    profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
 
     if not profile:
         return {
-            "name": current_user.name,
+            "name": current_user.full_name,
             "email": current_user.email,
             "location": "",
             "bio": "",
@@ -33,7 +33,7 @@ def get_profile(current_user=Depends(get_current_user), db: Session = Depends(ge
         }
 
     return {
-        "name": current_user.name,
+        "name": current_user.full_name,
         "email": current_user.email,
         "location": profile.location,
         "bio": profile.bio,
@@ -61,11 +61,11 @@ def update_profile(
     db: Session = Depends(get_db)
 ):
 
-    profile = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).first()
+    profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
 
     # Create new profile if not exists
     if not profile:
-        profile = UserProfile(user_id=current_user.id)
+        profile = StudentProfile(user_id=current_user.id)
         db.add(profile)
 
     # Update simple fields
@@ -112,7 +112,7 @@ def update_profile(
     return {
         "message": "Profile updated successfully",
         "profile": {
-            "name": current_user.name,
+            "name": current_user.full_name,
             "email": current_user.email,
             "location": profile.location,
             "bio": profile.bio,

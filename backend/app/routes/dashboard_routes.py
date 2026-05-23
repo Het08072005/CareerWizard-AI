@@ -30,7 +30,7 @@ def get_dashboard_stats(current_user=Depends(get_current_user), db: Session = De
     recent = db.query(UserActivity).filter(UserActivity.user_id == current_user.id).order_by(UserActivity.created_at.desc()).limit(5).all()
     
     return {
-        "user_name": current_user.name,
+        "user_name": current_user.full_name,
         "stats": stats,
         "recent_activities": [
             {

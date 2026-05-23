@@ -16,6 +16,7 @@ import JobMatchOutlet from "./components/JobMatchOutlet";
 import SkillGapOutlet from "./components/SkillGapOutlet";
 import InterviewPrepOutlet from "./components/InterviewPrepOutlet";
 import CareerRoadmapOutlet from "./components/CareerRoadmapOutlet";
+import AdminPanelOutlet from "./components/AdminPanelOutlet";
 
 // Internship Portal System
 import InternshipLayout from "./pages/internship/InternshipLayout";
@@ -93,6 +94,9 @@ export default function App() {
             <Route path="resources" element={<InternshipResources />} />
             <Route path="certificates" element={<InternshipCertificates />} />
           </Route>
+
+          {/* ADMIN PANEL */}
+          <Route path="/admin" element={<AdminPanelOutlet />} />
         </Route>
 
         {/* GRACEFUL REDIRECTS FOR ANY PREVIOUS OVERVIEW-INTERNSHIP PATHS */}

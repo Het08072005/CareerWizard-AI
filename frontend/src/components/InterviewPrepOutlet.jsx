@@ -75,7 +75,11 @@ const InterviewPrepOutlet = () => {
                 const data = await fetchQuestions(selectedRole);
                 baseQuestions = (data || []).map(q => ({
                     ...q,
-                    answer: q.answer || { explanation: q.answer_explanation || '', code: q.answer_code || null },
+                    title: q.question_text || q.title || 'Untitled Question',
+                    answer: q.answer || { 
+                        explanation: q.model_answer || q.answer_explanation || '', 
+                        code: q.star_example || q.answer_code || null 
+                    },
                 }));
             } catch (err) {
                 console.error('Error fetching role questions:', err);

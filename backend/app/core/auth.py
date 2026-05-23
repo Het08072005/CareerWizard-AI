@@ -24,7 +24,13 @@ def get_current_user(credentials=Depends(security), db: Session = Depends(get_db
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    user = db.query(User).filter(User.id == user_id).first()
+    import uuid
+    try:
+        uuid_obj = uuid.UUID(str(user_id))
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token format (expected UUID)")
+
+    user = db.query(User).filter(User.id == str(uuid_obj)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -40,8 +46,11 @@ def get_current_user_optional(credentials=Depends(security_optional), db: Sessio
     except JWTError:
         return None
 
-    if not user_id:
+    import uuid
+    try:
+        uuid_obj = uuid.UUID(str(user_id))
+    except ValueError:
         return None
 
-    return db.query(User).filter(User.id == user_id).first()
+    return db.query(User).filter(User.id == str(uuid_obj)).first()
 

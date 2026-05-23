@@ -24,7 +24,8 @@ import {
     ArrowDownTrayIcon,
     CreditCardIcon,
     IdentificationIcon,
-    CheckBadgeIcon
+    CheckBadgeIcon,
+    ShieldCheckIcon
 } from "@heroicons/react/24/outline";
 
 import {
@@ -63,7 +64,7 @@ const Overview = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
-    const [isAdminView, setIsAdminView] = useState(true);
+    const isAdminView = location.pathname === '/admin';
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
     const isInternshipRoute = location.pathname.startsWith('/internship');
@@ -525,21 +526,6 @@ const Overview = () => {
                                             </button>
                                         )}
 
-                                        {/* ADMIN VIEW TOGGLE */}
-                                        {isHome && (
-                                            <button 
-                                                onClick={() => { setIsAdminView(!isAdminView); setIsProfileMenuOpen(false); }}
-                                                className={`w-full flex items-center gap-3 py-2 px-3 text-[11px] font-semibold rounded-xl transition ${
-                                                    isDark 
-                                                        ? 'bg-white/[0.04] text-slate-300 hover:text-white' 
-                                                        : 'bg-slate-100 text-slate-600 hover:text-slate-900'
-                                                }`}
-                                            >
-                                                <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                                                <span>{isAdminView ? 'Exit Admin View' : 'Switch to Admin'}</span>
-                                            </button>
-                                        )}
-
                                         {/* THEME TOGGLE */}
                                         <button
                                             onClick={() => { toggleTheme(); }}
@@ -609,6 +595,27 @@ const Overview = () => {
                                     <Cog6ToothIcon className={`w-3.5 h-3.5 transition-transform duration-500 ${isProfileMenuOpen ? 'rotate-90' : ''}`} strokeWidth={2} />
                                 </button>
                             </div>
+
+                            {/* ADMIN VIEW EXTERNAL BUTTON */}
+                            {(['het', 'Het Panchal'].includes(user?.name) || user?.email === 'het80630@gmail.com') && (
+                                <button
+                                    onClick={() => {
+                                        if (location.pathname === '/admin') {
+                                            navigate('/overview');
+                                        } else {
+                                            navigate('/admin');
+                                        }
+                                    }}
+                                    className={`mt-1 w-full py-2 px-4 rounded-xl flex items-center justify-center gap-2 text-[13px] font-bold transition-all duration-300 ${
+                                        isDark
+                                            ? 'bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20'
+                                            : 'bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-100'
+                                    }`}
+                                >
+                                    <ShieldCheckIcon className="w-4 h-4" strokeWidth={2.5} />
+                                    {location.pathname === '/admin' ? 'Exit Admin View' : 'Switch to Admin View'}
+                                </button>
+                            )}
                         </div>
                     ) : (
                         <div ref={profileMenuRef} className="relative px-3 py-4 flex flex-col items-center justify-center border-t border-slate-500/10">
@@ -648,6 +655,28 @@ const Overview = () => {
                                             >
                                                 <SparklesIcon className="w-3.5 h-3.5 shrink-0" />
                                                 <span>Upgrade Plan</span>
+                                            </button>
+                                        )}
+
+                                        {/* ADMIN VIEW TOGGLE */}
+                                        {(['het', 'Het Panchal'].includes(user?.name) || user?.email === 'het80630@gmail.com') && (
+                                            <button 
+                                                onClick={() => { 
+                                                    if (location.pathname === '/admin') {
+                                                        navigate('/overview');
+                                                    } else {
+                                                        navigate('/admin');
+                                                    }
+                                                    setIsProfileMenuOpen(false); 
+                                                }}
+                                                className={`w-full flex items-center gap-2.5 py-2 px-3 text-[11px] font-semibold rounded-xl transition ${
+                                                    isDark 
+                                                        ? 'hover:bg-white/[0.04] text-slate-300' 
+                                                        : 'hover:bg-slate-100 text-slate-600'
+                                                }`}
+                                            >
+                                                <div className="w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
+                                                <span>{location.pathname === '/admin' ? 'Exit Admin View' : 'Switch to Admin'}</span>
                                             </button>
                                         )}
 
@@ -700,7 +729,7 @@ const Overview = () => {
 
                 {/* CONTENT AREA: FLUSH MOUNTED */}
                 <main ref={scrollRef} className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-hide p-0">
-                    <div className="w-full">
+                    <div className="w-full h-full">
                         <Outlet />
                     </div>
                 </main>

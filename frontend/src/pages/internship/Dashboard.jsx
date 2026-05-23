@@ -23,90 +23,117 @@ export default function InternshipDashboard() {
 
   return (
     <div className="space-y-6 pb-12 font-sans">
-      {/* TOP BANNER / PROGRESS SECTION (Screenshot 2) */}
-      <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] rounded-2xl p-5 sm:p-6 shadow-sm relative overflow-hidden border-t-4 border-t-emerald-600">
-        {/* Top pill tags */}
-        <div className="flex flex-wrap items-center gap-2 mb-5">
-          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200/60 font-mono flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" /> &lt;/&gt; AI / ML Engineering
+      {/* TOP BANNER / PROGRESS SECTION */}
+      <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] rounded-2xl shadow-sm relative overflow-hidden">
+        {/* Pills strip — subtle bg + bottom border */}
+        <div className="flex flex-wrap items-center gap-2 px-5 sm:px-7 py-3 bg-[var(--cw-bg2)]/40 border-b border-[var(--cw-border)]">
+          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 font-mono flex items-center gap-1.5">
+            <i className="fa-solid fa-microchip text-[10px]" /> AI / ML Internship
           </span>
-          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800 border border-blue-200/60 font-mono">
-            Phase 2 — Build &amp; Extend
+          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-600 border border-blue-200 flex items-center gap-1.5">
+            ★ Top 2%
           </span>
-          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[var(--cw-bg2)] text-[var(--cw-muted)] border border-[var(--cw-border)] font-mono">
-            Advanced
+          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-white text-[var(--cw-muted)] border border-[var(--cw-border)] flex items-center gap-1.5">
+            ✦ Top Rated
           </span>
         </div>
 
-        {/* Title & Stats + Progress Ring */}
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
-          <div className="pt-1">
-            <div className="text-2xl sm:text-3xl font-extrabold text-[var(--cw-text)] tracking-tight leading-snug font-sans">
-              Build <span className="italic text-emerald-600">real</span>&nbsp;projects.<br />
-              Earn your certificate.
-            </div>
-          </div>
+        {/* Main body */}
+        <div className="px-5 sm:px-7 pt-4 pb-6">
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
 
-          {/* Progress Ring */}
-          <div className="flex flex-col items-center bg-[var(--cw-bg2)]/60 p-4 rounded-2xl border border-[var(--cw-border)] min-w-[140px]">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" stroke="currentColor" className="text-[var(--cw-border)]" strokeWidth="8" fill="transparent" />
-                <circle cx="50" cy="50" r="40" stroke="currentColor" className="text-emerald-600" strokeWidth="8" fill="transparent"
-                  strokeDasharray="251.2" strokeDashoffset="27.6" strokeLinecap="round" />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xl sm:text-2xl font-bold text-[var(--cw-text)] num-font">89</span>
+            {/* Left: Headline + subtitle */}
+            <div className="flex-1">
+              <div className="text-[22px] sm:text-[26px] font-extrabold text-[var(--cw-text)] tracking-tight leading-snug font-sans">
+                Build Real Projects & Improve your skills.
+              </div>
+              <div className="mt-4 pl-3 border-l-[3px] border-emerald-500">
+                <p className="text-[12px] text-[var(--cw-muted)] font-medium leading-relaxed">
+                  Hands-on projects. Real-world impact.<br />Stand out with verified skills.
+                </p>
               </div>
             </div>
-            <div className="text-[10px] font-mono font-bold tracking-wider text-[var(--cw-muted)] uppercase mt-2">
-              Avg score
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-[var(--cw-muted)] font-mono tracking-wide mt-1 text-center border-t border-[var(--cw-border)] pt-1.5 w-full">
-              Rank <span className="font-bold text-[var(--cw-text)] num-font">#312</span> of 8,420
+
+            {/* Right: Score Card */}
+            <div className="flex-shrink-0 bg-[var(--cw-bg2)]/40 border border-[var(--cw-border)] rounded-2xl px-8 py-5 shadow-sm min-w-[240px]">
+              {/* Header label */}
+              <div className="text-[9px] font-black tracking-[0.22em] text-[var(--cw-muted)] uppercase font-mono mb-4 text-center">
+                Your Score
+              </div>
+              {/* Ring + divider + rank */}
+              <div className="flex items-center justify-center gap-6">
+                {/* Ring */}
+                <div className="relative w-[76px] h-[76px] flex-shrink-0">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" stroke="currentColor" className="text-[var(--cw-border)]" strokeWidth="9" fill="transparent" />
+                    <circle cx="50" cy="50" r="40" stroke="#10b981" strokeWidth="9" fill="transparent"
+                      strokeDasharray="251.3" strokeDashoffset="27.6" strokeLinecap="round" />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-[22px] font-black text-[var(--cw-text)] leading-none num-font">89</span>
+                    <span className="text-[9px] font-semibold text-[var(--cw-muted)] num-font leading-tight">/100</span>
+                  </div>
+                </div>
+
+                {/* Vertical divider */}
+                <div className="w-px h-12 bg-[var(--cw-border)]" />
+
+                {/* Rank */}
+                <div className="flex flex-col items-start gap-0.5">
+                  <div className="text-[9px] font-black tracking-[0.18em] text-[var(--cw-muted)] uppercase font-mono">Rank</div>
+                  <div className="text-[26px] font-black text-[var(--cw-text)] num-font leading-tight">#312</div>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+                    ↑ Top 2%
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Overall progress bar */}
-        <div className="mt-8 pt-6 border-t border-[var(--cw-border)]">
-          <div className="flex justify-between items-center mb-2.5">
-            <span className="text-xs font-bold text-[var(--cw-muted)] uppercase tracking-wider font-mono">Overall progress</span>
-            <span className="text-xs font-bold text-emerald-600 font-mono tracking-wide num-font">6 / 30 days — 20%</span>
-          </div>
-          <div className="w-full bg-[var(--cw-bg2)] h-2 rounded-full overflow-hidden">
-            <div className="h-full bg-emerald-600 rounded-full transition-all duration-500" style={{ width: '20%' }} />
-          </div>
-
-          {/* Timeline Nodes */}
-          <div className="flex items-center gap-1.5 mt-4 overflow-x-auto pb-2 pt-1 scrollbar-none">
-            {[1, 2, 3, 4, 5].map(d => (
-              <div key={d} onClick={() => setSelectedDay(d)} className="flex-shrink-0 w-8 h-8 rounded-xl bg-emerald-100/80 border border-emerald-300 flex items-center justify-center text-[11px] font-bold text-emerald-800 cursor-pointer hover:bg-emerald-200 transition num-font shadow-xs">
-                {d}
-              </div>
-            ))}
-            <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-emerald-600 border border-emerald-700 flex items-center justify-center text-[11px] font-bold text-white cursor-pointer num-font shadow-sm shadow-emerald-600/30 ring-2 ring-emerald-600/20">
-              6
+        {/* Progress bar section */}
+        <div className="px-5 sm:px-7 pb-6 border-t border-[var(--cw-border)]">
+          {/* Overall progress bar */}
+          <div className="mt-5">
+            <div className="flex justify-between items-center mb-2.5">
+              <span className="text-[10px] font-bold text-[var(--cw-muted)] uppercase tracking-[0.13em] font-mono">Overall progress</span>
+              <span className="text-[10px] font-black text-emerald-600 font-mono tracking-wide num-font">6 / 30 days — 20%</span>
             </div>
-            {[7, 8].map(d => (
-              <div key={d} onClick={() => setSelectedDay(d)} className="flex-shrink-0 w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[11px] font-bold text-blue-700 cursor-pointer hover:bg-blue-100 transition num-font">
-                {d}
-              </div>
-            ))}
-            {[9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map(d => (
-              <div key={d} className="flex-shrink-0 w-8 h-8 rounded-xl bg-[var(--cw-bg2)] border border-[var(--cw-border)] flex items-center justify-center text-[11px] font-medium text-[var(--cw-muted)] opacity-50 cursor-not-allowed num-font">
-                {d}
-              </div>
-            ))}
-          </div>
+            <div className="w-full bg-[var(--cw-bg2)] h-[6px] rounded-full overflow-hidden border border-[var(--cw-border)]">
+              <div className="h-full bg-emerald-600 rounded-full transition-all duration-700" style={{ width: '20%' }} />
+            </div>
 
-          {/* Phase labels below timeline */}
-          <div className="flex justify-between items-center mt-2.5 text-[10px] font-mono tracking-wider font-bold text-[var(--cw-muted)] uppercase">
-            <span>PHASE 1: FOUNDATION</span>
-            <span className="text-blue-600 flex items-center gap-1 font-bold tracking-widest">
-              PHASE 2: BUILD <i className="fa-solid fa-caret-left text-xs ml-0.5" /> YOU ARE HERE
-            </span>
-            <span>PHASE 3: DEPLOY</span>
+            {/* Timeline Nodes */}
+            <div className="flex items-center gap-[6px] mt-4 overflow-x-auto pb-2 pt-1 scrollbar-none">
+              {[1, 2, 3, 4, 5].map(d => (
+                <div key={d} onClick={() => setSelectedDay(d)} className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center text-[11px] font-bold text-emerald-800 cursor-pointer hover:bg-emerald-200 transition-colors num-font">
+                  {d}
+                </div>
+              ))}
+              {/* Active day */}
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-600 border-2 border-emerald-700 flex items-center justify-center text-[11px] font-bold text-white cursor-pointer num-font shadow-md shadow-emerald-600/30 ring-2 ring-offset-1 ring-emerald-400/40">
+                6
+              </div>
+              {[7, 8].map(d => (
+                <div key={d} onClick={() => setSelectedDay(d)} className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-[11px] font-bold text-blue-700 cursor-pointer hover:bg-blue-100 transition-colors num-font">
+                  {d}
+                </div>
+              ))}
+              {[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].map(d => (
+                <div key={d} className="flex-shrink-0 w-8 h-8 rounded-lg bg-[var(--cw-bg2)] border border-[var(--cw-border)] flex items-center justify-center text-[11px] font-medium text-[var(--cw-muted)] opacity-40 cursor-not-allowed num-font">
+                  {d}
+                </div>
+              ))}
+            </div>
+
+            {/* Phase labels */}
+            <div className="flex justify-between items-center mt-2.5 text-[9px] font-mono tracking-widest font-bold text-[var(--cw-muted)] uppercase">
+              <span>Phase 1: Foundation</span>
+              <span className="text-blue-600 flex items-center gap-1 font-black">
+                Phase 2: Build <i className="fa-solid fa-caret-left text-[9px]" /> You Are Here
+              </span>
+              <span>Phase 3: Deploy</span>
+            </div>
           </div>
         </div>
       </div>
@@ -192,11 +219,10 @@ export default function InternshipDashboard() {
                 <button
                   key={lvl}
                   onClick={() => setActiveLevel(lvl)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all capitalize flex items-center gap-1.5 ${
-                    activeLevel === lvl 
-                      ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 font-extrabold' 
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all capitalize flex items-center gap-1.5 ${activeLevel === lvl
+                      ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 font-extrabold'
                       : 'text-[var(--cw-muted)] hover:text-[var(--cw-text)]'
-                  }`}
+                    }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${lvl === 'beginner' ? 'bg-emerald-400' : lvl === 'intermediate' ? 'bg-emerald-600' : 'bg-red-500'}`} />
                   {lvl}
@@ -346,16 +372,17 @@ export default function InternshipDashboard() {
       {/* BOTTOM SECTION — SUBMITTED TASKS TABLE (Screenshot 4) */}
       <div className="space-y-3.5 pt-2">
         <div className="text-lg font-bold text-[var(--cw-text)] px-1 tracking-tight">Submitted tasks</div>
-        <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] rounded-2xl p-5 sm:p-6 shadow-sm overflow-x-auto">
+        <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] rounded-2xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[650px]">
             <thead>
-              <tr className="border-b border-[var(--cw-border)] text-[10px] font-mono tracking-wider text-[var(--cw-muted)] uppercase">
-                <th className="pb-3.5 font-bold w-14">DAY</th>
-                <th className="pb-3.5 font-bold">TASK</th>
-                <th className="pb-3.5 font-bold text-center w-28">PHASE</th>
-                <th className="pb-3.5 font-bold text-center w-24">SCORE</th>
-                <th className="pb-3.5 font-bold text-center w-24">RESULT</th>
-                <th className="pb-3.5 font-bold text-right w-20">REVIEW</th>
+              <tr className="border-b border-[var(--cw-border)] text-[10px] font-mono tracking-wider text-[var(--cw-muted)] uppercase bg-[var(--cw-bg2)]/60">
+                <th className="py-3 pl-5 font-bold w-14">DAY</th>
+                <th className="py-3 font-bold">TASK</th>
+                <th className="py-3 font-bold text-center w-28">PHASE</th>
+                <th className="py-3 font-bold text-center w-24">SCORE</th>
+                <th className="py-3 font-bold text-center w-24">RESULT</th>
+                <th className="py-3 font-bold text-right pr-5 w-20">REVIEW</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--cw-border)] text-xs">
@@ -367,7 +394,7 @@ export default function InternshipDashboard() {
                 { day: '05', title: 'Express Middleware + Error Handling', date: 'Yesterday · github.com/het/day5', phase: 'Phase 2', score: 94, isPurple: true }
               ].map((sub, idx) => (
                 <tr key={idx} className="hover:bg-[var(--cw-bg2)]/40 transition group">
-                  <td className="py-3.5 font-bold text-base text-[var(--cw-text)] num-font">{sub.day}</td>
+                  <td className="py-3.5 pl-5 font-bold text-base text-[var(--cw-text)] num-font">{sub.day}</td>
                   <td className="py-3.5">
                     <div className="font-bold text-[var(--cw-text)] text-xs group-hover:text-emerald-600 transition">{sub.title}</div>
                     <div className="text-[11px] text-[var(--cw-muted)] font-mono mt-0.5">{sub.date}</div>
@@ -387,7 +414,7 @@ export default function InternshipDashboard() {
                       PASS
                     </span>
                   </td>
-                  <td className="py-3.5 text-right">
+                  <td className="py-3.5 text-right pr-5">
                     <button onClick={() => alert(`Opening repository and feedback for Day ${sub.day}...`)} className="text-blue-600 group-hover:text-blue-800 font-bold text-xs inline-flex items-center gap-1 transition">
                       View →
                     </button>
@@ -396,6 +423,7 @@ export default function InternshipDashboard() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>

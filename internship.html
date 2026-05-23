@@ -1,0 +1,2013 @@
+cat > /mnt/user-data/outputs/careerwizard-internship.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerWizard AI — Internship Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --bg4: #1c1c28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f5;
+    --text2: #9090a8;
+    --text3: #5a5a72;
+    --accent: #7c6dfa;
+    --accent2: #a599ff;
+    --accent-glow: rgba(124,109,250,0.15);
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.1);
+    --orange: #f97316;
+    --orange-bg: rgba(249,115,22,0.1);
+    --blue: #38bdf8;
+    --blue-bg: rgba(56,189,248,0.1);
+    --red: #f43f5e;
+    --red-bg: rgba(244,63,94,0.1);
+    --yellow: #eab308;
+    --yellow-bg: rgba(234,179,8,0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+
+  /* ── LAYOUT ── */
+  .shell { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+
+  .logo {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-text { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; }
+  .logo-text span { color: var(--accent2); }
+  .plan-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--accent-glow); border: 1px solid var(--accent);
+    color: var(--accent2); font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 20px; margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .nav-section { padding: 12px 0; }
+  .nav-label {
+    font-size: 9px; font-weight: 700; color: var(--text3);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 18px 8px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 18px; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--text2);
+    transition: all 0.15s; border-left: 2px solid transparent;
+  }
+  .nav-item:hover { color: var(--text); background: var(--bg3); }
+  .nav-item.active {
+    color: var(--accent2); background: var(--accent-glow);
+    border-left-color: var(--accent);
+  }
+  .nav-item svg { opacity: 0.7; flex-shrink: 0; }
+  .nav-item.active svg { opacity: 1; }
+
+  .user-card {
+    margin-top: auto;
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #c084fc);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 600; }
+  .user-meta { font-size: 11px; color: var(--text3); }
+  .admin-tag { color: var(--accent2); font-size: 10px; font-weight: 600; }
+
+  /* ── MAIN ── */
+  .main { flex: 1; overflow-y: auto; background: var(--bg); }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 52px;
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text3);
+  }
+  .breadcrumb span { color: var(--text2); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .view-toggle {
+    display: flex; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .view-btn {
+    padding: 6px 14px; font-size: 12px; font-weight: 600;
+    cursor: pointer; color: var(--text3); transition: all 0.15s;
+    border: none; background: none; font-family: 'DM Sans', sans-serif;
+  }
+  .view-btn.active { background: var(--accent); color: white; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text2); transition: all 0.15s;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--border2); }
+
+  /* ── PAGE CONTENT ── */
+  .page { display: none; animation: fadeIn 0.25s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .page-inner { padding: 28px; }
+
+  /* ── PAGE HEADER ── */
+  .page-header { margin-bottom: 24px; }
+  .page-title {
+    font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .page-title-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--accent-glow); border: 1px solid var(--accent);
+    display: flex; align-items: center; justify-content: center; color: var(--accent2);
+  }
+  .page-sub { font-size: 13px; color: var(--text3); margin-top: 4px; }
+
+  /* ── STAT CARDS ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .stat-card.s1::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .stat-card.s2::before { background: linear-gradient(90deg, var(--green), #4ade80); }
+  .stat-card.s3::before { background: linear-gradient(90deg, var(--orange), #fb923c); }
+  .stat-card.s4::before { background: linear-gradient(90deg, var(--blue), #7dd3fc); }
+  .stat-icon { font-size: 20px; margin-bottom: 10px; }
+  .stat-val { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  /* ── GRID 2COL ── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .card-head {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .card-body { padding: 20px; }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--text2); margin-bottom: 6px; letter-spacing: 0.3px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    padding: 10px 14px; transition: all 0.15s; outline: none;
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--text3); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .form-select { cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239090a8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 36px;
+  }
+  .form-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  /* ── STEP WIZARD ── */
+  .step-wizard { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+  .step-item { display: flex; align-items: center; flex: 1; }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    border: 2px solid var(--border);
+    background: var(--bg3); color: var(--text3); transition: all 0.3s;
+  }
+  .step-dot.done { background: var(--green); border-color: var(--green); color: white; }
+  .step-dot.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .step-label { font-size: 11px; color: var(--text3); margin-left: 8px; white-space: nowrap; }
+  .step-label.active { color: var(--accent2); font-weight: 600; }
+  .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 10px; }
+  .step-line.done { background: var(--green); }
+
+  /* ── TYPE SELECTOR ── */
+  .type-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .type-card {
+    background: var(--bg3); border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 18px; cursor: pointer;
+    transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  .type-card:hover { border-color: var(--border2); }
+  .type-card.selected.learning { border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-bg); }
+  .type-card.selected.task { border-color: var(--orange); box-shadow: 0 0 0 4px var(--orange-bg); }
+  .type-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 10px;
+  }
+  .type-icon.learning { background: var(--blue-bg); }
+  .type-icon.task { background: var(--orange-bg); }
+  .type-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .type-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+  .type-check {
+    position: absolute; top: 12px; right: 12px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--green); display: none;
+    align-items: center; justify-content: center; color: white; font-size: 10px;
+  }
+  .type-card.selected .type-check { display: flex; }
+
+  /* ── RESOURCE ROW ── */
+  .resource-list { display: flex; flex-direction: column; gap: 8px; }
+  .resource-row {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 8px 12px;
+  }
+  .resource-type-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .rt-video { background: var(--red-bg); color: var(--red); }
+  .rt-article { background: var(--blue-bg); color: var(--blue); }
+  .rt-doc { background: var(--yellow-bg); color: var(--yellow); }
+  .rt-exercise { background: var(--green-bg); color: var(--green); }
+  .resource-title { flex: 1; font-size: 12px; color: var(--text2); }
+  .resource-del {
+    background: none; border: none; color: var(--text3); cursor: pointer;
+    font-size: 14px; padding: 2px; transition: color 0.15s;
+  }
+  .resource-del:hover { color: var(--red); }
+
+  /* ── CONCEPT TAGS ── */
+  .concept-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .concept-tag {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 10px; font-size: 12px;
+    display: flex; align-items: center; gap: 5px; color: var(--text2);
+  }
+  .concept-tag button {
+    background: none; border: none; cursor: pointer; color: var(--text3);
+    font-size: 13px; line-height: 1; padding: 0;
+  }
+  .concept-tag button:hover { color: var(--red); }
+
+  /* ── TASK LIST ── */
+  .task-list { display: flex; flex-direction: column; gap: 6px; }
+  .task-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s;
+  }
+  .task-row:hover { border-color: var(--border2); background: var(--bg4); }
+  .task-day-badge {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .tdb-learning { background: var(--blue-bg); color: var(--blue); }
+  .tdb-task { background: var(--orange-bg); color: var(--orange); }
+  .task-row-info { flex: 1; min-width: 0; }
+  .task-row-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .task-row-meta { font-size: 11px; color: var(--text3); margin-top: 2px; display: flex; gap: 8px; }
+  .meta-dot { color: var(--text3); }
+  .task-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .action-btn {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--bg4); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text3); transition: all 0.15s; font-size: 12px;
+  }
+  .action-btn.edit:hover { color: var(--accent2); border-color: var(--accent); }
+  .action-btn.del:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+
+  /* ── BTN ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: #6c5ce7; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(124,109,250,0.35); }
+  .btn-outline {
+    background: transparent; color: var(--text2);
+    border-color: var(--border2);
+  }
+  .btn-outline:hover { color: var(--text); border-color: var(--border2); background: var(--bg3); }
+  .btn-ghost { background: transparent; color: var(--text3); border-color: transparent; padding: 8px 12px; }
+  .btn-ghost:hover { color: var(--text); background: var(--bg3); }
+  .btn-sm { padding: 7px 14px; font-size: 12px; }
+  .btn-green { background: var(--green); color: white; border-color: var(--green); }
+  .btn-green:hover { opacity: 0.88; }
+  .btn-block { width: 100%; justify-content: center; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+  /* ── DIFFICULTY BADGE ── */
+  .diff-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .diff-beginner { background: var(--green-bg); color: var(--green); }
+  .diff-intermediate { background: var(--orange-bg); color: var(--orange); }
+  .diff-advanced { background: var(--red-bg); color: var(--red); }
+
+  /* ── TYPE BADGE ── */
+  .type-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .type-badge.learning { background: var(--blue-bg); color: var(--blue); }
+  .type-badge.task { background: var(--orange-bg); color: var(--orange); }
+
+  /* ── DOMAIN FILTER TABS ── */
+  .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .filter-tab {
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border); color: var(--text3);
+    background: var(--bg3); transition: all 0.15s;
+  }
+  .filter-tab:hover { color: var(--text2); border-color: var(--border2); }
+  .filter-tab.active { background: var(--accent-glow); color: var(--accent2); border-color: var(--accent); }
+
+  /* ── PLAN PREVIEW ── */
+  .plan-timeline { position: relative; padding-left: 40px; }
+  .plan-timeline::before {
+    content: ''; position: absolute; left: 14px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--border);
+  }
+  .timeline-item { position: relative; margin-bottom: 12px; }
+  .timeline-dot {
+    position: absolute; left: -33px; top: 10px;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700; border: 2px solid;
+  }
+  .timeline-dot.learning { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+  .timeline-dot.task { background: var(--orange-bg); border-color: var(--orange); color: var(--orange); }
+  .timeline-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    transition: all 0.15s; cursor: pointer;
+  }
+  .timeline-card:hover { border-color: var(--border2); background: var(--bg4); }
+  .tl-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .tl-day { font-size: 10px; font-weight: 700; color: var(--text3); }
+  .tl-title { font-size: 13px; font-weight: 600; flex: 1; }
+  .tl-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+
+  /* ── USER DAY VIEW ── */
+  .day-view-header {
+    background: linear-gradient(135deg, rgba(124,109,250,0.08) 0%, rgba(56,189,248,0.04) 100%);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden;
+  }
+  .day-view-header::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,109,250,0.1), transparent 70%);
+  }
+  .dvh-day { font-size: 12px; font-weight: 600; color: var(--accent2); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .dvh-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .dvh-meta { display: flex; gap: 10px; align-items: center; }
+  .dvh-progress { margin-top: 16px; }
+  .dvh-prog-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .prog-bar { height: 4px; background: var(--bg4); border-radius: 4px; }
+  .prog-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.5s ease; }
+
+  /* ── LEARNING CONTENT ── */
+  .concept-section { margin-bottom: 24px; }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    color: var(--text2);
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .concept-item {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 10px;
+  }
+  .concept-header {
+    padding: 14px 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.15s;
+  }
+  .concept-header:hover { background: var(--bg3); }
+  .concept-header-left { display: flex; align-items: center; gap: 10px; }
+  .concept-num {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--accent-glow); color: var(--accent2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+  }
+  .concept-name { font-size: 14px; font-weight: 600; }
+  .concept-chevron { color: var(--text3); transition: transform 0.2s; font-size: 12px; }
+  .concept-body { padding: 0 16px; max-height: 0; overflow: hidden; transition: all 0.3s; }
+  .concept-body.open { padding: 0 16px 16px; max-height: 600px; }
+  .concept-desc { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+  .usage-box {
+    background: var(--bg3); border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 12px 14px;
+  }
+  .usage-box-label { font-size: 10px; font-weight: 700; color: var(--accent2); letter-spacing: 0.8px; margin-bottom: 6px; text-transform: uppercase; }
+  .usage-box p { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  /* ── RESOURCE GRID ── */
+  .resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .resource-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; transition: all 0.15s; text-decoration: none;
+    color: var(--text);
+  }
+  .resource-card:hover { border-color: var(--border2); background: var(--bg4); }
+  .resource-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .ri-video { background: var(--red-bg); }
+  .ri-article { background: var(--blue-bg); }
+  .ri-doc { background: var(--yellow-bg); }
+  .ri-exercise { background: var(--green-bg); }
+  .resource-card-title { font-size: 12px; font-weight: 600; line-height: 1.4; }
+  .resource-card-type { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+  /* ── TASK DETAIL ── */
+  .task-detail-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .task-detail-head {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(249,115,22,0.06) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .task-detail-body { padding: 24px; }
+  .req-list { display: flex; flex-direction: column; gap: 8px; }
+  .req-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .req-check {
+    width: 18px; height: 18px; border-radius: 4px;
+    background: var(--bg4); border: 1.5px solid var(--border2);
+    flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; font-size: 10px; margin-top: 1px;
+  }
+  .req-check.done { background: var(--green); border-color: var(--green); color: white; }
+  .req-text { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .req-text.done { text-decoration: line-through; color: var(--text3); }
+
+  /* ── SUBMIT ZONE ── */
+  .submit-zone {
+    border: 2px dashed var(--border2); border-radius: var(--radius);
+    padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s;
+    background: var(--bg3);
+  }
+  .submit-zone:hover { border-color: var(--accent); background: var(--accent-glow); }
+  .submit-zone-icon { font-size: 28px; margin-bottom: 8px; }
+  .submit-zone-text { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .submit-zone-sub { font-size: 12px; color: var(--text3); }
+
+  /* ── EMPTY ── */
+  .empty-state {
+    text-align: center; padding: 48px 24px;
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+  .empty-sub { font-size: 13px; color: var(--text3); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; width: 560px; max-width: 95vw; max-height: 90vh;
+    overflow-y: auto; transform: scale(0.95) translateY(10px);
+    transition: all 0.25s; box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+  .modal-head {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: var(--bg2); z-index: 1;
+  }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; }
+  .modal-close {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer; width: 30px; height: 30px;
+    border-radius: 8px; font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { color: var(--text); background: var(--bg4); }
+  .modal-body { padding: 24px; }
+
+  /* ── NOTIFICATION ── */
+  .notif {
+    position: fixed; bottom: 24px; right: 24px; z-index: 500;
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateY(80px) scale(0.95); opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none; min-width: 280px;
+  }
+  .notif.show { transform: translateY(0) scale(1); opacity: 1; }
+  .notif-icon { font-size: 18px; }
+  .notif-text { font-size: 13px; font-weight: 600; }
+  .notif-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  /* ── USER INTERNSHIP VIEW ── */
+  .internship-header {
+    background: linear-gradient(135deg, rgba(124,109,250,0.08), rgba(56,189,248,0.05));
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px 28px; margin-bottom: 24px; position: relative; overflow: hidden;
+  }
+  .ih-track { font-size: 11px; font-weight: 700; color: var(--accent2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .ih-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .ih-meta { display: flex; gap: 16px; font-size: 12px; color: var(--text3); flex-wrap: wrap; }
+  .ih-meta span { display: flex; align-items: center; gap: 4px; }
+  .ih-progress { margin-top: 18px; }
+  .ih-prog-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+  .ih-prog-row strong { color: var(--text); }
+  .prog-bar-full { height: 6px; background: var(--bg4); border-radius: 6px; }
+  .prog-fill-full {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--blue));
+    transition: width 0.8s ease; position: relative;
+  }
+  .prog-fill-full::after {
+    content: ''; position: absolute; right: 0; top: -3px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent2); box-shadow: 0 0 8px var(--accent2);
+  }
+
+  .days-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .day-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    transition: all 0.2s; position: relative;
+  }
+  .day-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .day-card.completed { border-color: rgba(34,197,94,0.3); }
+  .day-card.locked { opacity: 0.5; cursor: not-allowed; }
+  .day-card-top { padding: 14px 16px 10px; display: flex; align-items: center; gap: 10px; }
+  .day-num-badge {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800;
+  }
+  .dnb-learning { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(56,189,248,0.2); }
+  .dnb-task { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
+  .day-card-title { font-size: 13px; font-weight: 700; line-height: 1.4; flex: 1; }
+  .day-card-body { padding: 0 16px 14px; }
+  .day-card-desc { font-size: 12px; color: var(--text3); line-height: 1.5; margin-bottom: 10px; }
+  .day-card-footer {
+    padding: 10px 16px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .done-tick {
+    position: absolute; top: 10px; right: 10px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--green); display: flex; align-items: center;
+    justify-content: center; font-size: 10px; color: white;
+  }
+  .lock-icon {
+    position: absolute; top: 10px; right: 10px;
+    color: var(--text3); font-size: 13px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* ── SEPARATOR TAG ── */
+  .sep-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; color: var(--text3);
+    padding: 4px 12px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 20px;
+  }
+
+  /* ── SCROLLABLE LIST ── */
+  .scroll-list { max-height: 400px; overflow-y: auto; }
+
+  /* ── ADMIN SECTION NAV ── */
+  .admin-tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .admin-tab {
+    padding: 10px 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; color: var(--text3); border-bottom: 2px solid transparent;
+    transition: all 0.15s; margin-bottom: -1px;
+  }
+  .admin-tab:hover { color: var(--text2); }
+  .admin-tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+
+  .admin-sub { display: none; }
+  .admin-sub.active { display: block; }
+
+  /* ── FULL WIDE ── */
+  .fw { grid-column: 1 / -1; }
+  .mt16 { margin-top: 16px; }
+  .mt8 { margin-top: 8px; }
+  .mb16 { margin-bottom: 16px; }
+  .flex-center { display: flex; align-items: center; }
+  .flex-between { display: flex; align-items: center; justify-content: space-between; }
+  .gap8 { gap: 8px; }
+  .gap12 { gap: 12px; }
+
+  /* ── PLAN BADGE PILL ── */
+  .plan-pill {
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text3);
+  }
+  .plan-pill.active { background: var(--accent-glow); color: var(--accent2); border-color: var(--accent); }
+
+  /* HINT TOOLTIP */
+  .tooltip-wrap { position: relative; display: inline-flex; }
+  .tooltip { 
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--bg4); border: 1px solid var(--border2);
+    font-size: 11px; color: var(--text2); padding: 5px 10px; border-radius: 6px;
+    white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s;
+    z-index: 100;
+  }
+  .tooltip-wrap:hover .tooltip { opacity: 1; }
+
+  .text-accent { color: var(--accent2); }
+  .text-green { color: var(--green); }
+  .text-orange { color: var(--orange); }
+  .text-blue { color: var(--blue); }
+  .fw700 { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-text">Career<span>Wizard</span> AI</div>
+      <div class="plan-badge">⚡ PRO PLAN</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-item active" onclick="showPage('internship')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        My Internship
+      </div>
+      <div class="nav-item" onclick="showPage('tasks')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        My Tasks
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Daily Learning
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Progress Summary
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        My Projects
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Resources
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Prepare</div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Job Matches
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z M3 9h18 M9 21V9"/></svg>
+        Roadmap
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Interview Prep
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Mock Tests
+      </div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18 M9 21V9"/></svg>
+        Resume AI
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Account</div>
+      <div class="nav-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+        Certificates
+      </div>
+      <div class="nav-item" onclick="showPage('admin')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Admin Panel
+      </div>
+    </div>
+    <div class="user-card">
+      <div class="avatar">H</div>
+      <div>
+        <div class="user-name">Het Panchal</div>
+        <div class="user-meta">Pro · CE Final Year · <span class="admin-tag">Admin</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+
+    <!-- ════════════════════ ADMIN PAGE ════════════════════ -->
+    <div class="page" id="page-admin">
+      <div class="topbar">
+        <div class="breadcrumb">Platform <span>›</span> <span class="current">Admin Panel</span></div>
+        <div class="topbar-actions">
+          <span style="font-size:12px;font-weight:700;padding:5px 14px;background:rgba(124,109,250,0.15);color:var(--accent2);border-radius:6px;border:1px solid var(--accent);">Super Admin</span>
+          <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+          <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2m0 18v-2m10-8h-2M4 12H2"/></svg></div>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="page-header">
+          <div class="page-title">
+            <div class="page-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            Admin Panel
+          </div>
+          <div class="page-sub">Manage tasks · Assign to users · Add domain-wise content</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card s1"><div class="stat-icon">👥</div><div class="stat-val" id="statUsers">1,247</div><div class="stat-label">Active users</div></div>
+          <div class="stat-card s2"><div class="stat-icon">📋</div><div class="stat-val" id="statTasks">0</div><div class="stat-label">Tasks in system</div></div>
+          <div class="stat-card s3"><div class="stat-icon">⏳</div><div class="stat-val">34</div><div class="stat-label">Pending reviews</div></div>
+          <div class="stat-card s4"><div class="stat-icon">🏅</div><div class="stat-val">312</div><div class="stat-label">Certs issued</div></div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+          <div class="admin-tab active" onclick="switchAdminTab('create', this)">➕ Create Task</div>
+          <div class="admin-tab" onclick="switchAdminTab('tasks', this)">📋 All Tasks</div>
+          <div class="admin-tab" onclick="switchAdminTab('plans', this)">🗓️ Plans</div>
+        </div>
+
+        <!-- ── Create Task Sub ── -->
+        <div class="admin-sub active" id="admin-create">
+          <!-- Step Wizard -->
+          <div class="step-wizard" id="stepWizard">
+            <div class="step-item">
+              <div class="step-dot active" id="step1dot">1</div>
+              <span class="step-label active" id="step1label">Domain & Plan</span>
+            </div>
+            <div class="step-line" id="stepLine1"></div>
+            <div class="step-item">
+              <div class="step-dot" id="step2dot">2</div>
+              <span class="step-label" id="step2label">Task Type</span>
+            </div>
+            <div class="step-line" id="stepLine2"></div>
+            <div class="step-item">
+              <div class="step-dot" id="step3dot">3</div>
+              <span class="step-label" id="step3label">Content</span>
+            </div>
+            <div class="step-line" id="stepLine3"></div>
+            <div class="step-item">
+              <div class="step-dot" id="step4dot">4</div>
+              <span class="step-label" id="step4label">Review & Save</span>
+            </div>
+          </div>
+
+          <!-- STEP 1: Domain & Plan -->
+          <div id="adminStep1">
+            <div class="grid2">
+              <div class="card">
+                <div class="card-head"><div class="card-title">📌 Domain & Plan Setup</div></div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label class="form-label">Domain / Track</label>
+                    <select class="form-select" id="adminDomain" onchange="updateDomainDisplay()">
+                      <option value="">-- Select Domain --</option>
+                      <option value="webdev">🌐 Web Development</option>
+                      <option value="dsa">🧠 Data Structures & Algorithms</option>
+                      <option value="ml">🤖 Machine Learning</option>
+                      <option value="backend">⚙️ Backend Engineering</option>
+                      <option value="devops">🚀 DevOps & Cloud</option>
+                      <option value="android">📱 Android Development</option>
+                      <option value="uiux">🎨 UI/UX Design</option>
+                      <option value="blockchain">⛓️ Blockchain</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Assign to Plan</label>
+                    <select class="form-select" id="adminPlan">
+                      <option value="15day">⚡ 15-Day Smart Internship</option>
+                      <option value="30day">🔥 30-Day Deep Dive</option>
+                      <option value="60day">🏆 60-Day Mastery Program</option>
+                      <option value="custom">✨ Custom Plan</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0">
+                      <label class="form-label">Day Number</label>
+                      <input type="number" class="form-input" id="adminDayNum" placeholder="e.g. 7" min="1" max="60">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                      <label class="form-label">Difficulty</label>
+                      <select class="form-select" id="adminDiff">
+                        <option value="beginner">🟢 Beginner</option>
+                        <option value="intermediate">🟡 Intermediate</option>
+                        <option value="advanced">🔴 Advanced</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group mt16">
+                    <label class="form-label">Task Title</label>
+                    <input type="text" class="form-input" id="adminTitle" placeholder="e.g. Arrays & Two Pointer Technique">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Short Description</label>
+                    <textarea class="form-textarea" id="adminShortDesc" placeholder="Brief overview of what this day covers..." style="min-height:70px;"></textarea>
+                  </div>
+                  <button class="btn btn-primary btn-block" onclick="goAdminStep(2)">
+                    Continue → Choose Type
+                  </button>
+                </div>
+              </div>
+
+              <!-- Domain Preview Card -->
+              <div class="card">
+                <div class="card-head"><div class="card-title">🗂️ Smart Plan Preview</div></div>
+                <div class="card-body">
+                  <div id="domainPreview">
+                    <div class="empty-state" style="padding:32px 0">
+                      <div class="empty-icon">🎯</div>
+                      <div class="empty-title">Select a domain</div>
+                      <div class="empty-sub">Smart task suggestions will appear here</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Task Type -->
+          <div id="adminStep2" style="display:none">
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title">🎨 Select Day Type</div>
+                <button class="btn btn-ghost btn-sm" onclick="goAdminStep(1)">← Back</button>
+              </div>
+              <div class="card-body">
+                <p style="font-size:13px;color:var(--text3);margin-bottom:18px;">Choose how this day is structured — a <strong style="color:var(--blue)">Learning Day</strong> delivers concepts and resources, while a <strong style="color:var(--orange)">Task Day</strong> gives hands-on assignments.</p>
+                <div class="type-cards">
+                  <div class="type-card" id="typeCardLearning" onclick="selectTaskType('learning')">
+                    <div class="type-check">✓</div>
+                    <div class="type-icon learning">📚</div>
+                    <div class="type-name" style="color:var(--blue)">Learning Day</div>
+                    <div class="type-desc">Concepts, explanations, how-to-use guides, video resources, articles, and practical examples. Best for theory-heavy topics.</div>
+                  </div>
+                  <div class="type-card" id="typeCardTask" onclick="selectTaskType('task')">
+                    <div class="type-check">✓</div>
+                    <div class="type-icon task">⚡</div>
+                    <div class="type-name" style="color:var(--orange)">Task Day</div>
+                    <div class="type-desc">Hands-on assignments, coding challenges, projects, or exercises. Includes requirements, submission format, and evaluation criteria.</div>
+                  </div>
+                </div>
+                <div class="mt16">
+                  <button class="btn btn-primary" id="btnGoStep3" onclick="goAdminStep(3)" disabled>Continue → Fill Content</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: Content (Learning) -->
+          <div id="adminStep3Learning" style="display:none">
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title" style="color:var(--blue)">📚 Learning Day Content</div>
+                <button class="btn btn-ghost btn-sm" onclick="goAdminStep(2)">← Back</button>
+              </div>
+              <div class="card-body">
+
+                <!-- Concepts Section -->
+                <div class="section-title">💡 Concepts to Cover</div>
+                <div id="conceptsList"></div>
+                <div style="display:flex;gap:10px;margin-bottom:24px;">
+                  <input type="text" class="form-input" id="newConceptName" placeholder="Concept name (e.g. Two Pointer Technique)" style="flex:1">
+                  <button class="btn btn-outline btn-sm" onclick="addConcept()">+ Add</button>
+                </div>
+
+                <!-- Selected concept editor -->
+                <div id="conceptEditor" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:24px;">
+                  <div class="flex-between mb16">
+                    <div style="font-size:13px;font-weight:700;color:var(--blue)" id="editingConceptLabel">Editing: —</div>
+                    <button class="btn btn-ghost btn-sm" onclick="closeConceptEditor()">Done ✓</button>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Full Description / Explanation</label>
+                    <textarea class="form-textarea" id="conceptDesc" placeholder="Explain the concept in detail. What it is, how it works, time/space complexity, use cases..." style="min-height:100px;"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">How to Use / Apply</label>
+                    <textarea class="form-textarea" id="conceptUsage" placeholder="Step-by-step guide on applying this concept. Include code pattern, common mistakes, when to use it..."></textarea>
+                  </div>
+                </div>
+
+                <!-- Resources Section -->
+                <div class="section-title">🔗 Resources</div>
+                <div id="resourcesList" class="resource-list" style="margin-bottom:12px;"></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-bottom:24px;">
+                  <input type="text" class="form-input" id="newResTitle" placeholder="Resource title">
+                  <input type="text" class="form-input" id="newResUrl" placeholder="URL (optional)">
+                  <select class="form-select" id="newResType">
+                    <option value="video">🎥 Video</option>
+                    <option value="article">📄 Article</option>
+                    <option value="doc">📘 Documentation</option>
+                    <option value="exercise">💻 Exercise</option>
+                  </select>
+                  <button class="btn btn-outline btn-sm" onclick="addResource()">+ Add</button>
+                </div>
+
+                <!-- Learning Outcomes -->
+                <div class="form-group">
+                  <label class="form-label">✅ Learning Outcomes (what student will achieve)</label>
+                  <textarea class="form-textarea" id="learningOutcomes" placeholder="By the end of this day, students will be able to:&#10;• Understand and implement...&#10;• Solve problems involving...&#10;• Recognize patterns in..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="goAdminStep(4)">Continue → Review</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: Content (Task) -->
+          <div id="adminStep3Task" style="display:none">
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title" style="color:var(--orange)">⚡ Task Day Content</div>
+                <button class="btn btn-ghost btn-sm" onclick="goAdminStep(2)">← Back</button>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label">Task Full Description</label>
+                  <textarea class="form-textarea" id="taskFullDesc" placeholder="Detailed task description: context, background, goals..." style="min-height:100px;"></textarea>
+                </div>
+                <div class="section-title">📋 Requirements / Checklist</div>
+                <div id="reqList" style="margin-bottom:12px;"></div>
+                <div style="display:flex;gap:8px;margin-bottom:20px;">
+                  <input type="text" class="form-input" id="newReq" placeholder="Add requirement (e.g. Implement BFS traversal)">
+                  <button class="btn btn-outline btn-sm" onclick="addRequirement()">+ Add</button>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Expected Output / Deliverable</label>
+                    <input type="text" class="form-input" id="taskOutput" placeholder="e.g. GitHub repo link, Deployed URL, PDF report">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Estimated Time</label>
+                    <input type="text" class="form-input" id="taskTime" placeholder="e.g. 3-4 hours">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Evaluation Criteria</label>
+                  <textarea class="form-textarea" id="taskEval" placeholder="How will this task be evaluated? Code quality, functionality, edge cases, documentation..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Hints / Tips (optional)</label>
+                  <textarea class="form-textarea" id="taskHints" placeholder="Optional hints to help students get started without giving away the solution..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="goAdminStep(4)">Continue → Review</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4: Review -->
+          <div id="adminStep4" style="display:none">
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title">✅ Review & Publish</div>
+                <button class="btn btn-ghost btn-sm" onclick="goAdminStep(3)">← Back</button>
+              </div>
+              <div class="card-body">
+                <div id="reviewContent"></div>
+                <div style="display:flex;gap:12px;margin-top:20px;">
+                  <button class="btn btn-green" onclick="saveTask()">🚀 Publish Task</button>
+                  <button class="btn btn-outline" onclick="goAdminStep(1)">Save as Draft</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /admin-create -->
+
+        <!-- ── All Tasks Sub ── -->
+        <div class="admin-sub" id="admin-tasks">
+          <div class="flex-between mb16">
+            <div class="filter-tabs" id="adminDomainFilter">
+              <div class="filter-tab active" onclick="filterAdminTasks('all', this)">All Domains</div>
+              <div class="filter-tab" onclick="filterAdminTasks('webdev', this)">Web Dev</div>
+              <div class="filter-tab" onclick="filterAdminTasks('dsa', this)">DSA</div>
+              <div class="filter-tab" onclick="filterAdminTasks('ml', this)">ML</div>
+              <div class="filter-tab" onclick="filterAdminTasks('backend', this)">Backend</div>
+            </div>
+            <div class="filter-tabs">
+              <div class="filter-tab active" onclick="filterAdminPlan('all', this)">All Plans</div>
+              <div class="filter-tab" onclick="filterAdminPlan('15day', this)">15-Day</div>
+              <div class="filter-tab" onclick="filterAdminPlan('30day', this)">30-Day</div>
+            </div>
+          </div>
+          <div class="task-list scroll-list" id="adminTaskList">
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <div class="empty-title">No tasks yet</div>
+              <div class="empty-sub">Create your first task using the Create Task tab</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Plans Sub ── -->
+        <div class="admin-sub" id="admin-plans">
+          <div class="grid3" id="planCards">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /page-admin -->
+
+    <!-- ════════════════════ INTERNSHIP (USER) PAGE ════════════════════ -->
+    <div class="page active" id="page-internship">
+      <div class="topbar">
+        <div class="breadcrumb">Platform <span>›</span> <span class="current">My Internship</span></div>
+        <div class="topbar-actions">
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setInternshipView('grid', this)">Grid</button>
+            <button class="view-btn" onclick="setInternshipView('timeline', this)">Timeline</button>
+          </div>
+          <select class="form-select" style="width:140px;font-size:12px;padding:7px 30px 7px 10px;" id="userDomainFilter" onchange="filterUserDomain(this.value)">
+            <option value="all">All Domains</option>
+            <option value="webdev">Web Dev</option>
+            <option value="dsa">DSA</option>
+            <option value="ml">ML</option>
+          </select>
+        </div>
+      </div>
+      <div class="page-inner">
+
+        <!-- Internship Header -->
+        <div class="internship-header">
+          <div class="ih-track" id="userTrackLabel">⚡ 15-DAY SMART INTERNSHIP · Web Development</div>
+          <div class="ih-title" id="userInternTitle">Full-Stack Web Development Internship</div>
+          <div class="ih-meta">
+            <span>📅 15 Days</span>
+            <span>📍 Remote</span>
+            <span>🏆 Certificate on completion</span>
+            <span id="userCompletedCount">✅ 0 / 0 days completed</span>
+          </div>
+          <div class="ih-progress">
+            <div class="ih-prog-row">
+              <span>Overall Progress</span>
+              <strong id="userProgressPct">0%</strong>
+            </div>
+            <div class="prog-bar-full"><div class="prog-fill-full" id="userProgressBar" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Days Grid -->
+        <div class="days-grid" id="userDaysGrid">
+          <div class="empty-state" style="grid-column:1/-1">
+            <div class="empty-icon">🌱</div>
+            <div class="empty-title">No tasks assigned yet</div>
+            <div class="empty-sub">Ask your admin to add tasks to this plan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════ MY TASKS (USER) PAGE ════════════════════ -->
+    <div class="page" id="page-tasks">
+      <div class="topbar">
+        <div class="breadcrumb">Platform <span>›</span> <span class="current">My Tasks</span></div>
+      </div>
+      <div class="page-inner">
+        <div class="page-header">
+          <div class="page-title">
+            <div class="page-title-icon">⚡</div> My Assigned Tasks
+          </div>
+          <div class="page-sub">All your pending and completed tasks across domains</div>
+        </div>
+        <div class="filter-tabs">
+          <div class="filter-tab active">All</div>
+          <div class="filter-tab">Pending</div>
+          <div class="filter-tab">Completed</div>
+          <div class="filter-tab">Learning</div>
+        </div>
+        <div class="task-list" id="userTaskList">
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">No tasks assigned</div>
+            <div class="empty-sub">Your tasks will appear here once assigned</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /shell -->
+
+<!-- ════════════════════ DAY DETAIL MODAL ════════════════════ -->
+<div class="modal-overlay" id="dayModal">
+  <div class="modal" id="dayModalContent">
+    <div class="modal-head">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:2px;" id="modalDayLabel">Day 1</div>
+        <div class="modal-title" id="modalTitle">—</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif">
+  <div class="notif-icon" id="notifIcon">✅</div>
+  <div>
+    <div class="notif-text" id="notifText">—</div>
+    <div class="notif-sub" id="notifSub">—</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const state = {
+  tasks: [],         // All tasks created
+  currentStep: 1,
+  selectedType: null,
+  concepts: [],      // [{name, desc, usage}]
+  resources: [],     // [{title, url, type}]
+  requirements: [],  // strings
+  editingConceptIdx: null,
+  userCompleted: new Set(),
+};
+
+const DOMAIN_LABELS = {
+  webdev: '🌐 Web Development', dsa: '🧠 DSA', ml: '🤖 Machine Learning',
+  backend: '⚙️ Backend', devops: '🚀 DevOps', android: '📱 Android',
+  uiux: '🎨 UI/UX', blockchain: '⛓️ Blockchain'
+};
+const PLAN_LABELS = { '15day': '15-Day', '30day': '30-Day', '60day': '60-Day', 'custom': 'Custom' };
+
+const DOMAIN_SUGGESTIONS = {
+  webdev: ['HTML/CSS Responsive Layout', 'JS Fetch API + DOM', 'React Components', 'PostgreSQL CRUD', 'Express + JWT Auth', 'REST API Design', 'Deploy to Vercel'],
+  dsa: ['Arrays & Hashing', 'Two Pointers', 'Sliding Window', 'Binary Search', 'Linked Lists', 'Trees & BFS/DFS', 'Dynamic Programming', 'Graphs & Union Find'],
+  ml: ['Python + NumPy Basics', 'Data Preprocessing', 'Linear Regression', 'Classification Models', 'Neural Networks Intro', 'CNN Architectures', 'Model Evaluation'],
+  backend: ['REST API Design', 'Auth & Sessions', 'Database Design', 'Caching with Redis', 'Message Queues', 'Microservices', 'Docker & Containers'],
+};
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function switchAdminTab(tab, el) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-sub').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('admin-' + tab).classList.add('active');
+  if (tab === 'tasks') renderAdminTaskList();
+  if (tab === 'plans') renderPlanCards();
+}
+
+// ═══════════════════════════════════════════
+// STEP WIZARD
+// ═══════════════════════════════════════════
+function updateStepUI() {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('step' + i + 'dot');
+    const label = document.getElementById('step' + i + 'label');
+    dot.className = 'step-dot';
+    label.className = 'step-label';
+    if (i < state.currentStep) { dot.classList.add('done'); dot.textContent = '✓'; }
+    else if (i === state.currentStep) { dot.classList.add('active'); dot.textContent = i; label.classList.add('active'); }
+    else { dot.textContent = i; }
+  }
+  for (let i = 1; i <= 3; i++) {
+    const line = document.getElementById('stepLine' + i);
+    line.className = 'step-line' + (i < state.currentStep ? ' done' : '');
+  }
+}
+
+function goAdminStep(step) {
+  // Validation
+  if (step === 2) {
+    const domain = document.getElementById('adminDomain').value;
+    const title = document.getElementById('adminTitle').value.trim();
+    const day = document.getElementById('adminDayNum').value;
+    if (!domain || !title || !day) { showNotif('⚠️', 'Missing Fields', 'Fill domain, title, and day number'); return; }
+  }
+  if (step === 3 && !state.selectedType) { showNotif('⚠️', 'Pick a type', 'Choose Learning or Task day type'); return; }
+
+  state.currentStep = step;
+  updateStepUI();
+
+  document.getElementById('adminStep1').style.display = step === 1 ? '' : 'none';
+  document.getElementById('adminStep2').style.display = step === 2 ? '' : 'none';
+  document.getElementById('adminStep3Learning').style.display = (step === 3 && state.selectedType === 'learning') ? '' : 'none';
+  document.getElementById('adminStep3Task').style.display = (step === 3 && state.selectedType === 'task') ? '' : 'none';
+  document.getElementById('adminStep4').style.display = step === 4 ? '' : 'none';
+
+  if (step === 4) renderReview();
+}
+
+// ═══════════════════════════════════════════
+// DOMAIN PREVIEW
+// ═══════════════════════════════════════════
+function updateDomainDisplay() {
+  const domain = document.getElementById('adminDomain').value;
+  const container = document.getElementById('domainPreview');
+  if (!domain) { container.innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">🎯</div><div class="empty-title">Select a domain</div><div class="empty-sub">Smart task suggestions will appear here</div></div>`; return; }
+  const sugs = DOMAIN_SUGGESTIONS[domain] || ['Custom Topic 1', 'Custom Topic 2', 'Custom Topic 3'];
+  container.innerHTML = `
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">💡 Suggested task names for <strong style="color:var(--accent2)">${DOMAIN_LABELS[domain]}</strong></div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      ${sugs.map((s,i) => `<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px;" onclick="useSuggestion('${s}')" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:10px;font-weight:700;color:var(--text3);">Day ${i+1}</span>
+        <span style="flex:1">${s}</span>
+        <span style="font-size:10px;color:var(--accent2)">Use →</span>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:16px;padding:10px 12px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;">
+      <div style="font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:4px;">⚡ Smart Strategy</div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.6;">Alternate Learning + Task days for best retention. Start with concepts, follow with hands-on practice the next day.</div>
+    </div>
+  `;
+}
+
+function useSuggestion(s) {
+  document.getElementById('adminTitle').value = s;
+  showNotif('✨', 'Suggestion Applied', s);
+}
+
+// ═══════════════════════════════════════════
+// TYPE SELECTION
+// ═══════════════════════════════════════════
+function selectTaskType(type) {
+  state.selectedType = type;
+  document.getElementById('typeCardLearning').className = 'type-card' + (type === 'learning' ? ' selected learning' : '');
+  document.getElementById('typeCardTask').className = 'type-card' + (type === 'task' ? ' selected task' : '');
+  document.getElementById('btnGoStep3').disabled = false;
+  // Reset
+  state.concepts = []; state.resources = []; state.requirements = [];
+}
+
+// ═══════════════════════════════════════════
+// LEARNING - CONCEPTS
+// ═══════════════════════════════════════════
+function addConcept() {
+  const name = document.getElementById('newConceptName').value.trim();
+  if (!name) return;
+  state.concepts.push({ name, desc: '', usage: '' });
+  document.getElementById('newConceptName').value = '';
+  renderConceptsList();
+  openConceptEditor(state.concepts.length - 1);
+}
+
+function renderConceptsList() {
+  const el = document.getElementById('conceptsList');
+  if (!state.concepts.length) { el.innerHTML = `<div style="font-size:12px;color:var(--text3);margin-bottom:12px;">No concepts yet. Add your first concept below.</div>`; return; }
+  el.innerHTML = state.concepts.map((c, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;">
+      <div style="width:22px;height:22px;border-radius:6px;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">${i+1}</div>
+      <div style="flex:1;font-size:13px;font-weight:600">${c.name}</div>
+      ${c.desc ? '<span style="font-size:10px;color:var(--green);font-weight:700">✓ Filled</span>' : '<span style="font-size:10px;color:var(--orange);font-weight:700">⚠ Empty</span>'}
+      <button class="btn btn-ghost btn-sm" style="padding:4px 10px;" onclick="openConceptEditor(${i})">Edit</button>
+      <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:4px;" onclick="deleteConcept(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function openConceptEditor(idx) {
+  state.editingConceptIdx = idx;
+  const c = state.concepts[idx];
+  document.getElementById('editingConceptLabel').textContent = `Editing: ${c.name}`;
+  document.getElementById('conceptDesc').value = c.desc || '';
+  document.getElementById('conceptUsage').value = c.usage || '';
+  document.getElementById('conceptEditor').style.display = 'block';
+}
+
+function closeConceptEditor() {
+  const idx = state.editingConceptIdx;
+  if (idx === null) return;
+  state.concepts[idx].desc = document.getElementById('conceptDesc').value;
+  state.concepts[idx].usage = document.getElementById('conceptUsage').value;
+  document.getElementById('conceptEditor').style.display = 'none';
+  state.editingConceptIdx = null;
+  renderConceptsList();
+}
+
+function deleteConcept(idx) {
+  state.concepts.splice(idx, 1);
+  renderConceptsList();
+}
+
+// ═══════════════════════════════════════════
+// LEARNING - RESOURCES
+// ═══════════════════════════════════════════
+function addResource() {
+  const title = document.getElementById('newResTitle').value.trim();
+  const url = document.getElementById('newResUrl').value.trim();
+  const type = document.getElementById('newResType').value;
+  if (!title) return;
+  state.resources.push({ title, url, type });
+  document.getElementById('newResTitle').value = '';
+  document.getElementById('newResUrl').value = '';
+  renderResourcesList();
+}
+
+function renderResourcesList() {
+  const el = document.getElementById('resourcesList');
+  if (!state.resources.length) { el.innerHTML = ''; return; }
+  const typeIcon = { video: '🎥', article: '📄', doc: '📘', exercise: '💻' };
+  const typeCls = { video: 'rt-video', article: 'rt-article', doc: 'rt-doc', exercise: 'rt-exercise' };
+  el.innerHTML = state.resources.map((r, i) => `
+    <div class="resource-row">
+      <span class="resource-type-badge ${typeCls[r.type]}">${typeIcon[r.type]} ${r.type}</span>
+      <span class="resource-title">${r.title}${r.url ? ` <a href="${r.url}" target="_blank" style="color:var(--accent2);font-size:10px;">↗</a>` : ''}</span>
+      <button class="resource-del" onclick="deleteResource(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function deleteResource(idx) {
+  state.resources.splice(idx, 1);
+  renderResourcesList();
+}
+
+// ═══════════════════════════════════════════
+// TASK - REQUIREMENTS
+// ═══════════════════════════════════════════
+function addRequirement() {
+  const val = document.getElementById('newReq').value.trim();
+  if (!val) return;
+  state.requirements.push(val);
+  document.getElementById('newReq').value = '';
+  renderRequirements();
+}
+
+function renderRequirements() {
+  const el = document.getElementById('reqList');
+  if (!state.requirements.length) { el.innerHTML = ''; return; }
+  el.innerHTML = state.requirements.map((r, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;">
+      <span style="font-size:12px;color:var(--orange)">●</span>
+      <span style="flex:1;font-size:13px;">${r}</span>
+      <button style="background:none;border:none;cursor:pointer;color:var(--text3);" onclick="deleteReq(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function deleteReq(idx) {
+  state.requirements.splice(idx, 1);
+  renderRequirements();
+}
+
+// ═══════════════════════════════════════════
+// REVIEW
+// ═══════════════════════════════════════════
+function renderReview() {
+  const domain = document.getElementById('adminDomain').value;
+  const plan = document.getElementById('adminPlan').value;
+  const day = document.getElementById('adminDayNum').value;
+  const diff = document.getElementById('adminDiff').value;
+  const title = document.getElementById('adminTitle').value;
+  const shortDesc = document.getElementById('adminShortDesc').value;
+  const typeLabel = state.selectedType === 'learning' ? '📚 Learning Day' : '⚡ Task Day';
+  const typeColor = state.selectedType === 'learning' ? 'var(--blue)' : 'var(--orange)';
+
+  let contentPreview = '';
+  if (state.selectedType === 'learning') {
+    const outcomes = document.getElementById('learningOutcomes').value;
+    contentPreview = `
+      <div class="section-title">💡 Concepts (${state.concepts.length})</div>
+      ${state.concepts.map(c => `<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:13px;font-weight:600;">${c.name} ${c.desc ? '<span style="color:var(--green);font-size:11px;">✓ Filled</span>' : '<span style="color:var(--orange);font-size:11px;">⚠ No description</span>'}</div>`).join('') || '<div style="font-size:12px;color:var(--text3)">No concepts added</div>'}
+      <div class="section-title mt16">🔗 Resources (${state.resources.length})</div>
+      ${state.resources.map(r => `<div style="font-size:12px;color:var(--text2);padding:4px 0;">• ${r.type === 'video' ? '🎥' : r.type === 'article' ? '📄' : r.type === 'exercise' ? '💻' : '📘'} ${r.title}</div>`).join('') || '<div style="font-size:12px;color:var(--text3)">No resources added</div>'}
+      ${outcomes ? `<div class="mt16"><div class="section-title">✅ Outcomes</div><div style="font-size:12px;color:var(--text2);white-space:pre-line;line-height:1.7">${outcomes}</div></div>` : ''}
+    `;
+  } else {
+    const taskDesc = document.getElementById('taskFullDesc').value;
+    const output = document.getElementById('taskOutput').value;
+    const time = document.getElementById('taskTime').value;
+    contentPreview = `
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;">${taskDesc || '(No description)'}</div>
+      <div class="section-title">📋 Requirements (${state.requirements.length})</div>
+      ${state.requirements.map(r => `<div style="font-size:12px;color:var(--text2);padding:3px 0;">• ${r}</div>`).join('') || '<div style="font-size:12px;color:var(--text3)">None</div>'}
+      ${output ? `<div class="mt16"><span class="form-label">📦 Deliverable:</span> <span style="font-size:12px;color:var(--text2)">${output}</span></div>` : ''}
+      ${time ? `<div><span class="form-label">⏱ Time:</span> <span style="font-size:12px;color:var(--text2)">${time}</span></div>` : ''}
+    `;
+  }
+
+  document.getElementById('reviewContent').innerHTML = `
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:${state.selectedType==='learning'?'var(--blue-bg)':'var(--orange-bg)'};display:flex;align-items:center;justify-content:center;font-size:18px;">${state.selectedType==='learning'?'📚':'⚡'}</div>
+        <div>
+          <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;">${title}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Day ${day} · ${DOMAIN_LABELS[domain]||domain} · ${PLAN_LABELS[plan]||plan}</div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <span class="type-badge ${state.selectedType}" style="font-size:11px;">${typeLabel}</span>
+          <span class="diff-badge diff-${diff}">${diff}</span>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;">${shortDesc || '—'}</div>
+    </div>
+    ${contentPreview}
+  `;
+}
+
+// ═══════════════════════════════════════════
+// SAVE TASK
+// ═══════════════════════════════════════════
+function saveTask() {
+  const domain = document.getElementById('adminDomain').value;
+  const plan = document.getElementById('adminPlan').value;
+  const day = parseInt(document.getElementById('adminDayNum').value);
+  const diff = document.getElementById('adminDiff').value;
+  const title = document.getElementById('adminTitle').value;
+  const shortDesc = document.getElementById('adminShortDesc').value;
+
+  const task = { id: Date.now(), domain, plan, day, diff, title, shortDesc, type: state.selectedType };
+
+  if (state.selectedType === 'learning') {
+    task.concepts = [...state.concepts];
+    task.resources = [...state.resources];
+    task.outcomes = document.getElementById('learningOutcomes').value;
+  } else {
+    task.taskDesc = document.getElementById('taskFullDesc').value;
+    task.requirements = [...state.requirements];
+    task.output = document.getElementById('taskOutput').value;
+    task.time = document.getElementById('taskTime').value;
+    task.eval = document.getElementById('taskEval').value;
+    task.hints = document.getElementById('taskHints').value;
+  }
+
+  state.tasks.push(task);
+  updateStatCount();
+  showNotif('🚀', 'Task Published!', `"${title}" — Day ${day}`);
+  resetForm();
+  renderUserView();
+  goAdminStep(1);
+  switchAdminTab('tasks', document.querySelectorAll('.admin-tab')[1]);
+}
+
+function resetForm() {
+  document.getElementById('adminDomain').value = '';
+  document.getElementById('adminTitle').value = '';
+  document.getElementById('adminShortDesc').value = '';
+  document.getElementById('adminDayNum').value = '';
+  state.selectedType = null;
+  state.concepts = []; state.resources = []; state.requirements = [];
+  document.getElementById('domainPreview').innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">🎯</div><div class="empty-title">Select a domain</div></div>`;
+}
+
+function updateStatCount() {
+  document.getElementById('statTasks').textContent = state.tasks.length;
+}
+
+// ═══════════════════════════════════════════
+// ADMIN TASK LIST
+// ═══════════════════════════════════════════
+let adminDomainFilter = 'all';
+let adminPlanFilter = 'all';
+
+function filterAdminTasks(val, el) {
+  adminDomainFilter = val;
+  document.querySelectorAll('#adminDomainFilter .filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAdminTaskList();
+}
+
+function filterAdminPlan(val, el) {
+  adminPlanFilter = val;
+  el.parentElement.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAdminTaskList();
+}
+
+function renderAdminTaskList() {
+  const list = document.getElementById('adminTaskList');
+  let tasks = state.tasks;
+  if (adminDomainFilter !== 'all') tasks = tasks.filter(t => t.domain === adminDomainFilter);
+  if (adminPlanFilter !== 'all') tasks = tasks.filter(t => t.plan === adminPlanFilter);
+  tasks = tasks.sort((a, b) => a.day - b.day);
+
+  if (!tasks.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No tasks found</div><div class="empty-sub">Try adjusting filters</div></div>`;
+    return;
+  }
+  list.innerHTML = tasks.map(t => `
+    <div class="task-row" onclick="openDayModal(${t.id})">
+      <div class="task-day-badge ${t.type === 'learning' ? 'tdb-learning' : 'tdb-task'}">D${t.day}</div>
+      <div class="task-row-info">
+        <div class="task-row-title">${t.title}</div>
+        <div class="task-row-meta">
+          <span class="type-badge ${t.type}" style="font-size:10px;">${t.type === 'learning' ? '📚 Learning' : '⚡ Task'}</span>
+          <span class="meta-dot">·</span>
+          <span>${DOMAIN_LABELS[t.domain]||t.domain}</span>
+          <span class="meta-dot">·</span>
+          <span>${PLAN_LABELS[t.plan]||t.plan}</span>
+        </div>
+      </div>
+      <span class="diff-badge diff-${t.diff}">${t.diff}</span>
+      <div class="task-row-actions">
+        <div class="action-btn del" onclick="event.stopPropagation();deleteTask(${t.id})">🗑</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteTask(id) {
+  state.tasks = state.tasks.filter(t => t.id !== id);
+  updateStatCount();
+  renderAdminTaskList();
+  renderUserView();
+  showNotif('🗑', 'Task Deleted', '');
+}
+
+// ═══════════════════════════════════════════
+// PLAN CARDS
+// ═══════════════════════════════════════════
+function renderPlanCards() {
+  const plans = ['15day', '30day', '60day', 'custom'];
+  const planIcons = { '15day': '⚡', '30day': '🔥', '60day': '🏆', 'custom': '✨' };
+  const container = document.getElementById('planCards');
+  container.innerHTML = plans.map(p => {
+    const tasks = state.tasks.filter(t => t.plan === p);
+    const learning = tasks.filter(t => t.type === 'learning').length;
+    const taskCount = tasks.filter(t => t.type === 'task').length;
+    return `
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">${planIcons[p]} ${PLAN_LABELS[p]} Plan</div>
+          <span style="font-size:11px;font-weight:700;color:var(--text3);">${tasks.length} days</span>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;gap:12px;margin-bottom:14px;">
+            <div style="flex:1;background:var(--blue-bg);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--blue);">${learning}</div>
+              <div style="font-size:11px;color:var(--text3);">Learning</div>
+            </div>
+            <div style="flex:1;background:var(--orange-bg);border:1px solid rgba(249,115,22,0.2);border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--orange);">${taskCount}</div>
+              <div style="font-size:11px;color:var(--text3);">Tasks</div>
+            </div>
+          </div>
+          ${tasks.length === 0 ? `<div style="font-size:12px;color:var(--text3);text-align:center;padding:8px;">No tasks added yet</div>` :
+            tasks.sort((a,b) => a.day - b.day).slice(0,4).map(t => `
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+                <span style="font-size:10px;font-weight:700;color:var(--text3);width:32px;">Day ${t.day}</span>
+                <span class="type-badge ${t.type}" style="font-size:9px;">${t.type === 'learning' ? '📚' : '⚡'}</span>
+                <span style="font-size:12px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.title}</span>
+              </div>
+            `).join('') + (tasks.length > 4 ? `<div style="font-size:11px;color:var(--text3);text-align:center;padding-top:8px;">+${tasks.length - 4} more</div>` : '')
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// USER VIEW
+// ═══════════════════════════════════════════
+function renderUserView(domainFilter) {
+  let tasks = state.tasks;
+  if (domainFilter && domainFilter !== 'all') tasks = tasks.filter(t => t.domain === domainFilter);
+  tasks = tasks.sort((a, b) => a.day - b.day);
+
+  const grid = document.getElementById('userDaysGrid');
+  const total = tasks.length;
+  const completed = tasks.filter(t => state.userCompleted.has(t.id)).length;
+  const pct = total ? Math.round((completed / total) * 100) : 0;
+
+  document.getElementById('userCompletedCount').textContent = `✅ ${completed} / ${total} days completed`;
+  document.getElementById('userProgressPct').textContent = pct + '%';
+  document.getElementById('userProgressBar').style.width = pct + '%';
+
+  // Detect primary domain
+  const domainCounts = {};
+  tasks.forEach(t => { domainCounts[t.domain] = (domainCounts[t.domain] || 0) + 1; });
+  const primaryDomain = Object.keys(domainCounts).sort((a,b) => domainCounts[b] - domainCounts[a])[0];
+  if (primaryDomain) {
+    document.getElementById('userTrackLabel').textContent = `⚡ ${PLAN_LABELS[tasks[0]?.plan||'15day']?.toUpperCase()} SMART INTERNSHIP · ${DOMAIN_LABELS[primaryDomain]||primaryDomain}`;
+    document.getElementById('userInternTitle').textContent = `${DOMAIN_LABELS[primaryDomain]||primaryDomain} Internship Program`;
+  }
+
+  if (!tasks.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🌱</div><div class="empty-title">No tasks assigned yet</div><div class="empty-sub">Ask your admin to add tasks to this plan</div></div>`;
+    renderUserTaskList(tasks);
+    return;
+  }
+
+  grid.innerHTML = tasks.map((t, i) => {
+    const isDone = state.userCompleted.has(t.id);
+    const isLocked = i > 0 && !state.userCompleted.has(tasks[i-1].id) && i > 0;
+    const typeIcon = t.type === 'learning' ? '📚' : '⚡';
+    return `
+      <div class="day-card ${isDone ? 'completed' : ''} ${isLocked ? 'locked' : ''}" onclick="${isLocked ? '' : `openDayModal(${t.id})`}">
+        ${isDone ? `<div class="done-tick">✓</div>` : ''}
+        ${isLocked ? `<div class="lock-icon">🔒</div>` : ''}
+        <div class="day-card-top">
+          <div class="day-num-badge ${t.type === 'learning' ? 'dnb-learning' : 'dnb-task'}">D${t.day}</div>
+          <div>
+            <div class="day-card-title">${t.title}</div>
+          </div>
+        </div>
+        <div class="day-card-body">
+          <div class="day-card-desc">${t.shortDesc || 'Click to view details and start this day.'}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="type-badge ${t.type}">${typeIcon} ${t.type === 'learning' ? 'Learning' : 'Task'}</span>
+            <span class="diff-badge diff-${t.diff}">${t.diff}</span>
+            ${t.type === 'learning' ? `<span style="font-size:10px;background:var(--bg4);padding:2px 7px;border-radius:20px;color:var(--text3);">${t.concepts?.length||0} concepts</span>` : ''}
+            ${t.type === 'task' ? `<span style="font-size:10px;background:var(--bg4);padding:2px 7px;border-radius:20px;color:var(--text3);">${t.requirements?.length||0} reqs</span>` : ''}
+          </div>
+        </div>
+        <div class="day-card-footer">
+          <span style="font-size:11px;color:var(--text3);">${DOMAIN_LABELS[t.domain]||t.domain}</span>
+          <button style="background:${isDone?'var(--green-bg)':'var(--accent-glow)'};border:1px solid ${isDone?'var(--green)':'var(--accent)'};color:${isDone?'var(--green)':'var(--accent2)'};padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;" onclick="event.stopPropagation();${isLocked?'':isDone?`markIncomplete(${t.id})`:`openDayModal(${t.id})`}">
+            ${isLocked ? '🔒 Locked' : isDone ? '✓ Done' : '→ Start'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  renderUserTaskList(tasks);
+}
+
+function filterUserDomain(val) {
+  renderUserView(val === 'all' ? null : val);
+}
+
+function setInternshipView(type, el) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  // Timeline view: rearrange as list
+  const grid = document.getElementById('userDaysGrid');
+  if (type === 'timeline') {
+    grid.style.display = 'flex';
+    grid.style.flexDirection = 'column';
+    grid.style.gap = '8px';
+  } else {
+    grid.style.display = '';
+    grid.style.flexDirection = '';
+    grid.style.gap = '';
+  }
+}
+
+function markIncomplete(id) {
+  state.userCompleted.delete(id);
+  renderUserView();
+}
+
+function renderUserTaskList(tasks) {
+  const list = document.getElementById('userTaskList');
+  if (!tasks.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No tasks assigned</div><div class="empty-sub">Your tasks will appear here once assigned</div></div>`;
+    return;
+  }
+  list.innerHTML = tasks.map(t => {
+    const isDone = state.userCompleted.has(t.id);
+    return `
+      <div class="task-row" onclick="openDayModal(${t.id})">
+        <div class="task-day-badge ${t.type === 'learning' ? 'tdb-learning' : 'tdb-task'}">D${t.day}</div>
+        <div class="task-row-info">
+          <div class="task-row-title">${t.title}</div>
+          <div class="task-row-meta">
+            <span class="type-badge ${t.type}" style="font-size:10px;">${t.type === 'learning' ? '📚 Learning' : '⚡ Task'}</span>
+            <span class="meta-dot">·</span>
+            <span>${DOMAIN_LABELS[t.domain]||t.domain}</span>
+          </div>
+        </div>
+        <span class="diff-badge diff-${t.diff}">${t.diff}</span>
+        <span style="font-size:11px;font-weight:700;color:${isDone?'var(--green)':'var(--text3)'};">${isDone ? '✓ Done' : 'Pending'}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// DAY MODAL
+// ═══════════════════════════════════════════
+function openDayModal(id) {
+  const task = state.tasks.find(t => t.id === id);
+  if (!task) return;
+
+  document.getElementById('modalDayLabel').textContent = `Day ${task.day} · ${DOMAIN_LABELS[task.domain]||task.domain} · ${PLAN_LABELS[task.plan]||task.plan}`;
+  document.getElementById('modalTitle').textContent = task.title;
+
+  let html = `
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
+      <span class="type-badge ${task.type}">${task.type === 'learning' ? '📚 Learning Day' : '⚡ Task Day'}</span>
+      <span class="diff-badge diff-${task.diff}">${task.diff}</span>
+      ${task.type === 'task' && task.time ? `<span style="font-size:11px;color:var(--text3);">⏱ ${task.time}</span>` : ''}
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">${task.shortDesc || ''}</p>
+  `;
+
+  if (task.type === 'learning') {
+    // Concepts
+    if (task.concepts && task.concepts.length) {
+      html += `<div class="section-title">💡 Concepts (${task.concepts.length})</div>`;
+      task.concepts.forEach((c, i) => {
+        html += `
+          <div class="concept-item">
+            <div class="concept-header" onclick="toggleConcept(${i})">
+              <div class="concept-header-left">
+                <div class="concept-num">${i+1}</div>
+                <div class="concept-name">${c.name}</div>
+              </div>
+              <span class="concept-chevron" id="chevron${i}">▼</span>
+            </div>
+            <div class="concept-body" id="conceptBody${i}">
+              ${c.desc ? `<div class="concept-desc">${c.desc}</div>` : ''}
+              ${c.usage ? `<div class="usage-box"><div class="usage-box-label">How to Use / Apply</div><p>${c.usage}</p></div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Resources
+    if (task.resources && task.resources.length) {
+      html += `<div class="section-title" style="margin-top:20px;">🔗 Resources</div>`;
+      const typeIcon = { video: '🎥', article: '📄', doc: '📘', exercise: '💻' };
+      const typeCls = { video: 'ri-video', article: 'ri-article', doc: 'ri-doc', exercise: 'ri-exercise' };
+      html += `<div class="resource-grid">`;
+      task.resources.forEach(r => {
+        html += `
+          <a class="resource-card" href="${r.url || '#'}" target="_blank">
+            <div class="resource-icon ${typeCls[r.type]||''}">${typeIcon[r.type]||'📎'}</div>
+            <div>
+              <div class="resource-card-title">${r.title}</div>
+              <div class="resource-card-type">${r.type}</div>
+            </div>
+          </a>
+        `;
+      });
+      html += `</div>`;
+    }
+
+    // Outcomes
+    if (task.outcomes) {
+      html += `<div class="section-title" style="margin-top:20px;">✅ Learning Outcomes</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8;white-space:pre-line;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">${task.outcomes}</div>`;
+    }
+
+    const isDone = state.userCompleted.has(task.id);
+    html += `<div style="margin-top:24px;"><button class="btn ${isDone?'btn-outline':'btn-green'} btn-block" onclick="markDone(${task.id})">${isDone?'✓ Mark as Incomplete':'✅ Mark as Complete'}</button></div>`;
+
+  } else {
+    // Task Day
+    if (task.taskDesc) {
+      html += `<div class="section-title">📖 Description</div><div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">${task.taskDesc}</div>`;
+    }
+
+    if (task.requirements && task.requirements.length) {
+      html += `<div class="section-title">📋 Requirements</div><div class="req-list" id="modalReqList">`;
+      task.requirements.forEach((r, i) => {
+        const checkId = `req_${task.id}_${i}`;
+        const isDoneReq = localStorage[checkId] === '1';
+        html += `
+          <div class="req-item">
+            <div class="req-check ${isDoneReq ? 'done' : ''}" id="${checkId}" onclick="toggleReq('${checkId}')">${isDoneReq ? '✓' : ''}</div>
+            <div class="req-text ${isDoneReq ? 'done' : ''}" id="${checkId}_text">${r}</div>
+          </div>
+        `;
+      });
+      html += `</div>`;
+    }
+
+    if (task.eval) {
+      html += `<div class="section-title" style="margin-top:20px;">🎯 Evaluation Criteria</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">${task.eval}</div>`;
+    }
+
+    if (task.hints) {
+      html += `<div class="section-title" style="margin-top:20px;">💡 Hints</div>
+        <div style="font-size:13px;color:var(--orange);line-height:1.7;background:var(--orange-bg);border:1px solid rgba(249,115,22,0.2);border-radius:var(--radius-sm);padding:14px;">${task.hints}</div>`;
+    }
+
+    if (task.output) {
+      html += `<div style="margin-top:20px;" class="section-title">📦 Deliverable</div>
+        <div style="font-size:13px;color:var(--text2);padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);">${task.output}</div>`;
+    }
+
+    // Submit zone
+    html += `
+      <div class="mt16">
+        <div class="submit-zone" onclick="submitTask(${task.id})">
+          <div class="submit-zone-icon">📤</div>
+          <div class="submit-zone-text">Submit Your Work</div>
+          <div class="submit-zone-sub">Click to submit your ${task.output || 'deliverable'}</div>
+        </div>
+      </div>
+    `;
+
+    const isDone = state.userCompleted.has(task.id);
+    html += `<div style="margin-top:14px;"><button class="btn ${isDone?'btn-outline':'btn-green'} btn-block" onclick="markDone(${task.id})">${isDone?'✓ Mark as Incomplete':'✅ Mark as Complete'}</button></div>`;
+  }
+
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('dayModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('dayModal').classList.remove('open');
+}
+
+function toggleConcept(i) {
+  const body = document.getElementById('conceptBody' + i);
+  const chevron = document.getElementById('chevron' + i);
+  body.classList.toggle('open');
+  chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+function toggleReq(id) {
+  const el = document.getElementById(id);
+  const textEl = document.getElementById(id + '_text');
+  const isDone = el.classList.toggle('done');
+  el.textContent = isDone ? '✓' : '';
+  if (textEl) textEl.classList.toggle('done', isDone);
+  try { localStorage[id] = isDone ? '1' : '0'; } catch(e) {}
+}
+
+function markDone(id) {
+  if (state.userCompleted.has(id)) {
+    state.userCompleted.delete(id);
+    showNotif('↩️', 'Marked Incomplete', '');
+  } else {
+    state.userCompleted.add(id);
+    showNotif('🎉', 'Day Completed!', 'Keep going!');
+  }
+  closeModal();
+  renderUserView();
+}
+
+function submitTask(id) {
+  showNotif('📤', 'Submission Noted!', 'Your work has been recorded');
+  markDone(id);
+}
+
+// ═══════════════════════════════════════════
+// NOTIFICATION
+// ═══════════════════════════════════════════
+let notifTimer;
+function showNotif(icon, text, sub) {
+  const el = document.getElementById('notif');
+  document.getElementById('notifIcon').textContent = icon;
+  document.getElementById('notifText').textContent = text;
+  document.getElementById('notifSub').textContent = sub;
+  el.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// Close modal on overlay click
+document.getElementById('dayModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ═══════════════════════════════════════════
+// SEED DEMO DATA
+// ═══════════════════════════════════════════
+function seedDemoData() {
+  const demoTasks = [
+    { id: 1001, domain: 'dsa', plan: '15day', day: 1, diff: 'beginner', title: 'Arrays & Hashing Fundamentals', shortDesc: 'Master the basics of arrays, hash maps, and solving classic two-sum style problems.', type: 'learning',
+      concepts: [
+        { name: 'Arrays in Memory', desc: 'Arrays store elements in contiguous memory locations. Access is O(1), insertion/deletion is O(n). Dynamic arrays (like Python lists, Java ArrayLists) resize automatically, amortized O(1) append.', usage: 'Use arrays when: you need index-based access, iterating sequentially, or working with fixed-size data. Avoid for frequent insertions in the middle.' },
+        { name: 'Hash Maps', desc: 'Hash maps store key-value pairs with average O(1) get/put. Internally uses hash function + buckets. Collision resolved via chaining or open addressing. Python: dict, Java: HashMap.', usage: 'Classic pattern: Two Sum → store {val: index} as you iterate. Frequency count → {char: count}. Always ask: "Can I trade O(n) space for O(1) time?"' },
+        { name: 'Two Pointer Technique', desc: 'Use two index pointers (usually left/right or slow/fast) to scan array in O(n) instead of O(n²). Works on sorted arrays. Used in: pair sum, removing duplicates, container with most water.', usage: 'Template: left=0, right=n-1. While left < right: check condition, move appropriate pointer. Key insight: eliminate invalid states by moving the pointer that can\'t improve the result.' },
+      ],
+      resources: [
+        { title: 'NeetCode Arrays & Hashing Playlist', url: 'https://neetcode.io', type: 'video' },
+        { title: 'GeeksForGeeks Arrays Guide', url: 'https://geeksforgeeks.org/array-data-structure/', type: 'article' },
+        { title: 'LeetCode Two Sum', url: 'https://leetcode.com/problems/two-sum/', type: 'exercise' },
+        { title: 'Python Dict Docs', url: 'https://docs.python.org/3/tutorial/datastructures.html', type: 'doc' },
+      ],
+      outcomes: 'By end of Day 1, you will be able to:\n• Implement hash map–based solutions for O(n) frequency/lookup problems\n• Apply two-pointer technique on sorted arrays\n• Solve LeetCode Easy arrays problems independently'
+    },
+    { id: 1002, domain: 'dsa', plan: '15day', day: 2, diff: 'intermediate', title: 'Arrays Coding Challenge', shortDesc: 'Apply Day 1 concepts: solve 3 LeetCode problems using hashing and two pointers.', type: 'task',
+      taskDesc: 'Put your Day 1 knowledge to work. Solve the following 3 problems on LeetCode. Focus on optimal time/space complexity. Write clean, commented code.',
+      requirements: ['Solve LeetCode #1 Two Sum (must be O(n) hash solution)', 'Solve LeetCode #217 Contains Duplicate', 'Solve LeetCode #238 Product of Array Except Self (no division)', 'Add time/space complexity comment above each function'],
+      output: 'GitHub Gist or Replit link with all 3 solutions',
+      time: '2-3 hours', eval: 'Correctness (all test cases pass), optimal complexity, code readability, edge cases handled.',
+      hints: 'For #238: think prefix + suffix product arrays. You can do it in O(1) extra space with two passes!'
+    },
+    { id: 1003, domain: 'dsa', plan: '15day', day: 3, diff: 'intermediate', title: 'Sliding Window Technique', shortDesc: 'Learn fixed and variable sliding window patterns for subarray/substring problems.', type: 'learning',
+      concepts: [
+        { name: 'Fixed Window', desc: 'Maintain a window of size k as you iterate. Add new element, remove oldest (i - k). Used for: max sum subarray of size k, average of subarrays.', usage: 'Initialize first window sum[0..k-1]. Then slide: add arr[i], subtract arr[i-k]. O(n) total.' },
+        { name: 'Variable Window', desc: 'Expand right pointer, shrink left when condition violated. Window size adjusts dynamically. Used for: longest substring without repeat, min window substring, max sum with constraint.', usage: 'Template: left=0, for right in range(n): expand window. While invalid: shrink from left. Track answer at each valid state.' },
+      ],
+      resources: [
+        { title: 'Sliding Window Master Video — NeetCode', url: 'https://neetcode.io', type: 'video' },
+        { title: 'Sliding Window Problems List', url: 'https://leetcode.com/tag/sliding-window/', type: 'exercise' },
+      ],
+      outcomes: 'Recognize and implement fixed + variable sliding window patterns. Solve medium-level substring and subarray problems.'
+    },
+  ];
+  state.tasks.push(...demoTasks);
+  updateStatCount();
+  renderUserView();
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+seedDemoData();
+showPage('internship');
+document.querySelector('.nav-item').classList.add('active');
+</script>
+</body>
+</html>

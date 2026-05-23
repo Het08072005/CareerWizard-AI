@@ -11,6 +11,17 @@ from app.routes.interview_routes import router as interview_router
 from app.routes.dashboard_routes import router as dashboard_router
 from app.models.activity import UserActivity
 from app.models.roadmap import SkillProgress
+from app.models.user import User
+from app.models.user_profile import StudentProfile
+from app.models.admin import Admin
+from app.models.internship_plan import InternshipPlan
+from app.models.internship_track import InternshipTrack
+from app.models.internship_task import InternshipTask
+from app.models.payment import Payment
+from app.models.enrollment import Enrollment
+from app.models.task_submission import TaskSubmission
+from app.models.certificate import Certificate
+from app.models.interview import InterviewQuestion, InterviewProgress
 
 Base.metadata.create_all(bind=engine)
 
