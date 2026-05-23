@@ -133,30 +133,32 @@ const Overview = () => {
             )}
 
             {/* INTEGRATED MAIN NAVBAR - SYNCED WITH HOME PAGE */}
-            <header className={`h-[72px] w-full border-b px-8 flex items-center justify-between shrink-0 z-[100] transition-all duration-500 ${
+            <header className={`h-[64px] w-full border-b px-6 lg:px-8 flex items-center justify-between shrink-0 z-[100] transition-all duration-500 ${
                 isDark
                     ? 'border-white/5 bg-black/60 backdrop-blur-xl'
                     : 'border-[var(--border-color)] bg-[var(--bg-sidebar)]/80 backdrop-blur-xl'
             }`}>
-                <div className="flex items-center gap-12">
+                <div className="flex items-center gap-8">
                     <Link to="/" className="group flex items-center relative z-10 py-1">
-                        <h1 className="cw-brand-logo relative">
-                            career<span className="accent">wizard</span>
+                        <h1 className="cw-brand-logo relative text-xl lg:text-2xl tracking-tight">
+                            Career<span className="accent">Wizard</span>
                             <div className="absolute -inset-x-4 -inset-y-1 bg-white/[0.03] blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10 rounded-lg"></div>
-                            <span className={`absolute -right-3 -top-1 text-[8px] font-black tracking-widest ${isDark ? 'text-cyan-500' : 'text-emerald-500'} opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:translate-x-1`}>AI</span>
+                            {/* Premium AI Badge docked above the D */}
+                            <span className={`absolute -right-2 top-0 text-[8px] font-black tracking-[0.2em] ${isDark ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' : 'text-[var(--gold-dark)] drop-shadow-[0_0_8px_rgba(160,120,64,0.3)]'} opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:-translate-y-1`}>
+                                AI
+                            </span>
                         </h1>
                     </Link>
                 </div>
 
                 <div className="flex items-center gap-6">
-                    {/* UPGRADE / PRO BADGE (Only on Home/Overview page) */}
                     {isHome && (
                         <Link 
                             to="/internship/enroll" 
-                            className={`flex items-center gap-1.5 px-4 py-1.8 rounded-full border text-[11px] font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_4px_12px_rgba(22,163,74,0.1)] hover:scale-[1.03] hover:shadow-[0_4px_15px_rgba(22,163,74,0.2)] ${
+                            className={`flex items-center gap-1.5 px-4 py-1.8 rounded-full border text-[11px] font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_4px_12px_rgba(160,120,64,0.1)] hover:scale-[1.03] hover:shadow-[0_4px_15px_rgba(160,120,64,0.2)] ${
                                 isDark 
                                     ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                                    : 'bg-emerald-500/5 text-[#16a34a] border-[#16a34a]/20 hover:bg-emerald-500/10'
+                                    : 'bg-[var(--gold)]/5 text-[var(--gold-dark)] border-[var(--gold)]/20 hover:bg-[var(--gold)]/10'
                             }`}
                         >
                             <SparklesIcon className="w-3.5 h-3.5" />
@@ -200,25 +202,25 @@ const Overview = () => {
                                         <button onClick={() => { navigate("/profile"); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 ${
                                             isDark 
                                                 ? 'text-slate-400 hover:bg-white/5 hover:text-cyan-400' 
-                                                : 'text-slate-600 hover:bg-slate-100 hover:text-emerald-600'
+                                                : 'text-slate-600 hover:bg-slate-100 hover:text-[var(--gold-dark)]'
                                         }`}>
-                                            <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-emerald-600'}`} />
+                                            <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-[var(--gold-dark)]'}`} />
                                             Account Config
                                         </button>
                                         <button onClick={() => { navigate("/internship"); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 ${
                                             isDark 
                                                 ? 'text-slate-400 hover:bg-white/5 hover:text-cyan-400' 
-                                                : 'text-slate-600 hover:bg-slate-100 hover:text-emerald-600'
+                                                : 'text-slate-600 hover:bg-slate-100 hover:text-[var(--gold-dark)]'
                                         }`}>
-                                            <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-emerald-600'}`} />
+                                            <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-[var(--gold-dark)]'}`} />
                                             My Internship
                                         </button>
                                         <button onClick={() => { navigate("/overview"); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 ${
                                             isDark 
                                                 ? 'text-slate-400 hover:bg-white/5 hover:text-cyan-400' 
-                                                : 'text-slate-600 hover:bg-slate-100 hover:text-emerald-600'
+                                                : 'text-slate-600 hover:bg-slate-100 hover:text-[var(--gold-dark)]'
                                         }`}>
-                                            <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-emerald-600'}`} />
+                                            <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-[var(--gold-dark)]'}`} />
                                             Core Interface
                                         </button>
 
@@ -226,10 +228,10 @@ const Overview = () => {
                                         <button onClick={() => { toggleTheme(); setIsDropdownOpen(false); }} className={`w-full text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-between ${
                                             isDark 
                                                 ? 'text-slate-400 hover:bg-white/5 hover:text-cyan-400' 
-                                                : 'text-slate-600 hover:bg-slate-100 hover:text-emerald-600'
+                                                : 'text-slate-600 hover:bg-slate-100 hover:text-[var(--gold-dark)]'
                                         }`}>
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-emerald-600'}`} />
+                                                <div className={`w-1 h-1 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-[var(--gold-dark)]'}`} />
                                                 Theme Protocol
                                             </div>
                                             <span className="text-[9px] uppercase font-black px-2 py-0.5 bg-white/10 rounded">{isDark ? 'Dark' : 'Light'}</span>
@@ -254,11 +256,11 @@ const Overview = () => {
                 {/* MATCHING SIDEBAR: INDUSTRIAL COCKPIT DESIGN */}
                 <motion.aside
                     initial={false}
-                    animate={{ width: isCollapsed ? 72 : 240 }}
+                    animate={{ width: isCollapsed ? 64 : 220 }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                     className="h-full bg-[var(--bg-sidebar)] border-r border-[var(--border-color)] flex flex-col shrink-0 relative z-[100] transition-colors duration-500"
                 >
-                    <nav className="flex-1 py-10 px-3 space-y-1.5 scrollbar-hide overflow-y-auto overflow-x-hidden">
+                    <nav className="flex-1 py-8 px-3 space-y-1 scrollbar-hide overflow-y-auto overflow-x-hidden">
                         {tabs.map((tab) => {
                             const active = location.pathname === tab.path || 
                                            (tab.path === '/overview' && location.pathname === '/overview/') ||
@@ -276,9 +278,9 @@ const Overview = () => {
                                             }
                                         }}
                                         className={`
-                                            relative flex items-center h-11 rounded-xl transition-all duration-500 group px-4
+                                            relative flex items-center h-10 rounded-xl transition-all duration-500 group px-3.5
                                             ${active 
-                                                ? isDark ? 'text-white bg-white/[0.04]' : 'text-[#15803d] bg-emerald-500/10 font-bold'
+                                                ? isDark ? 'text-white bg-white/[0.04]' : 'text-[var(--gold-dark)] bg-[var(--gold)]/10 font-bold'
                                                 : isDark ? 'text-slate-500 hover:text-white hover:bg-white/[0.03]' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'}
                                             ${isCollapsed ? 'justify-center px-0' : 'justify-start'}
                                         `}
@@ -290,7 +292,7 @@ const Overview = () => {
                                                 className={`absolute left-[-2px] w-[3px] h-4 rounded-full ${
                                                     isDark 
                                                         ? 'bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' 
-                                                        : 'bg-[#16a34a] shadow-[0_0_15px_rgba(22,163,74,0.8)]'
+                                                        : 'bg-[var(--gold-dark)] shadow-[0_0_15px_rgba(160,120,64,0.8)]'
                                                 }`}
                                             />
                                         )}
@@ -300,7 +302,7 @@ const Overview = () => {
                                             ${active 
                                                 ? isDark 
                                                     ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]' 
-                                                    : 'text-[#16a34a] drop-shadow-[0_0_8px_rgba(22,163,74,0.4)]' 
+                                                    : 'text-[var(--gold-dark)] drop-shadow-[0_0_8px_rgba(160,120,64,0.4)]' 
                                                 : ''}
                                             ${isCollapsed ? 'w-9 h-9' : 'mr-4'}
                                         `}>
@@ -311,7 +313,7 @@ const Overview = () => {
                                             <motion.span
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
-                                                className="text-[15px] font-semibold tracking-tight whitespace-nowrap"
+                                                className="text-[13px] font-medium tracking-tight whitespace-nowrap"
                                             >
                                                 {tab.name}
                                             </motion.span>
@@ -334,7 +336,7 @@ const Overview = () => {
                                                         <span className={`text-[9px] font-bold uppercase tracking-[0.15em] whitespace-nowrap ${
                                                             isDark 
                                                                 ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]' 
-                                                                : 'text-[#16a34a]'
+                                                                : 'text-[var(--gold-dark)]'
                                                         }`}>
                                                             {tab.name}
                                                         </span>
@@ -365,14 +367,14 @@ const Overview = () => {
                                                                 ${subActive 
                                                                     ? isDark 
                                                                         ? 'text-cyan-400 bg-cyan-400/[0.05]' 
-                                                                        : 'text-[#15803d] bg-emerald-500/5 font-bold'
+                                                                        : 'text-[var(--gold-dark)] bg-[var(--gold)]/10 font-bold'
                                                                     : isDark 
                                                                         ? 'text-slate-400 hover:text-slate-300 hover:bg-white/[0.02]' 
                                                                         : 'text-slate-700 hover:text-black hover:bg-slate-100/80'}
                                                             `}
                                                         >
                                                             {sub.icon && (
-                                                                <sub.icon className={`w-3.5 h-3.5 shrink-0 mr-2 ${subActive ? (isDark ? 'text-cyan-400' : 'text-[#15803d]') : 'text-slate-400'}`} strokeWidth={2} />
+                                                                <sub.icon className={`w-3.5 h-3.5 shrink-0 mr-2 ${subActive ? (isDark ? 'text-cyan-400' : 'text-[var(--gold-dark)]') : 'text-slate-400'}`} strokeWidth={2} />
                                                             )}
                                                             <span>{sub.name}</span>
                                                         </Link>
@@ -405,7 +407,7 @@ const Overview = () => {
                                             className={`absolute left-[-2px] w-[3px] h-4 rounded-full ${
                                                 isDark 
                                                     ? 'bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' 
-                                                    : 'bg-[#15803d] shadow-[0_0_15px_rgba(21,128,61,0.8)]'
+                                                    : 'bg-[var(--gold-dark)] shadow-[0_0_15px_rgba(160,120,64,0.8)]'
                                             }`}
                                         />
                                     )}
@@ -415,7 +417,7 @@ const Overview = () => {
                                         ${active 
                                             ? isDark 
                                                 ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]' 
-                                                : 'text-[#15803d] drop-shadow-[0_0_8px_rgba(21,128,61,0.4)]' 
+                                                : 'text-[var(--gold-dark)] drop-shadow-[0_0_8px_rgba(160,120,64,0.4)]' 
                                             : ''}
                                         ${isCollapsed ? 'w-9 h-9' : 'mr-4'}
                                     `}>
@@ -445,7 +447,7 @@ const Overview = () => {
                                                     <span className={`text-[9px] font-bold uppercase tracking-[0.15em] whitespace-nowrap ${
                                                         isDark 
                                                             ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]' 
-                                                            : 'text-[#15803d]'
+                                                            : 'text-[var(--gold-dark)]'
                                                     }`}>
                                                         {tab.name}
                                                     </span>
@@ -457,9 +459,9 @@ const Overview = () => {
                             );
 
                             const buttonClass = `
-                                relative flex items-center h-11 rounded-xl transition-all duration-500 group px-4 cursor-pointer w-full text-left
+                                relative flex items-center h-10 rounded-xl transition-all duration-500 group px-3.5 cursor-pointer w-full text-left
                                 ${active 
-                                    ? isDark ? 'text-white bg-white/[0.04]' : 'text-[#15803d] bg-emerald-500/10 font-bold'
+                                    ? isDark ? 'text-white bg-white/[0.04]' : 'text-[var(--gold-dark)] bg-[var(--gold)]/10 font-bold'
                                     : isDark ? 'text-slate-500 hover:text-white hover:bg-white/[0.03]' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100/80'}
                                 ${isCollapsed ? 'justify-center px-0' : 'justify-start'}
                             `;
@@ -515,10 +517,10 @@ const Overview = () => {
                                         {!isHome && (
                                             <button 
                                                 onClick={() => { navigate('/internship/enroll'); setIsProfileMenuOpen(false); }}
-                                                className={`w-full flex items-center gap-3 py-2 px-3 text-[13px] font-semibold rounded-xl border transition-all duration-300 hover:scale-[1.01] ${
+                                                className={`w-full flex items-center gap-3 py-2 px-3 text-[12px] font-semibold rounded-xl border transition-all duration-300 hover:scale-[1.01] ${
                                                     isDark 
                                                         ? 'bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                                                        : 'bg-[#10b981]/5 hover:bg-[#10b981]/10 text-[#0f766e] border-[#10b981]/20'
+                                                        : 'bg-[var(--gold)]/5 hover:bg-[var(--gold)]/10 text-[var(--gold-dark)] border-[var(--gold)]/20'
                                                 }`}
                                             >
                                                 <SparklesIcon className="w-3.5 h-3.5" />
@@ -560,9 +562,9 @@ const Overview = () => {
                             </AnimatePresence>
 
                             {/* COMPACT USER CARD ROW */}
-                            <div className="flex items-center gap-3 p-2 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                            <div className="flex items-center gap-3 p-2 rounded-xl bg-[var(--gold)]/5 border border-[var(--gold)]/10">
                                 {/* AVATAR */}
-                                <div className="w-9 h-9 rounded-xl bg-[#10b981] text-white flex items-center justify-center font-bold text-base shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                                <div className="w-9 h-9 rounded-xl bg-[var(--gold-dark)] text-white flex items-center justify-center font-bold text-base shrink-0 shadow-[0_0_10px_rgba(160,120,64,0.2)]">
                                     H
                                 </div>
                                 
@@ -586,7 +588,7 @@ const Overview = () => {
                                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                                     className={`p-2 rounded-lg border transition ${
                                         isProfileMenuOpen 
-                                            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500' 
+                                            ? 'border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold-dark)]' 
                                             : isDark
                                                 ? 'border-white/5 text-slate-400 hover:text-white hover:bg-white/5' 
                                                 : 'border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100'
@@ -650,7 +652,7 @@ const Overview = () => {
                                                 className={`w-full flex items-center gap-2.5 py-2 px-3 text-[11px] font-semibold rounded-xl border transition-all duration-300 hover:scale-[1.01] ${
                                                     isDark 
                                                         ? 'bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                                                        : 'bg-[#10b981]/5 hover:bg-[#10b981]/10 text-[#0f766e] border-[#10b981]/20'
+                                                        : 'bg-[var(--gold)]/5 hover:bg-[var(--gold)]/10 text-[var(--gold-dark)] border-[var(--gold)]/20'
                                                 }`}
                                             >
                                                 <SparklesIcon className="w-3.5 h-3.5 shrink-0" />
@@ -716,7 +718,7 @@ const Overview = () => {
                             {/* COMPACT AVATAR TRIGGER */}
                             <div 
                                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                                className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg cursor-pointer shadow-[0_0_12px_rgba(16,185,129,0.3)] hover:scale-105 transition-all relative"
+                                className="w-10 h-10 rounded-xl bg-[var(--gold-dark)] text-white flex items-center justify-center font-bold text-lg cursor-pointer shadow-[0_0_12px_rgba(160,120,64,0.3)] hover:scale-105 transition-all relative"
                             >
                                 H
                                 {isAdminView && (

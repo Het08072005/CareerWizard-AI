@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
-import './internship.css';
+import '../../css/internship.css';
 
 export default function InternshipLayout() {
   const { user, logout } = useContext(AuthContext);

@@ -55,9 +55,9 @@ export default function Navbar() {
         {/* BRAND */}
         <Link to="/" className="group flex items-center relative z-10 py-1">
           <h1 className="cw-brand-logo relative">
-            career<span className="accent">wizard</span>
+            Career<span className="accent">Wizard</span>
             <div className="absolute -inset-x-4 -inset-y-1 bg-white/[0.03] blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10 rounded-lg"></div>
-            <span className={`absolute -right-3 -top-1 text-[8px] font-black tracking-widest ${isDark ? 'text-cyan-500' : 'text-emerald-500'} opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:translate-x-1`}>AI</span>
+            <span className={`absolute -right-3 -top-1 text-[10px] font-black tracking-widest ${isDark ? 'text-[var(--gold)]' : 'text-[var(--gold-dark)]'} opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:translate-x-1`}>AI</span>
           </h1>
         </Link>
 

@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 
@@ -37,9 +37,13 @@ const ProtectedRoute = ({ children }) => {
 };
 
 export default function App() {
+  const location = useLocation();
+
+  const hideNavbarRoutes = ['/', '/login', '/signup'];
+
   return (
     <div>
-      <Navbar />
+      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
       <Routes>
         {/* PUBLIC ROUTES */}

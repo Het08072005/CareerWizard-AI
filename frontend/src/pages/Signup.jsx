@@ -1,8 +1,7 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { register } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
-import { ChevronRightIcon } from "../components/ui/Icons";
+import "../css/Home.css";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -12,7 +11,6 @@ export default function Signup() {
   const [msg, setMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { isDark } = useContext(ThemeContext);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -30,73 +28,73 @@ export default function Signup() {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-6 pt-32 relative overflow-hidden ${isDark ? 'bg-black text-slate-200' : 'bg-[#f0eeea] text-slate-900'}`}>
-      {isDark && <div className="nebula-bg"></div>}
-
-      <div className="w-full max-w-[480px] relative z-10 animate-reveal-up">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className={`text-3xl font-bold tracking-tight mb-2 uppercase ${isDark ? 'text-white' : 'text-black'}`}>Create Profile</h2>
-          <p className="text-slate-500 font-medium text-xs tracking-wide">Enter your details to create an account.</p>
+    <div className="home-container auth-page">
+      <div className="auth-left">
+        <Link to="/" className="auth-logo">Career<em>Wizard</em></Link>
+        <div className="auth-quote">
+          Your future starts here.<br />
+          <em>Build it with AI.</em>
         </div>
+      </div>
+      <div className="auth-right">
+        <div className="auth-card" style={{ maxWidth: '480px' }}>
+          <div className="auth-header">
+            <h2 className="auth-title">Create an account</h2>
+            <p className="auth-subtitle">Please enter your details to create an account.</p>
+          </div>
 
-        {/* Form Card */}
-        <div className={`glass-card p-10 md:p-12 rounded-3xl relative overflow-hidden transition-all duration-500 ${isDark ? 'hover:border-white/20' : 'hover:border-black/10'}`}>
-          <div className="shimmer-sweep opacity-30"></div>
-
-          <form className="space-y-6 relative z-10" onSubmit={handleSignup}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className={`block text-[9px] font-bold uppercase tracking-[0.2em] ml-1 ${isDark ? 'text-slate-500' : 'text-black'}`}>Name</label>
+          <form className="auth-form" onSubmit={handleSignup}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="auth-field">
+                <label className="auth-label">Full name</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`w-full input-glass px-5 py-3.5 rounded-xl font-medium focus:outline-none text-xs transition-all ${isDark ? 'text-white placeholder-slate-800 focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,242,255,0.1)]' : 'text-black placeholder-slate-400 focus:border-emerald-500 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)]'}`}
+                  className="auth-input"
                   placeholder="John Doe"
                 />
               </div>
-              <div className="space-y-2">
-                <label className={`block text-[9px] font-bold uppercase tracking-[0.2em] ml-1 ${isDark ? 'text-slate-500' : 'text-black'}`}>Target Role</label>
+              <div className="auth-field">
+                <label className="auth-label">Target role</label>
                 <input
                   type="text"
                   required
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className={`w-full input-glass px-5 py-3.5 rounded-xl font-medium focus:outline-none text-xs transition-all ${isDark ? 'text-white placeholder-slate-800 focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,242,255,0.1)]' : 'text-black placeholder-slate-400 focus:border-emerald-500 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)]'}`}
+                  className="auth-input"
                   placeholder="Software Engineer"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className={`block text-[9px] font-bold uppercase tracking-[0.2em] ml-1 ${isDark ? 'text-slate-500' : 'text-black'}`}>Email Address</label>
+            <div className="auth-field">
+              <label className="auth-label">Email address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full input-glass px-6 py-4 rounded-xl font-medium focus:outline-none text-sm transition-all ${isDark ? 'text-white placeholder-slate-800 focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,242,255,0.1)]' : 'text-black placeholder-slate-400 focus:border-emerald-500 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)]'}`}
+                className="auth-input"
                 placeholder="you@example.com"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className={`block text-[9px] font-bold uppercase tracking-[0.2em] ml-1 ${isDark ? 'text-slate-500' : 'text-black'}`}>Password</label>
+            <div className="auth-field">
+              <label className="auth-label">Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full input-glass px-6 py-4 rounded-xl font-medium focus:outline-none text-sm transition-all ${isDark ? 'text-white placeholder-slate-800 focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,242,255,0.1)]' : 'text-black placeholder-slate-400 focus:border-emerald-500 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)]'}`}
+                className="auth-input"
                 placeholder="••••••••"
               />
             </div>
 
             {msg && (
-              <div className={`p-4 rounded-xl text-[10px] font-bold flex items-center animate-shake ${msg.includes("success") ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'}`}>
-                <div className={`w-1 h-1 rounded-full mr-2 animate-pulse ${msg.includes("success") ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
+              <div className={msg.includes("success") ? "auth-success" : "auth-error"}>
                 {msg}
               </div>
             )}
@@ -104,23 +102,33 @@ export default function Signup() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full btn-action py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center group ${isDark ? '' : 'before:bg-gradient-to-r before:from-emerald-400 before:to-emerald-600 hover:border-emerald-500'}`}
+              className="auth-btn"
             >
               {isLoading ? (
-                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <span className="flex items-center">
-                  Sign Up <ChevronRightIcon className="ml-2 w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              )}
+                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="currentColor">
+                    <rect className="spinner_S1WN" x="11" y="1" width="2" height="5" rx="1"/>
+                    <rect className="spinner_S1WN spinner_b2T7" x="11" y="1" width="2" height="5" rx="1" transform="rotate(30 12 12)"/>
+                    <rect className="spinner_S1WN spinner_YRVV" x="11" y="1" width="2" height="5" rx="1" transform="rotate(60 12 12)"/>
+                    <rect className="spinner_S1WN spinner_c9oY" x="11" y="1" width="2" height="5" rx="1" transform="rotate(90 12 12)"/>
+                    <rect className="spinner_S1WN spinner_grm3" x="11" y="1" width="2" height="5" rx="1" transform="rotate(120 12 12)"/>
+                    <rect className="spinner_S1WN spinner_KFRN" x="11" y="1" width="2" height="5" rx="1" transform="rotate(150 12 12)"/>
+                    <rect className="spinner_S1WN" x="11" y="1" width="2" height="5" rx="1" transform="rotate(180 12 12)"/>
+                    <rect className="spinner_S1WN spinner_b2T7" x="11" y="1" width="2" height="5" rx="1" transform="rotate(210 12 12)"/>
+                    <rect className="spinner_S1WN spinner_YRVV" x="11" y="1" width="2" height="5" rx="1" transform="rotate(240 12 12)"/>
+                    <rect className="spinner_S1WN spinner_c9oY" x="11" y="1" width="2" height="5" rx="1" transform="rotate(270 12 12)"/>
+                    <rect className="spinner_S1WN spinner_grm3" x="11" y="1" width="2" height="5" rx="1" transform="rotate(300 12 12)"/>
+                    <rect className="spinner_S1WN spinner_KFRN" x="11" y="1" width="2" height="5" rx="1" transform="rotate(330 12 12)"/>
+                  </g>
+                </svg>
+              ) : "Create account"}
             </button>
           </form>
-        </div>
 
-        {/* Footer Link */}
-        <p className="text-center mt-8 text-[11px] text-slate-500 font-medium tracking-wide">
-          Already synced? <Link to="/login" className={`font-bold transition-colors ${isDark ? 'text-white hover:text-cyan-400' : 'text-slate-900 hover:text-emerald-600'}`}>Login to Account</Link>
-        </p>
+          <div className="auth-footer">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </div>
+        </div>
       </div>
     </div>
   );

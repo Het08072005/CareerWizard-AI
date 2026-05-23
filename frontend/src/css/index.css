@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100..900&family=Syne:wght@400..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Rubik:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Outfit:wght@100..900&family=Syne:wght@400..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Rubik:wght@500&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -10,6 +10,14 @@
   --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-numeric: 'Rubik', sans-serif;
+
+  /* Global Premium Theme Palette */
+  --gold: #c9a96e;
+  --gold-light: #e8c98a;
+  --gold-dark: #a07840;
+  --cream: #f5f0e8;
+  --cream-light: #faf7f2;
+  --ink: #2c2820;
 
   /* Default Dark Mode variables */
   --bg-main: #050505;
@@ -42,12 +50,10 @@ html.light {
 
 /* Centralized standardized Brand Logo - Original High-Tech Style */
 .cw-brand-logo {
-  font-family: var(--font-primary) !important;
-  font-weight: 300 !important;
-  /* light weight */
-  font-size: 22px !important;
-  letter-spacing: -0.05em !important;
-  /* tight tracking */
+  font-family: 'Cormorant Garamond', serif !important;
+  font-weight: 500 !important;
+  font-size: 28px !important;
+  letter-spacing: 0.02em !important;
   display: inline-flex;
   align-items: center;
   transition: all 0.3s ease;
@@ -55,34 +61,29 @@ html.light {
 }
 
 .cw-brand-logo .accent {
-  font-weight: 600 !important;
-  /* semibold */
-  letter-spacing: -0.02em !important;
-  margin-left: 1px;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  margin-left: 0px;
 }
 
 /* Color in Light Mode */
 html.light .cw-brand-logo {
-  color: #1e293b !important;
-  /* slate-800 */
+  color: var(--ink) !important;
 }
 
 html.light .cw-brand-logo .accent {
-  color: #16a34a !important;
-  /* emerald-600 */
+  color: var(--gold-dark) !important;
 }
 
 /* Color in Dark Mode or default (Original layout style) */
 html.dark .cw-brand-logo,
 .cw-brand-logo {
-  color: #94a3b8 !important;
-  /* slate-400 */
+  color: var(--cream) !important;
 }
 
 html.dark .cw-brand-logo .accent,
 .cw-brand-logo .accent {
-  color: #ffffff !important;
-  /* white */
+  color: var(--gold) !important;
 }
 
 /* Base resets depending on theme */

@@ -27,6 +27,10 @@ logs/
 .DS_Store
 Thumbs.db
 
+# .gitignore file me ye add karein:
+__pycache__/
+*.py[cod]
+
 
 
 
