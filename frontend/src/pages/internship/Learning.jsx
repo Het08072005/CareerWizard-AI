@@ -25,7 +25,7 @@ export default function InternshipLearning() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* LESSONS LIST COLUMN */}
       <div className="lg:col-span-5 space-y-4">
-        <div className="cw-card">
+        <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
           <div className="cw-card-title" style={{ marginBottom: 16 }}>
             <i className="fa-solid fa-graduation-cap" />
             <span>Select Learning Day</span>
@@ -35,7 +35,7 @@ export default function InternshipLearning() {
               <div
                 key={l.day}
                 onClick={() => { setSelectedDay(l.day); setNotes(savedNotes[l.day] || ''); }}
-                className={`p-3 rounded-xl border cursor-pointer transition ${selectedDay === l.day ? 'border-[#16a34a] bg-[rgba(22,163,74,0.05)]' : 'border-white/5 hover:border-white/10'}`}
+                className={`p-3 rounded-xl border cursor-pointer transition ${selectedDay === l.day ? 'border-[#16a34a] bg-[rgba(22,163,74,0.05)]' : 'border-black/5 bg-transparent hover:border-[var(--gold)]/30 hover:bg-black/[0.02]'}`}
               >
                 <div style={{ fontSize: 13, fontWeight: 700 }}>Day {l.day} — {l.title}</div>
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 6 }}>
@@ -51,7 +51,7 @@ export default function InternshipLearning() {
 
       {/* CONTENT & NOTES COLUMN */}
       <div className="lg:col-span-7 space-y-6">
-        <div className="cw-card">
+        <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
           <div className="cw-card-header">
             <div className="cw-card-title">
               <i className="fa-solid fa-book-open-reader" />
@@ -60,7 +60,7 @@ export default function InternshipLearning() {
             <span className="cw-badge cw-badge-purple">ACTIVE LESSON</span>
           </div>
 
-          <div style={{ fontSize: 18, fontWeight: 800 }}>{activeLesson.title}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, fontFamily: '"Cormorant Garamond", serif' }}>{activeLesson.title}</div>
           <p style={{ fontSize: 14, color: 'var(--cw-text2)', lineHeight: 1.6, marginTop: 12 }}>
             {activeLesson.content} Our interactive learning protocols match academic standards to provide key strategic concepts.
           </p>

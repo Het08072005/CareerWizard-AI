@@ -378,7 +378,7 @@ const JobMatchOutlet = () => {
       >
         <motion.div variants={itemVariants} className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4 relative">
           <div className="flex flex-col gap-1 group">
-            <h3 className="text-3xl font-bold text-[var(--text-main)] tracking-tight leading-none cursor-default">
+            <h3 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-[32px] font-bold text-[var(--text-main)] tracking-tight leading-none cursor-default">
               AI Job Matching
             </h3>
           </div>
@@ -408,7 +408,7 @@ const JobMatchOutlet = () => {
                   </div>
                 ) : loading ? (
                   <div className={`border px-4 rounded-xl flex items-center justify-center h-full backdrop-blur-md ${
-                    isDark ? 'bg-white/[0.01] border-white/5' : 'bg-[var(--bg-sidebar)] border-slate-200'
+                    isDark ? 'bg-white/[0.01] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-sm'
                   }`}>
                     <svg className={`animate-spin h-4 w-4 mr-3 ${isDark ? 'text-cyan-500/50' : 'text-emerald-500'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-10" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -418,14 +418,23 @@ const JobMatchOutlet = () => {
                   </div>
                 ) : (
                   <label
-                    className={`flex items-center justify-center border border-dashed rounded-xl px-4 cursor-pointer h-full transition-all duration-700 group overflow-hidden relative shadow-md ${
+                    className={`flex items-center justify-center border border-dashed rounded-xl px-4 cursor-pointer h-full transition-all duration-700 group overflow-hidden relative shadow-sm ${
                       isDragOver 
-                        ? isDark ? 'border-cyan-400 bg-cyan-400/[0.03] scale-[1.01]' : 'border-emerald-500 bg-emerald-500/[0.03] scale-[1.01]' 
-                        : isDark ? 'border-white/10 bg-white/[0.01] hover:border-white/20' : 'border-slate-200 bg-[var(--bg-sidebar)] hover:border-slate-300'
+                        ? isDark ? 'border-cyan-400 bg-cyan-400/[0.03] scale-[1.01]' : 'border-[var(--gold-dark)] bg-[var(--gold)]/10 scale-[1.01]' 
+                        : isDark ? 'border-white/10 bg-white/[0.01] hover:border-white/20' : 'border-[var(--gold)] bg-[#fffcf7] shadow-[inset_0_0_20px_rgba(160,120,64,0.05)] hover:bg-[var(--gold)]/10'
                     }`}
                     onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
                   >
-                    <span className="font-black text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 text-[9px] uppercase tracking-[0.3em] whitespace-nowrap transition-colors duration-700">Upload Resume</span>
+                    <div className={`flex items-center gap-2 relative z-10 transition-colors duration-700 ${
+                      isDark ? 'text-slate-400 group-hover:text-cyan-400' : 'text-[var(--gold-dark)]'
+                    }`}>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                      <span className="font-semibold text-[13px] whitespace-nowrap">
+                        Upload Resume
+                      </span>
+                    </div>
                     <input type="file" ref={fileInputRef} onChange={handleResumeUpload} className="hidden" accept=".pdf,.doc,.docx" />
                   </label>
                 )
@@ -449,7 +458,7 @@ const JobMatchOutlet = () => {
             </div>
             <div className="grid grid-cols-1 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={`init-skel-${i}`} className="relative bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-8 overflow-hidden">
+                <div key={`init-skel-${i}`} className={`relative border rounded-2xl p-8 overflow-hidden ${isDark ? 'bg-[var(--bg-sidebar)] border-[var(--border-color)]' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
                   <div className="absolute top-0 left-0 w-full h-[1px] bg-white/[0.05]" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-500/[0.02] to-transparent animate-shimmer-fast" style={{ backgroundSize: '200% 100%' }} />
 
@@ -491,7 +500,7 @@ const JobMatchOutlet = () => {
           <div className="mt-8 space-y-6">
             <div className="grid grid-cols-1 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={`load-skel-${i}`} className="relative bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-8 overflow-hidden">
+                <div key={`load-skel-${i}`} className={`relative border rounded-2xl p-8 overflow-hidden ${isDark ? 'bg-[var(--bg-sidebar)] border-[var(--border-color)]' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
                   <div className="absolute top-0 left-0 w-full h-[1px] bg-white/[0.05]" />
                   <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-${isDark ? 'cyan-500' : 'emerald-500'}/[0.03] to-transparent animate-shimmer-fast`} style={{ backgroundSize: '200% 100%' }} />
                   <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center relative z-10 opacity-40">
@@ -512,13 +521,13 @@ const JobMatchOutlet = () => {
               <div className="flex items-center gap-6">
                 {/* TAB SWITCHER */}
                 <div className={`flex items-center p-1 border rounded-xl backdrop-blur-md ${
-                  isDark ? 'bg-white/[0.03] border-white/5' : 'bg-[var(--bg-sidebar)] border-slate-200'
+                  isDark ? 'bg-white/[0.03] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
                 }`}>
                   <button
                     onClick={switchToAvailable}
                     className={`px-4 py-2 rounded-lg text-[12px] font-bold transition-all duration-500 ${activeTab === "available"
-                        ? isDark ? "bg-white/10 text-white shadow-lg" : "bg-[var(--bg-main)] text-slate-900 shadow"
-                        : isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-500 hover:text-slate-800"
+                        ? isDark ? "bg-white/10 text-white shadow-lg" : "bg-white text-[var(--gold-dark)] shadow-[0_4px_15px_rgba(160,120,64,0.1)] border border-[var(--gold)]/20"
+                        : isDark ? "text-slate-500 hover:text-slate-300" : "text-[var(--text-muted)] hover:text-[var(--gold-dark)]"
                       }`}
                   >
                     Available Jobs
@@ -535,8 +544,8 @@ const JobMatchOutlet = () => {
                     className={`px-4 py-2 rounded-lg text-[12px] font-bold transition-all duration-500 ${activeTab === "latest"
                         ? isDark
                           ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.1)]"
-                          : "bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 shadow-sm"
-                        : isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-500 hover:text-slate-800"
+                          : "bg-[var(--gold)]/10 text-[var(--gold-dark)] border border-[var(--gold)]/30 shadow-[0_4px_15px_rgba(160,120,64,0.05)]"
+                        : isDark ? "text-slate-500 hover:text-slate-300" : "text-[var(--text-muted)] hover:text-[var(--gold-dark)]"
                       }`}
                   >
                     Latest Jobs
@@ -556,7 +565,7 @@ const JobMatchOutlet = () => {
                   className={`flex items-center gap-2 px-4 py-2 border rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-95 ${
                     isDark 
                       ? "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border-cyan-500/20" 
-                      : "bg-[var(--bg-sidebar)] hover:bg-[var(--bg-main)] text-slate-800 border-slate-200 hover:border-slate-400/50 shadow-sm"
+                      : "bg-[#fffcf7] hover:bg-[var(--gold)]/10 text-[var(--text-main)] hover:text-[var(--gold-dark)] border-[var(--gold)]/20 hover:border-[var(--gold)]/40 shadow-[0_2px_10px_rgba(160,120,64,0.04)]"
                   }`}
                 >
                   {isFetchingApi ? (
@@ -578,7 +587,7 @@ const JobMatchOutlet = () => {
                   className={`rounded-xl px-4 py-2 text-[12px] font-bold focus:outline-none transition-all cursor-pointer border ${
                     isDark 
                       ? 'bg-[#080808] border-white/10 text-slate-300 focus:border-cyan-500/50' 
-                      : 'bg-[var(--bg-sidebar)] border-slate-200 text-slate-700 focus:border-emerald-500/50'
+                      : 'bg-[#fffcf7] border-[var(--gold)]/20 text-[var(--text-main)] focus:border-[var(--gold)]/40 shadow-[0_2px_10px_rgba(160,120,64,0.04)]'
                   }`}
                 >
                   <option value="latest">Sort: Newest First</option>
@@ -611,7 +620,7 @@ const JobMatchOutlet = () => {
               </div>
             ) : (
               <div className={`border p-16 rounded-2xl text-center max-w-2xl mx-auto flex flex-col items-center ${
-                isDark ? 'bg-white/[0.01] border-white/5' : 'bg-slate-50 border-slate-200'
+                isDark ? 'bg-white/[0.01] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
               }`}>
                 <h3 className="text-lg font-bold text-[var(--text-main)] mb-2">No Matches Found</h3>
                 <p className="text-[14px] text-[var(--text-muted)] font-medium max-w-xs leading-relaxed mb-8">Try adjusting your filters or search terms to find relevant job opportunities.</p>
@@ -628,7 +637,7 @@ const JobMatchOutlet = () => {
                   className={`px-6 py-2 border rounded-xl text-[12px] font-bold transition-all uppercase tracking-widest ${
                     isDark 
                       ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white' 
-                      : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
+                      : 'bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 border-[var(--gold)]/20 text-[var(--gold-dark)] hover:shadow-md'
                   }`}
                 >
                   Clear All Filters

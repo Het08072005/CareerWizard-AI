@@ -16,7 +16,7 @@ import JobMatchOutlet from "./components/JobMatchOutlet";
 import SkillGapOutlet from "./components/SkillGapOutlet";
 import InterviewPrepOutlet from "./components/InterviewPrepOutlet";
 import CareerRoadmapOutlet from "./components/CareerRoadmapOutlet";
-import AdminPanelOutlet from "./components/AdminPanelOutlet";
+import Admintaskpage from "./pages/internship/Admintaskpage";
 
 // Internship Portal System
 import InternshipLayout from "./pages/internship/InternshipLayout";
@@ -40,10 +40,14 @@ export default function App() {
   const location = useLocation();
 
   const hideNavbarRoutes = ['/', '/login', '/signup'];
+  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname) || 
+                           location.pathname.startsWith('/overview') || 
+                           location.pathname.startsWith('/internship') || 
+                           location.pathname.startsWith('/admin');
 
   return (
     <div>
-      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+      {!shouldHideNavbar && <Navbar />}
 
       <Routes>
         {/* PUBLIC ROUTES */}
@@ -100,7 +104,7 @@ export default function App() {
           </Route>
 
           {/* ADMIN PANEL */}
-          <Route path="/admin" element={<AdminPanelOutlet />} />
+          <Route path="/admin" element={<Admintaskpage />} />
         </Route>
 
         {/* GRACEFUL REDIRECTS FOR ANY PREVIOUS OVERVIEW-INTERNSHIP PATHS */}

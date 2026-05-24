@@ -1,6 +1,35 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const CircularScore = ({ score }) => {
+  const size = 76; // Increased size significantly for generous padding
+  const strokeWidth = 5;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (score / 100) * circumference;
+
+  return (
+    <div style={{ position: 'relative', width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        {/* Background Circle */}
+        <circle cx={size / 2} cy={size / 2} r={radius} stroke="var(--gold)" strokeWidth={strokeWidth} fill="none" opacity={0.2} />
+        {/* Progress Circle */}
+        <circle cx={size / 2} cy={size / 2} r={radius} stroke="var(--gold)" strokeWidth={strokeWidth} fill="none" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} style={{ transition: 'stroke-dashoffset 1s ease-in-out' }} />
+      </svg>
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline' }}>
+          <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 26, fontWeight: 700, color: 'var(--text-main)', lineHeight: 1 }}>
+            {score}
+          </span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--cw-muted)', marginLeft: 2 }}>
+            %
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const certificates = [
   {
     id: 1,
@@ -29,20 +58,20 @@ export default function InternshipCertificates() {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
 
       {/* MY CERTIFICATES */}
-      <div className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-sm">
-        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-[var(--border-color)]">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-[#16a34a] shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
-          </svg>
-          <span className="text-sm font-semibold text-[var(--text-main)]">My Certificates</span>
+      <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
+        <div className="cw-card-header">
+          <div className="cw-card-title">
+            <i className="fa-solid fa-certificate" />
+            My Certificates
+          </div>
         </div>
 
-        <div className="p-5 space-y-3">
+        <div className="space-y-4">
           {certificates.map(cert => (
-            <div key={cert.id} className="flex items-center gap-4 p-4 rounded-xl bg-emerald-500/[0.04] border border-emerald-500/20">
+            <div key={cert.id} className="group p-5 rounded-2xl border border-black/5 hover:border-[var(--gold)]/40 hover:bg-white bg-transparent hover:shadow-[0_8px_24px_rgba(160,120,64,0.08)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex items-center gap-4">
               {/* ICON */}
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-[#16a34a]" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
@@ -52,7 +81,7 @@ export default function InternshipCertificates() {
 
               {/* INFO */}
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-[var(--text-main)] leading-snug">{cert.title}</div>
+                <div className="text-[17px] font-extrabold text-[var(--text-main)] leading-snug" style={{ fontFamily: '"Cormorant Garamond", serif' }}>{cert.title}</div>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                   <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
@@ -85,9 +114,8 @@ export default function InternshipCertificates() {
               </div>
 
               {/* SCORE */}
-              <div className="text-right shrink-0">
-                <div className="text-3xl font-extrabold text-[#16a34a] leading-none">{cert.score}</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">out of 100</div>
+              <div className="shrink-0 flex items-center justify-center">
+                <CircularScore score={cert.score} />
               </div>
             </div>
           ))}
@@ -95,19 +123,19 @@ export default function InternshipCertificates() {
       </div>
 
       {/* IN PROGRESS */}
-      <div className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-sm">
-        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-[var(--border-color)]">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          <span className="text-sm font-semibold text-[var(--text-main)]">In progress</span>
+      <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
+        <div className="cw-card-header">
+          <div className="cw-card-title">
+            <i className="fa-solid fa-hourglass-half" />
+            In progress
+          </div>
         </div>
 
-        <div className="p-5 space-y-3">
+        <div className="space-y-4">
           {inProgress.map(item => (
-            <div key={item.id} className="flex items-center gap-4 p-4 rounded-xl border border-[var(--border-color)] bg-slate-50/50 dark:bg-white/[0.01]">
+            <div key={item.id} className="group p-5 rounded-2xl border border-black/5 hover:border-[var(--gold)]/40 hover:bg-white bg-transparent hover:shadow-[0_8px_24px_rgba(160,120,64,0.08)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex items-center gap-4">
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-[var(--text-main)]">{item.title}</div>
+                <div className="text-[17px] font-extrabold text-[var(--text-main)]" style={{ fontFamily: '"Cormorant Garamond", serif' }}>{item.title}</div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   {item.progress} / {item.total} tasks done · Avg score {item.avg_score} · On track for certificate
                 </div>

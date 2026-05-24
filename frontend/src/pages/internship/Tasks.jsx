@@ -34,7 +34,7 @@ export default function InternshipTasks() {
 
   return (
     <div className="space-y-6">
-      <div className="cw-card">
+      <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
         <div className="cw-card-header">
           <div className="cw-card-title">
             <i className="fa-solid fa-list-check" />
@@ -65,14 +65,14 @@ export default function InternshipTasks() {
             <div
               key={task.day}
               onClick={() => setSelectedTask(task)}
-              className="p-4 rounded-xl border border-white/5 hover:border-white/15 bg-white/[0.01] hover:bg-white/[0.03] transition flex items-center justify-between cursor-pointer"
+              className="p-4 rounded-xl border border-black/5 hover:border-[var(--gold)]/30 bg-transparent hover:bg-black/[0.02] transition flex items-center justify-between cursor-pointer"
             >
               <div className="flex items-center gap-4">
                 <div style={{
                   width: 38,
                   height: 38,
                   borderRadius: 8,
-                  background: task.status === 'done' ? 'rgba(22, 163, 74, 0.12)' : task.status === 'active' ? 'rgba(37, 99, 235, 0.12)' : 'rgba(255,255,255,0.03)',
+                  background: task.status === 'done' ? 'rgba(22, 163, 74, 0.12)' : task.status === 'active' ? 'rgba(37, 99, 235, 0.12)' : 'rgba(0,0,0,0.03)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

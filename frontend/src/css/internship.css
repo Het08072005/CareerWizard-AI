@@ -401,9 +401,9 @@ html.dark {
 }
 
 .cw-card-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  font-size: 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 800;
+  font-size: 18px;
   color: var(--cw-text);
   display: flex;
   align-items: center;
@@ -840,15 +840,16 @@ html.dark {
 
 .cw-modal-header {
   padding: 18px 22px;
-  border-b: 1px solid var(--cw-border);
+  border-bottom: 1px solid var(--cw-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .cw-modal-title {
-  font-size: 16px;
-  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--cw-text);
 }
 

@@ -9,7 +9,7 @@ const genericResources = [
 
 export default function InternshipResources() {
   return (
-    <div className="cw-card">
+    <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
       <div className="cw-card-header">
         <div className="cw-card-title">
           <i className="fa-solid fa-cloud-arrow-down" />
@@ -26,7 +26,7 @@ export default function InternshipResources() {
           <div
             key={idx}
             onClick={() => alert(`Starting download for ${res.name}...`)}
-            className="p-4 rounded-xl border border-white/5 hover:border-white/10 bg-white/[0.01] hover:bg-white/[0.02] transition flex items-center justify-between cursor-pointer"
+            className="p-4 rounded-xl border border-black/5 hover:border-[var(--gold)]/30 bg-transparent hover:bg-black/[0.02] transition flex items-center justify-between cursor-pointer"
           >
             <div className="flex items-center gap-4">
               <div style={{
@@ -43,7 +43,7 @@ export default function InternshipResources() {
                 <i className={`fa-solid ${res.icon}`} />
               </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700 }}>{res.name}</div>
+                <div style={{ fontSize: 17, fontWeight: 800, fontFamily: '"Cormorant Garamond", serif' }}>{res.name}</div>
                 <div style={{ fontSize: 11, color: 'var(--cw-muted)', marginTop: 2 }}>{res.type} · Ready to download</div>
               </div>
             </div>

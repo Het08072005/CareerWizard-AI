@@ -25,7 +25,7 @@ export default function InternshipProjects() {
 
   return (
     <div className="space-y-6">
-      <div className="cw-card">
+      <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
         <div className="cw-card-header">
           <div className="cw-card-title">
             <i className="fa-solid fa-folder-open" />
@@ -38,10 +38,10 @@ export default function InternshipProjects() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {projects.map((p, idx) => (
-            <div key={idx} className="p-5 rounded-2xl border border-white/5 bg-white/[0.01] space-y-4">
+            <div key={idx} className="p-5 rounded-2xl border border-black/5 bg-transparent space-y-4 hover:border-[var(--gold)]/30 hover:bg-black/[0.02] transition">
               <div className="flex justify-between items-start">
                 <div>
-                  <div style={{ fontSize: 16, fontWeight: 800 }}>{p.name}</div>
+                  <div style={{ fontSize: 20, fontWeight: 800, fontFamily: '"Cormorant Garamond", serif' }}>{p.name}</div>
                   <div style={{ fontSize: 12, color: 'var(--cw-muted)', marginTop: 2 }}>{p.stack} · {p.target}</div>
                 </div>
                 <span className="cw-badge cw-badge-purple">My Project</span>

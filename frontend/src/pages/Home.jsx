@@ -34,12 +34,12 @@ const Home = () => {
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
 
-    // Trail Canvas Logic
+    // Original Precise Trail Logic
     const trailCanvas = document.getElementById('trail-canvas');
     let trailCtx;
     let trailFrameId;
     let trailPath = [];
-    const maxAge = 40; // frames before a point disappears
+    const maxAge = 35; // Frames before point vanishes (faster fade)
     let lastMousePos = { x: mx, y: my };
 
     const handleMouseMove = (e) => {
@@ -50,7 +50,7 @@ const Home = () => {
         dot.style.left = mx + 'px';
         dot.style.top = my + 'px';
       }
-      // Add exact point to trail
+      // Add exact point to trail directly under mouse
       trailPath.push({ x: mx, y: my, age: 0 });
     };
 
@@ -67,21 +67,16 @@ const Home = () => {
 
       const animateTrail = () => {
         trailCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
-        
-        // Add a stationary point if the mouse isn't moving to keep the trail smooth at the end
-        if (trailPath.length === 0 || (trailPath[trailPath.length - 1].x !== lastMousePos.x || trailPath[trailPath.length - 1].y !== lastMousePos.y)) {
-           // We only push moving points from mousemove, but to prevent hard stops, 
-           // the age loop handles it.
-        }
 
         // Age points
         for (let i = 0; i < trailPath.length; i++) {
           trailPath[i].age += 1;
         }
+        
         // Remove dead points
         trailPath = trailPath.filter(p => p.age < maxAge);
 
-        // Draw high-end smooth scratch line
+        // Draw exact path using High-Level Catmull-Rom Cubic Splines
         if (trailPath.length > 2) {
           trailCtx.globalCompositeOperation = 'source-over';
           trailCtx.lineCap = 'round';
@@ -89,29 +84,38 @@ const Home = () => {
           trailCtx.shadowBlur = 0; 
           trailCtx.shadowColor = 'transparent'; 
 
-          for (let i = 1; i < trailPath.length - 1; i++) {
-            const p0 = trailPath[i - 1];
-            const p1 = trailPath[i];
-            const p2 = trailPath[i + 1];
-            
-            const life = Math.max(0, 1 - (p1.age / maxAge)); 
-            const organicLife = Math.pow(life, 1.2); 
+          // Pad array for Catmull-Rom boundaries (requires 4 points per curve)
+          const pts = [trailPath[0], ...trailPath, trailPath[trailPath.length - 1]];
 
-            const midX = (p1.x + p2.x) / 2;
-            const midY = (p1.y + p2.y) / 2;
+          for (let i = 1; i < pts.length - 2; i++) {
+            const p0 = pts[i - 1];
+            const p1 = pts[i];
+            const p2 = pts[i + 1];
+            const p3 = pts[i + 2];
             
-            const startX = i === 1 ? p0.x : (p0.x + p1.x) / 2;
-            const startY = i === 1 ? p0.y : (p0.y + p1.y) / 2;
+            // Age calculation based on the actual point
+            const life = Math.max(0, 1 - (p1.age / maxAge)); 
+            const organicLife = Math.pow(life, 0.5); 
+
+            // High-Level Catmull-Rom to Cubic Bezier Formula
+            // This guarantees the curve passes exactly through the mouse coordinates
+            // creating mathematically perfect circles and infinite loops.
+            const tension = 0.5; // Optimal tension for exact path following
+            
+            const cp1x = p1.x + (p2.x - p0.x) * tension / 3;
+            const cp1y = p1.y + (p2.y - p0.y) * tension / 3;
+            const cp2x = p2.x - (p3.x - p1.x) * tension / 3;
+            const cp2y = p2.y - (p3.y - p1.y) * tension / 3;
 
             trailCtx.beginPath();
-            trailCtx.moveTo(startX, startY);
-            trailCtx.quadraticCurveTo(p1.x, p1.y, midX, midY);
+            trailCtx.moveTo(p1.x, p1.y);
+            trailCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
             
-            // Solid alpha prevents overlapping "dots" or "gaps" at the joints!
-            trailCtx.strokeStyle = `rgba(184, 142, 47, 1)`; 
+            // Light Gold
+            trailCtx.strokeStyle = `rgba(215, 185, 125, ${organicLife * 0.85})`; 
             
-            // The fade effect is purely handled by the line getting thinner until it vanishes
-            trailCtx.lineWidth = 1.0 * organicLife; 
+            // Extremely smooth precise width
+            trailCtx.lineWidth = 1.8 * organicLife; 
             trailCtx.stroke();
           }
         }
@@ -123,7 +127,7 @@ const Home = () => {
     const addHover = () => document.body.classList.add('cursor-hover');
     const removeHover = () => document.body.classList.remove('cursor-hover');
     const interactables = document.querySelectorAll('a, button, .feature-card, .intern-card, .roadmap-card, .pricing-card, .testimonial-card, .interview-feature, .company-logo-item, .dash-nav-item, .filter-pill, .dash-tab');
-    
+
     interactables.forEach(el => {
       el.addEventListener('mouseenter', addHover);
       el.addEventListener('mouseleave', removeHover);
@@ -139,7 +143,7 @@ const Home = () => {
     let ctx;
     let particles = [];
     let particlesFrameId;
-    
+
     if (canvas) {
       ctx = canvas.getContext('2d');
       const resizeCanvas = () => {
@@ -330,7 +334,7 @@ const Home = () => {
   return (
     <div className="home-container">
       {/* Scroll Progress Indicator */}
-      <div 
+      <div
         style={{
           position: 'fixed', top: 0, left: 0, height: '2px',
           background: 'linear-gradient(90deg, var(--gold-dark), var(--gold))',
@@ -349,7 +353,7 @@ const Home = () => {
       <div id="loader" className={isLoaded ? 'out' : ''}>
         <div className="loader-logo" style={{ position: 'relative', display: 'inline-block' }}>
           CareerWizard
-          <span style={{ 
+          <span style={{
             position: 'absolute',
             right: '-1.5rem',
             top: '0rem',
@@ -357,7 +361,7 @@ const Home = () => {
             fontWeight: 900,
             fontStyle: 'normal',
             letterSpacing: '0.1em',
-            color: 'var(--gold-dark)' 
+            color: 'var(--gold-dark)'
           }}>AI</span>
         </div>
         <div className="loader-bar-wrap"><div className="loader-bar"></div></div>

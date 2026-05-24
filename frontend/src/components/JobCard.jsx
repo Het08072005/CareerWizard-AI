@@ -27,7 +27,9 @@ const JobCard = ({ job }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className={`group relative bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6 transition-all duration-700 hover:shadow-md overflow-hidden ${
+      className={`group relative border rounded-2xl p-6 transition-all duration-700 hover:shadow-[0_8px_30px_rgba(160,120,64,0.08)] overflow-hidden ${
+        isDark ? 'bg-[var(--bg-sidebar)] border-[var(--border-color)]' : 'bg-[#fbf8f1] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
+      } ${
         isDark ? 'hover:border-white/20' : 'hover:border-slate-300'
       }`}
     >

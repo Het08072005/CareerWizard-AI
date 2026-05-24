@@ -11,7 +11,7 @@ const events = [
 export default function InternshipSummary() {
   return (
     <div className="space-y-6">
-      <div className="cw-card">
+      <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
         <div className="cw-card-header">
           <div className="cw-card-title">
             <i className="fa-solid fa-clock-rotate-left" />
@@ -36,12 +36,12 @@ export default function InternshipSummary() {
                 background: '#16a34a',
                 border: '2px solid var(--cw-white)'
               }} />
-              <div className="flex-1 p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-                <div className="flex justify-between items-center">
-                  <div style={{ fontSize: 14, fontWeight: 700 }}>Day {ev.day} — {ev.title}</div>
+              <div className="flex-1 pb-6 pt-1">
+                <div className="flex justify-between items-start">
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--cw-text)' }}>Day {ev.day} — {ev.title}</div>
                   <span className="cw-badge cw-badge-green">Score: {ev.score}/100</span>
                 </div>
-                <p style={{ fontSize: 12, color: 'var(--cw-muted)', marginTop: 4 }}>
+                <p style={{ fontSize: 13, color: 'var(--cw-text2)', marginTop: 4, lineHeight: 1.5 }}>
                   Verified successfully via automated secure blockchain credential checks. Excellent work conforming to API specs!
                 </p>
               </div>

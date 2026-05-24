@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import QuestionCard from './QuestionCard';
 import { ThemeContext } from '../../context/ThemeContext';
-import { ArrowLeftIcon, CodeIcon, ServerIcon, MessageSquareIcon, SparklesIcon, BookIcon } from '../ui/Icons';
+import { ArrowLeftIcon, CodeIcon, ServerIcon, MessageSquareIcon, SparklesIcon, DocumentIcon } from '../ui/Icons';
 
 const AdvancedPrep = ({
     role, progressPercent, completedCount, totalCount, questions, loading, toggleComplete,
@@ -13,7 +13,7 @@ const AdvancedPrep = ({
 
     const categoryIcons = {
         'All Questions': SparklesIcon,
-        'Fundamentals': BookIcon,
+        'Fundamentals': DocumentIcon,
         'Coding': CodeIcon,
         'System Design': ServerIcon,
         'Behavioral': MessageSquareIcon,
@@ -29,7 +29,7 @@ const AdvancedPrep = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className={`relative mb-4 p-4 rounded-xl border transition-colors duration-500 ${
-                    isDark ? 'bg-white/[0.01] border-white/[0.04]' : 'bg-[var(--bg-sidebar)] border-slate-200 shadow-sm'
+                    isDark ? 'bg-white/[0.01] border-white/[0.04]' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
                 } overflow-hidden`}
             >
                 <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
@@ -39,9 +39,9 @@ const AdvancedPrep = ({
                             <div className="w-10 h-10 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-black dark:text-white">
                                 <SparklesIcon size={18} />
                              </div>
-                             <h2 className="text-lg font-semibold tracking-tight leading-none text-black dark:text-white">
-                                 {role}
-                             </h2>
+                             <h2 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-3xl font-bold tracking-tight leading-none text-[var(--text-main)]">
+                                {role}
+                            </h2>
                          </div>
  
                          <div className={`h-10 w-[1px] hidden md:block ${isDark ? 'bg-white/[0.06]' : 'bg-slate-200'}`} />
@@ -70,25 +70,25 @@ const AdvancedPrep = ({
                     <button
                         type="button"
                         onClick={onRoleChange}
-                        className={`group w-9 h-9 flex items-center justify-center border rounded-full transition-all duration-300 ${
+                        className={`group px-4 h-9 flex items-center justify-center gap-2 border rounded-full transition-all duration-300 ${
                             isDark 
-                                ? 'bg-white/[0.02] hover:bg-white/[0.05] border-white/[0.06] hover:border-indigo-500/30' 
-                                : 'bg-[var(--bg-main)] hover:bg-slate-200 border-slate-200 hover:border-indigo-500/30'
+                                ? 'bg-white/[0.02] hover:bg-white/[0.05] border-white/[0.06] hover:border-[var(--gold)]/30' 
+                                : 'bg-[#fffcf7] hover:bg-[#f8f5f0] border-[var(--gold)]/20 hover:border-[var(--gold)]/50 shadow-sm'
                         }`}
                         title="Return to Selection"
                     >
-                        <ArrowLeftIcon size={13} className="group-hover:-translate-x-1 transition-transform duration-300 text-slate-500 group-hover:text-indigo-500" />
+                        <ArrowLeftIcon size={13} className="group-hover:-translate-x-0.5 transition-transform duration-300 text-[var(--gold)]" />
+                        <span className="text-[12.5px] font-bold tracking-wide text-slate-600 dark:text-slate-300 group-hover:text-[#1a1d20] transition-colors">Back</span>
                     </button>
                 </div>
             </motion.div>
 
-            {/* Categories Hub: Flat Tabs like Image 1 */}
             <div className={`mb-6 border-b flex overflow-x-auto scrollbar-none ${
-                isDark ? 'border-white/[0.05]' : 'border-slate-100'
+                isDark ? 'border-white/[0.05]' : 'border-slate-200/80'
             }`}>
                 <div className="flex gap-6 md:gap-8 pb-px">
                     {displayCategories.map((cat, idx) => {
-                        const CatIcon = categoryIcons[cat] || BookIcon;
+                        const CatIcon = categoryIcons[cat] || DocumentIcon;
                         const isActive = selectedCategory === cat;
                         const count = cat === 'All Questions' ? totalQuestionsForRole : counts[cat] || 0;
 
@@ -96,31 +96,26 @@ const AdvancedPrep = ({
                             <button
                                 key={`cat-${cat}-${idx}`}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`group relative flex items-center gap-2 pb-3 text-left select-none outline-none border-b-2 transition-all duration-200 ${
+                                className={`group relative flex items-center gap-2 pb-3 text-left select-none outline-none border-b-[2px] transition-all duration-300 ${
                                     isActive
-                                        ? 'border-black text-black dark:border-white dark:text-white font-medium'
-                                        : 'border-transparent text-slate-500 hover:text-black dark:text-slate-400 dark:hover:text-white'
+                                        ? 'border-[#1a1d20] dark:border-white text-[#1a1d20] dark:text-white font-semibold'
+                                        : 'border-transparent text-slate-500 hover:border-[#a07840]/60'
                                 }`}
                             >
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                    <CatIcon size={10} className={`flex-shrink-0 transition-colors duration-200 ${
+                                <div className="flex items-center min-w-0">
+                                    <span style={{ fontFamily: '"Cormorant Garamond", serif' }} className={`text-[15px] md:text-[16px] font-bold tracking-wide truncate transition-colors duration-300 ${
                                         isActive 
-                                            ? 'text-black dark:text-white' 
-                                            : 'text-slate-400 group-hover:text-black dark:text-slate-500 dark:group-hover:text-white'
-                                    }`} />
-                                    <span className={`text-[11px] font-medium tracking-tight truncate ${
-                                        isActive 
-                                            ? 'text-black dark:text-white' 
-                                            : 'text-slate-500 group-hover:text-black dark:text-slate-400 dark:group-hover:text-white'
+                                            ? 'text-[#1a1d20] dark:text-white' 
+                                            : 'text-[#735b3c] group-hover:text-[#a07840] dark:text-[#a07840]'
                                     }`}>
                                         {cat.replace(' Questions', '')}
                                     </span>
                                 </div>
 
-                                <span className={`text-[10px] font-bold tracking-tight px-2 py-0.5 rounded-full transition-colors duration-200 ${
+                                <span className={`text-[10px] md:text-[11px] font-extrabold tracking-tight px-2 py-0.5 rounded-full transition-all duration-300 ${
                                     isActive 
-                                        ? 'bg-black text-white dark:bg-white dark:text-black' 
-                                        : 'bg-slate-100 text-slate-600 dark:bg-white/[0.08] dark:text-slate-300'
+                                        ? 'bg-[#1a1d20] text-[#ffffff] dark:bg-white dark:text-[#1a1d20] shadow-sm' 
+                                        : 'bg-[#735b3c]/10 text-[#735b3c] dark:bg-[#a07840]/10 dark:text-[#a07840] group-hover:bg-[#a07840]/15 group-hover:text-[#a07840]'
                                 }`}>
                                     {count}
                                 </span>
@@ -132,23 +127,7 @@ const AdvancedPrep = ({
 
             {/* Content List */}
             <div className="w-full relative">
-                <div className={`flex items-center justify-between mb-5 border-b pb-3.5 ${
-                    isDark ? 'border-white/[0.04]' : 'border-slate-200'
-                }`}>
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-600 tracking-wider uppercase">Target Phase:</span>
-                            <span className="text-[13px] font-bold text-[var(--text-main)]">{selectedCategory}</span>
-                        </div>
-                        <div className={`h-4 w-[1px] ${isDark ? 'bg-white/[0.06]' : 'bg-slate-200'}`} />
-                        <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-600 tracking-wider uppercase">Available Payload:</span>
-                            <span className="text-[13px] font-bold text-black dark:text-white">{questions.length} Nodes</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="space-y-6">
+                <div className="space-y-6 mt-4">
                     <AnimatePresence mode="popLayout" initial={false}>
                         {loading ? (
                             <motion.div
@@ -159,7 +138,7 @@ const AdvancedPrep = ({
                             >
                                 {[1, 2, 3, 4].map((_, idx) => (
                                     <div key={`skeleton-${idx}`} className={`relative h-24 w-full border rounded-2xl overflow-hidden ${
-                                        isDark ? 'bg-[#080808] border-white/[0.04]' : 'bg-[var(--bg-sidebar)] border-slate-200'
+                                        isDark ? 'bg-[#080808] border-white/[0.04]' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
                                     }`}>
                                         <motion.div
                                             animate={{

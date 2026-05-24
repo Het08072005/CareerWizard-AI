@@ -7,34 +7,20 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
   const [open, setOpen] = useState(true);
   const { isDark } = useContext(ThemeContext);
 
-  const colorMap = {
-    cyan: "bg-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.4)] border-cyan-500/30",
-    indigo: "bg-indigo-500/40 shadow-[0_0_12px_rgba(99,102,241,0.4)] border-indigo-500/30",
-    fuchsia: "bg-fuchsia-500/40 shadow-[0_0_12px_rgba(217,70,239,0.4)] border-fuchsia-500/30",
-    amber: "bg-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.4)] border-amber-500/30",
-    emerald: "bg-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.4)] border-emerald-500/30",
-  };
 
-  const hoverBorders = {
-    cyan: isDark ? "hover:border-cyan-500/30" : "hover:border-cyan-500/50 hover:shadow-md",
-    indigo: isDark ? "hover:border-indigo-500/30" : "hover:border-indigo-500/50 hover:shadow-md",
-    fuchsia: isDark ? "hover:border-fuchsia-500/30" : "hover:border-fuchsia-500/50 hover:shadow-md",
-    amber: isDark ? "hover:border-amber-500/30" : "hover:border-amber-500/50 hover:shadow-md",
-    emerald: isDark ? "hover:border-emerald-500/30" : "hover:border-emerald-500/50 hover:shadow-md",
-  };
 
   return (
-    <div className={`backdrop-blur-3xl rounded-xl p-3 md:p-4 border transition-all duration-500 ${
-      isDark ? "bg-[#0A0A0A] border-white/5" : "bg-[var(--bg-sidebar)] border-slate-200"
-    } ${hoverBorders[color] || (isDark ? "hover:border-white/10" : "hover:border-slate-300")} group/milestone relative overflow-hidden`}>
+    <div className={`rounded-xl p-3 md:p-4 border transition-all duration-500 ${
+      isDark ? "bg-[#0A0A0A] border-white/5 hover:border-white/10" : "bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:border-[var(--gold)]/40 hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)]"
+    } group/milestone relative overflow-hidden`}>
       
       {/* Left Beam - Extended and Joined to Divider */}
-      <div className={`absolute left-0 top-0 w-[1.5px] h-[84px] ${colorMap[color].split(" shadow")[0] || colorMap.cyan.split(" shadow")[0]} group-hover/milestone:opacity-100 opacity-60 transition-opacity duration-700`}>
-        <div className={`absolute inset-0 ${colorMap[color]?.split(" border")[0] || colorMap.cyan.split(" border")[0]} blur-md opacity-50 animate-pulse`}></div>
+      <div className={`absolute left-0 top-0 w-[1.5px] h-[84px] bg-[var(--gold)]/80 group-hover/milestone:opacity-100 opacity-60 transition-opacity duration-700`}>
+        <div className={`absolute inset-0 bg-[var(--gold)] blur-md opacity-50 animate-pulse`}></div>
       </div>
 
       {/* Right Minor Light */}
-      <div className={`absolute right-0 top-4 w-[1px] h-10 ${colorMap[color]?.split(" border")[0] || colorMap.cyan.split(" border")[0]} opacity-0 group-hover/milestone:opacity-20 transition-opacity duration-700 blur-[0.5px]`}></div>
+      <div className={`absolute right-0 top-4 w-[1px] h-10 bg-[var(--gold)]/60 opacity-0 group-hover/milestone:opacity-20 transition-opacity duration-700 blur-[0.5px]`}></div>
 
       <div className="absolute top-0 right-0 w-24 h-24 bg-white/[0.01] rounded-bl-2xl pointer-events-none transition-colors"></div>
 
@@ -45,23 +31,27 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center text-sm border transition-all duration-500
               ${data.completeFlag
-                ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20"
+                ? "bg-[var(--gold)]/10 text-[var(--gold-dark)] border-[var(--gold)]/20 shadow-[0_0_8px_rgba(160,120,64,0.15)]"
                 : isDark 
                   ? "bg-white/[0.01] text-slate-700 border-white/5 group-hover/milestone:border-white/20"
                   : "bg-[var(--bg-main)] text-slate-400 border-slate-200 group-hover/milestone:border-slate-300"}
             `}
           >
-            {data.completeFlag ? "✓" : "○"}
+            {data.completeFlag ? (
+              <span className="font-bold text-[14px]">✓</span>
+            ) : (
+              <div className="w-1.5 h-1.5 rounded-full bg-current opacity-40"></div>
+            )}
           </div>
 
           <div>
-            <h4 className="font-bold text-base text-[var(--text-main)] tracking-tight mb-0.5 transition-colors duration-500">{data.title}</h4>
+            <h4 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="font-bold text-[18px] text-[var(--text-main)] tracking-tight mb-0.5 transition-colors duration-500">{data.title}</h4>
             <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-600 flex flex-wrap items-center gap-3 uppercase tracking-wider">
               <span className="flex items-center">
                 <svg className="w-3 h-3 mr-1.5 text-slate-400 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 {data.duration}
               </span>
-              {data.completeFlag && <span className="text-emerald-600 dark:text-emerald-400/80 font-semibold">Synced</span>}
+              {data.completeFlag && <span className="text-[var(--gold)] font-semibold">Synced</span>}
             </div>
           </div>
         </div>
@@ -70,17 +60,27 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
         <div className="flex items-center gap-2 w-full sm:w-auto justify-end mt-2 sm:mt-0">
           <button
             onClick={() => onTogglePhaseComplete(data.index)}
-            className={`h-8 px-3.5 rounded-md text-[9px] font-semibold uppercase tracking-widest transition-all border 
+            className={`h-8 px-3.5 rounded-md text-[12px] font-semibold transition-all border flex items-center justify-center gap-1.5
               ${data.completeFlag
                 ? isDark
                   ? "bg-white/[0.03] text-slate-400 border-white/10 hover:bg-white/[0.05]"
                   : "bg-[var(--bg-main)] text-slate-500 border-slate-200 hover:bg-slate-200/50"
                 : isDark
                   ? "bg-white/[0.03] text-slate-500 border-white/5 hover:bg-white/[0.05] hover:text-white"
-                  : "bg-slate-200/40 text-slate-600 border-slate-200 hover:bg-slate-200/70 hover:text-slate-800"}
+                  : "bg-[var(--gold)]/10 text-[var(--gold-dark)] border-[var(--gold)]/20 hover:bg-[var(--gold)]/20 hover:text-[var(--text-main)]"}
             `}
           >
-            {data.completeFlag ? "Reset" : "Finalize"}
+            {data.completeFlag ? (
+              <>
+                <span>✗</span>
+                Incomplete
+              </>
+            ) : (
+              <>
+                <span>✓</span>
+                Complete
+              </>
+            )}
           </button>
 
           <button
@@ -112,10 +112,10 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
           >
             {/* Divider surgically joined to the beam */}
             <div className={`h-[1px] w-auto -mx-3 md:-mx-4 mb-4 opacity-40 ${
-              isDark ? (colorMap[color]?.split(" ")[0] || "bg-white/10") : "bg-slate-200"
+              isDark ? "bg-[var(--gold)]/30" : "bg-[var(--gold)]/50"
             }`} />
 
-            <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
+            <h5 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="font-bold text-[18px] tracking-widest text-[var(--gold-dark)] mb-3">
               Detailed Requirements
             </h5>
 
@@ -138,7 +138,7 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
               transition={{ duration: 0.5 }}
               className={`mt-4 pt-4 border-t ${isDark ? 'border-white/5' : 'border-slate-150'}`}
             >
-              <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
+              <h5 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="font-bold text-[18px] tracking-widest text-[var(--gold-dark)] mb-3">
                 Core Protocols
               </h5>
 
@@ -146,10 +146,10 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
                 {data.proTips?.map((tip, i) => (
                   <motion.div
                     key={i}
-                    className={`p-1.5 px-3 rounded-lg text-[9px] flex items-center leading-relaxed font-medium tracking-wide border ${
+                    className={`p-2 px-4 rounded-lg text-[13px] flex items-center leading-relaxed font-medium tracking-wide border ${
                       isDark 
                         ? "bg-white/[0.01] border-white/[0.03] text-slate-400" 
-                        : "bg-[var(--bg-main)] border-slate-100 text-slate-600"
+                        : "bg-[var(--bg-main)] border-[var(--gold)]/20 shadow-[0_2px_8px_rgba(160,120,64,0.03)] text-slate-600"
                     }`}
                   >
                     <div className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 mr-3 flex-shrink-0"></div>
@@ -169,15 +169,15 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
               <div className={`p-4 rounded-xl border group/proj transition-all duration-500 ${
                 isDark 
                   ? "bg-white/[0.01] border-white/5 hover:border-white/10" 
-                  : "bg-[var(--bg-main)]/50 border-slate-200 hover:border-slate-300"
+                  : "bg-[var(--bg-main)] border-[var(--gold)]/20 shadow-[0_4px_15px_rgba(160,120,64,0.03)] hover:border-[var(--gold)]/40 hover:shadow-md"
               }`}>
-                <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
-                  Artifact Development
+                <h5 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="font-bold text-[18px] tracking-widest text-[var(--gold-dark)] mb-3">
+                  Project Ideas
                 </h5>
-                <ul className="space-y-2 text-[9px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-600">
+                <ul className="space-y-2 text-[13px] text-slate-600 dark:text-slate-500 font-medium tracking-wide">
                   {data.projectIdeas?.map((p, i) => (
                     <li key={i} className="flex items-start group-hover/proj:text-[var(--text-main)] transition-colors">
-                      <span className="text-slate-400 dark:text-slate-500 mr-2">/</span>
+                      <div className="w-1 h-1 rounded-full bg-[var(--gold)]/40 mt-1.5 mr-2.5 flex-shrink-0"></div>
                       {p}
                     </li>
                   ))}
@@ -187,15 +187,15 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
               <div className={`p-4 rounded-xl border group/yt transition-all duration-500 ${
                 isDark 
                   ? "bg-white/[0.01] border-white/5 hover:border-white/10" 
-                  : "bg-[var(--bg-main)]/50 border-slate-200 hover:border-slate-300"
+                  : "bg-[var(--bg-main)] border-[var(--gold)]/20 shadow-[0_4px_15px_rgba(160,120,64,0.03)] hover:border-[var(--gold)]/40 hover:shadow-md"
               }`}>
-                <h5 className="font-semibold text-[10px] uppercase tracking-widest text-slate-500 mb-2">
-                  Intelligence Sync
+                <h5 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="font-bold text-[18px] tracking-widest text-[var(--gold-dark)] mb-3">
+                  YouTube Channels
                 </h5>
-                <ul className="space-y-2 text-[11px] text-slate-500 dark:text-slate-600 font-medium tracking-wide">
+                <ul className="space-y-2 text-[13px] text-slate-600 dark:text-slate-500 font-medium tracking-wide">
                   {data.ytChannels?.map((c, i) => (
                     <li key={i} className="flex items-start group-hover/yt:text-[var(--text-main)] transition-colors">
-                      <span className="text-slate-400 dark:text-slate-500 mr-2">/</span>
+                      <div className="w-1 h-1 rounded-full bg-[var(--gold)]/40 mt-1.5 mr-2.5 flex-shrink-0"></div>
                       {c}
                     </li>
                   ))}

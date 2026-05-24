@@ -40,21 +40,21 @@ const RoleSelection = ({ roles, onSelect }) => {
         <div className="w-full text-[var(--text-main)] min-h-screen bg-transparent p-4 md:px-8 py-5 selection:bg-indigo-500/30">
             <div className="w-full max-w-[1500px] mx-auto relative z-10">
                 {/* Editorial Header */}
-                <motion.div
+                <motion.header
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                    className="mb-8 border-b border-[var(--border-color)] pb-5 flex flex-col md:flex-row items-end justify-between gap-8"
+                    className="mb-14 flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-[var(--border-color)] pb-10 relative"
                 >
-                    <div className="flex flex-col gap-2">
-                        <h2 className="text-2xl font-bold tracking-tight leading-none cursor-default">
+                    <div className="flex flex-col gap-2 group">
+                        <h2 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-4xl font-bold text-[var(--text-main)] tracking-tight leading-none transition-all duration-700 group-hover:tracking-normal cursor-default">
                             Select your domain
                         </h2>
-                        <p className="text-[12px] text-[var(--text-muted)] font-medium tracking-tight max-w-lg leading-relaxed opacity-90">
+                        <p className="text-[13px] text-[var(--text-muted)] font-medium tracking-wide max-w-xl opacity-90">
                             Configure your specialized interview environment for precise AI-driven preparation.
                         </p>
                     </div>
-                </motion.div>
+                </motion.header>
 
                 {/* Role Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full pb-16">
@@ -67,11 +67,11 @@ const RoleSelection = ({ roles, onSelect }) => {
                                 variants={cardVariants}
                                 initial="hidden"
                                 whileInView="visible"
-                                viewport={{ once: false, amount: 0.15 }}
+                                viewport={{ once: true, amount: 0.15 }}
                                 whileTap={{ scale: 0.99 }}
                                 onClick={() => onSelect(r.name)}
-                                className={`group relative flex flex-col items-start p-6 border rounded-xl overflow-hidden text-left shadow-sm transition-colors duration-300 ${
-                                    isDark ? 'bg-[#080808] border-white/[0.04]' : 'bg-[var(--bg-sidebar)] border-[var(--border-color)]'
+                                className={`group relative flex flex-col items-start p-6 border rounded-xl overflow-hidden text-left shadow-sm transition-all duration-500 hover:-translate-y-1 ${
+                                    isDark ? 'bg-[#080808] border-white/[0.04]' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:border-[var(--gold)]/40'
                                 }`}
                             >
                                 {/* Header Row: Freestanding Icon and Title */}
@@ -81,7 +81,7 @@ const RoleSelection = ({ roles, onSelect }) => {
                                     </div>
 
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="font-bold text-[15px] tracking-tight text-[var(--text-main)] leading-tight truncate">
+                                        <h3 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="font-bold text-[19px] tracking-tight text-[var(--text-main)] leading-tight truncate">
                                             {r.name.replace(/ \(.+\)/, '')}
                                         </h3>
                                         <p className="text-[9px] text-[var(--text-muted)] font-bold tracking-wider uppercase opacity-80 mt-0.5">

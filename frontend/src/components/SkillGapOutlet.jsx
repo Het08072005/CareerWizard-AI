@@ -92,7 +92,7 @@ const SkillGapOutlet = () => {
         {view === "hub" && (
           <motion.header variants={itemVariants} className="mb-14 flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-[var(--border-color)] pb-10 relative">
             <div className="flex flex-col gap-2 group">
-              <h1 className="text-4xl font-semibold text-[var(--text-main)] tracking-tight leading-none transition-all duration-700 group-hover:tracking-normal cursor-default">
+              <h1 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-4xl font-bold text-[var(--text-main)] tracking-tight leading-none transition-all duration-700 group-hover:tracking-normal cursor-default">
                 Career Roadmaps
               </h1>
               <p className="text-[13px] text-[var(--text-muted)] font-medium tracking-wide max-w-xl opacity-90">
@@ -117,37 +117,33 @@ const SkillGapOutlet = () => {
                     variants={itemVariants}
                     whileHover={{ y: -4, scale: 1.01 }}
                     onClick={() => openRole(r.key)}
-                    className={`group relative border rounded-xl p-5 transition-all duration-700 cursor-pointer overflow-hidden shadow-sm ${
-                      isDark 
-                        ? 'bg-[#080808] border-white/5 hover:border-white/10 hover:shadow-xl' 
-                        : 'bg-[var(--bg-sidebar)] border-slate-200/60 hover:border-slate-300 hover:shadow-md'
-                    }`}
+                    className={`group relative border rounded-xl p-5 transition-all duration-700 cursor-pointer overflow-hidden shadow-sm ${isDark
+                        ? 'bg-[#080808] border-white/5 hover:border-white/10 hover:shadow-xl'
+                        : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:border-[var(--gold)]/40 hover:shadow-md'
+                      }`}
                   >
                     <div className={`absolute top-0 left-0 w-full h-[1px] ${isDark ? 'bg-white/5 group-hover:bg-cyan-500/15' : 'bg-slate-150 group-hover:bg-emerald-500/15'} transition-all duration-700`} />
                     <div className={`absolute inset-0 bg-gradient-to-br from-${isDark ? 'cyan' : 'emerald'}-500/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
 
                     {/* Header Row: Icon & Title */}
                     <div className="flex items-center gap-3.5 mb-4">
-                      <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-700 border ${
-                        isDark 
-                          ? 'bg-white/[0.02] border-white/5 group-hover:border-cyan-500/30' 
-                          : 'bg-slate-50 border-slate-200 group-hover:border-emerald-500/30'
-                      }`}>
-                        <IconComponent size={20} className={`transition-colors duration-700 ${
-                          isDark ? 'text-slate-500 group-hover:text-cyan-400' : 'text-slate-400 group-hover:text-emerald-600'
-                        }`} />
+                      <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-700 border ${isDark
+                          ? 'bg-white/[0.02] border-white/5 group-hover:border-cyan-500/30'
+                          : 'bg-[var(--gold)]/5 border-[var(--gold)]/20 group-hover:border-[var(--gold)]/40'
+                        }`}>
+                        <IconComponent size={20} className={`transition-colors duration-700 ${isDark ? 'text-slate-500 group-hover:text-cyan-400' : 'text-slate-400 group-hover:text-emerald-600'
+                          }`} />
                       </div>
-                      
+
                       <div className="flex-1 min-w-0">
-                        <h3 className={`text-[16px] font-bold tracking-tight transition-colors duration-700 truncate ${
-                          isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-800 group-hover:text-emerald-600'
-                        }`}>{r.title}</h3>
+                        <h3 style={{ fontFamily: '"Cormorant Garamond", serif' }} className={`text-[19px] font-bold tracking-tight transition-colors duration-700 truncate ${isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-800 group-hover:text-[var(--gold-dark)]'
+                          }`}>{r.title}</h3>
                         <p className="text-[10px] text-[var(--text-muted)] opacity-75 font-semibold">
                           Career Roadmap
                         </p>
                       </div>
                     </div>
-                    
+
                     <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal leading-relaxed mb-4 h-9 line-clamp-2">
                       {r.path}
                     </p>
@@ -165,11 +161,10 @@ const SkillGapOutlet = () => {
 
                     <button
                       onClick={(e) => { e.stopPropagation(); openRole(r.key); }}
-                      className={`w-full h-10 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all duration-500 shadow-sm relative z-20 ${
-                        isDark 
-                          ? 'bg-white text-black hover:bg-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]' 
+                      className={`w-full h-10 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all duration-500 shadow-sm relative z-20 ${isDark
+                          ? 'bg-white text-black hover:bg-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]'
                           : 'bg-[#0f172a] text-white hover:bg-emerald-600 hover:shadow-[0_0_15px_rgba(22,163,74,0.3)]'
-                      }`}
+                        }`}
                     >
                       Start Now
                     </button>
@@ -184,25 +179,23 @@ const SkillGapOutlet = () => {
                   variants={itemVariants}
                   whileHover={{ y: -4, scale: 1.01 }}
                   onClick={() => openRole("interview")}
-                  className={`group relative border rounded-xl p-5 transition-all duration-700 cursor-pointer overflow-hidden shadow-sm ${
-                    isDark 
-                      ? 'bg-[#080808] border-indigo-500/20 hover:border-indigo-500/40 hover:shadow-xl' 
-                      : 'bg-[var(--bg-sidebar)] border-indigo-200/60 hover:border-indigo-300 hover:shadow-md'
-                  }`}
+                  className={`group relative border rounded-xl p-5 transition-all duration-700 cursor-pointer overflow-hidden shadow-sm ${isDark
+                      ? 'bg-[#080808] border-indigo-500/20 hover:border-indigo-500/40 hover:shadow-xl'
+                      : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:border-[var(--gold)]/40 hover:shadow-md'
+                    }`}
                 >
                   <div className={`absolute top-0 left-0 w-full h-[1px] ${isDark ? 'bg-indigo-500/30' : 'bg-indigo-300'}`} />
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.01] to-transparent pointer-events-none" />
 
                   {/* Header Row: Icon & Title */}
                   <div className="flex items-center gap-3.5 mb-4">
-                    <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-700 border ${
-                      isDark ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
-                    }`}>
+                    <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-700 border ${isDark ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+                      }`}>
                       <BriefcaseIcon size={20} className="text-indigo-500" />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[16px] font-bold text-[var(--text-main)] tracking-tight truncate">Master the Interview</h3>
+                      <h3 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-[19px] font-bold text-[var(--text-main)] tracking-tight truncate">Master the Interview</h3>
                       <p className="text-[10px] text-indigo-500 font-bold tracking-wider uppercase">Preparation Set</p>
                     </div>
                   </div>
@@ -222,11 +215,10 @@ const SkillGapOutlet = () => {
 
                   <button
                     onClick={(e) => { e.stopPropagation(); openRole("interview"); }}
-                    className={`w-full h-10 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all duration-500 shadow-sm relative z-20 ${
-                      isDark
+                    className={`w-full h-10 text-[10px] font-semibold uppercase tracking-widest rounded-lg transition-all duration-500 shadow-sm relative z-20 ${isDark
                         ? 'bg-indigo-600 text-white hover:bg-indigo-400 hover:shadow-[0_0_15px_rgba(129,140,248,0.3)]'
                         : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-[0_0_15px_rgba(79,70,229,0.3)]'
-                    }`}
+                      }`}
                   >
                     Start Preparation
                   </button>
@@ -236,53 +228,47 @@ const SkillGapOutlet = () => {
 
             {/* Premium Info Tip boxes */}
             <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 pt-10 border-t ${isDark ? 'border-white/5' : 'border-slate-200'}`}>
-              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-sm ${
-                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[var(--bg-sidebar)] border-slate-200 hover:border-slate-300'
-              }`}>
+              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
+                }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-indigo-500/30 group-hover:bg-indigo-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-700 ${
-                    isDark ? 'bg-indigo-500/5 border-indigo-500/10 group-hover:bg-indigo-500/10' : 'bg-indigo-50 border-indigo-200'
-                  }`}>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-700 ${isDark ? 'bg-indigo-500/5 border-indigo-500/10 group-hover:bg-indigo-500/10' : 'bg-indigo-50 border-indigo-200'
+                    }`}>
                     <DocumentMagnifyingGlassIcon size={20} className="text-indigo-500" />
                   </div>
                   <div>
-                    <h4 className="text-[13px] font-semibold text-[var(--text-main)] tracking-wide mb-1">Structured Learning</h4>
+                    <h4 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-[17px] font-bold text-[var(--text-main)] tracking-wide mb-1">Structured Learning</h4>
                     <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal">Proven roadmap archives.</p>
                   </div>
                 </div>
               </motion.div>
 
-              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-sm ${
-                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[var(--bg-sidebar)] border-slate-200 hover:border-slate-300'
-              }`}>
+              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
+                }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-cyan-500/30 group-hover:bg-cyan-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-700 ${
-                    isDark ? 'bg-cyan-500/5 border-cyan-500/10 group-hover:bg-cyan-500/10' : 'bg-cyan-50 border-cyan-200'
-                  }`}>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-700 ${isDark ? 'bg-cyan-500/5 border-cyan-500/10 group-hover:bg-cyan-500/10' : 'bg-cyan-50 border-cyan-200'
+                    }`}>
                     <TrendingUpIcon size={20} className="text-cyan-500" />
                   </div>
                   <div>
-                    <h4 className="text-[13px] font-semibold text-[var(--text-main)] tracking-wide mb-1">Track Progress</h4>
+                    <h4 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-[17px] font-bold text-[var(--text-main)] tracking-wide mb-1">Track Progress</h4>
                     <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal">Goal and phase analytics.</p>
                   </div>
                 </div>
               </motion.div>
 
-              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-sm ${
-                isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[var(--bg-sidebar)] border-slate-200 hover:border-slate-300'
-              }`}>
+              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
+                }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-emerald-500/30 group-hover:bg-emerald-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-700 ${
-                    isDark ? 'bg-emerald-500/5 border-emerald-500/10 group-hover:bg-emerald-500/10' : 'bg-emerald-50 border-emerald-200'
-                  }`}>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-700 ${isDark ? 'bg-emerald-500/5 border-emerald-500/10 group-hover:bg-emerald-500/10' : 'bg-emerald-50 border-emerald-200'
+                    }`}>
                     <BoltIcon size={20} className="text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="text-[13px] font-semibold text-[var(--text-main)] tracking-wide mb-1">Expert Tips</h4>
-                    <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal">Industry insider advice.</p>
+                    <h4 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-[17px] font-bold text-[var(--text-main)] tracking-wide mb-1">Expert Tips</h4>
+                    <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal">Best practices to follow.</p>
                   </div>
                 </div>
               </motion.div>
@@ -300,17 +286,15 @@ const SkillGapOutlet = () => {
                 onBack={goBack}
               />
             ) : (
-              <div className={`flex flex-col items-center justify-center py-20 border rounded-3xl ${
-                isDark ? 'bg-[#080808] border-white/5' : 'bg-[var(--bg-sidebar)] border-slate-200'
-              }`}>
+              <div className={`flex flex-col items-center justify-center py-20 border rounded-3xl ${isDark ? 'bg-[#080808] border-white/5' : 'bg-[var(--bg-sidebar)] border-slate-200'
+                }`}>
                 <p className="text-[var(--text-muted)] font-bold uppercase tracking-widest text-sm mb-6">Roadmap content not found</p>
                 <button
                   onClick={goBack}
-                  className={`px-8 py-3 font-bold uppercase tracking-[0.3em] text-[10px] rounded-xl transition-all duration-500 border ${
-                    isDark 
-                      ? 'bg-white text-black hover:bg-cyan-500 hover:text-white border-transparent' 
+                  className={`px-8 py-3 font-bold uppercase tracking-[0.3em] text-[10px] rounded-xl transition-all duration-500 border ${isDark
+                      ? 'bg-white text-black hover:bg-cyan-500 hover:text-white border-transparent'
                       : 'bg-slate-900 text-white hover:bg-emerald-600 border-transparent'
-                  }`}
+                    }`}
                 >
                   Return to Hub
                 </button>

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  UsersIcon, 
-  ClipboardDocumentCheckIcon, 
-  ClockIcon, 
+import {
+  UsersIcon,
+  ClipboardDocumentCheckIcon,
+  ClockIcon,
   AcademicCapIcon,
   ListBulletIcon,
   PencilSquareIcon,
@@ -20,7 +20,7 @@ import {
 export default function AdminPanelOutlet() {
   const [activeTab, setActiveTab] = useState('create');
   const [step, setStep] = useState(1);
-  
+
   // Step 1 State
   const [domain, setDomain] = useState("Web Development");
   const [plan, setPlan] = useState("15-Day Internship");
@@ -58,20 +58,20 @@ export default function AdminPanelOutlet() {
   ]);
 
   const addConcept = () => {
-    if(!newConcept.trim()) return;
+    if (!newConcept.trim()) return;
     setConcepts([...concepts, { name: newConcept, desc: '', usage: '' }]);
     setNewConcept("");
   };
 
   const addResource = () => {
-    if(!newResTitle.trim()) return;
+    if (!newResTitle.trim()) return;
     setResources([...resources, { title: newResTitle, url: newResUrl, type: newResType }]);
     setNewResTitle("");
     setNewResUrl("");
   };
 
   const addRequirement = () => {
-    if(!newReq.trim()) return;
+    if (!newReq.trim()) return;
     setRequirements([...requirements, newReq]);
     setNewReq("");
   };
@@ -103,7 +103,7 @@ export default function AdminPanelOutlet() {
   const renderStepIndicator = () => (
     <div className="flex items-center justify-between mb-8 relative w-full">
       <div className="absolute left-0 right-0 top-1/2 h-[2px] bg-slate-200 dark:bg-white/10 -z-10 -translate-y-1/2"></div>
-      
+
       {[
         { num: 1, label: 'Domain & Plan' },
         { num: 2, label: 'Task Type' },
@@ -114,10 +114,9 @@ export default function AdminPanelOutlet() {
         const isDone = step > s.num;
         return (
           <div key={s.num} className="flex flex-col items-center gap-2 bg-[var(--bg-main)] px-4 sm:px-8">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[13px] font-bold transition-all ${
-              isActive ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(147,51,234,0.4)] border-2 border-[var(--bg-main)]' : 
-              isDone ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-white/30 border border-slate-200 dark:border-white/10'
-            }`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[13px] font-bold transition-all ${isActive ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(147,51,234,0.4)] border-2 border-[var(--bg-main)]' :
+                isDone ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-white/30 border border-slate-200 dark:border-white/10'
+              }`}>
               {isDone ? <CheckCircleIcon className="w-5 h-5" /> : s.num}
             </div>
             <span className={`text-[10px] sm:text-[11px] font-bold tracking-widest uppercase ${isActive ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`}>
@@ -136,7 +135,7 @@ export default function AdminPanelOutlet() {
           <div className="w-8 h-8 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center">1</div>
           Initialize Track Details
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2">Domain / Track</label>
@@ -156,7 +155,7 @@ export default function AdminPanelOutlet() {
             </select>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2">Day Number</label>
@@ -183,7 +182,7 @@ export default function AdminPanelOutlet() {
         </div>
 
         <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-white/5">
-          <button 
+          <button
             disabled={!title || !dayNumber}
             onClick={() => setStep(2)}
             className="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-[13px] flex items-center gap-2 transition-all shadow-[0_4px_16px_rgba(147,51,234,0.3)] hover:shadow-[0_4px_24px_rgba(147,51,234,0.4)] hover:-translate-y-0.5"
@@ -206,7 +205,7 @@ export default function AdminPanelOutlet() {
         <p className="text-[13px] text-slate-500 dark:text-slate-400">Choose how this day is formatted. A Learning Day focuses on concepts, while a Task Day is a hands-on assignment.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div 
+          <div
             onClick={() => setTaskType('learning')}
             className={`cursor-pointer rounded-2xl p-6 border-2 transition-all relative overflow-hidden group ${taskType === 'learning' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 shadow-[0_0_24px_rgba(59,130,246,0.15)]' : 'border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] hover:border-blue-300'}`}
           >
@@ -218,7 +217,7 @@ export default function AdminPanelOutlet() {
             <p className="text-[12px] text-slate-500 dark:text-slate-400 leading-relaxed">Concepts, explanations, how-to-use guides, video resources, and practical examples. Best for theory-heavy topics.</p>
           </div>
 
-          <div 
+          <div
             onClick={() => setTaskType('task')}
             className={`cursor-pointer rounded-2xl p-6 border-2 transition-all relative overflow-hidden group ${taskType === 'task' ? 'border-orange-500 bg-orange-50 dark:bg-orange-500/10 shadow-[0_0_24px_rgba(249,115,22,0.15)]' : 'border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] hover:border-orange-300'}`}
           >
@@ -235,7 +234,7 @@ export default function AdminPanelOutlet() {
           <button onClick={() => setStep(1)} className="px-5 py-2.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-white rounded-xl font-bold text-[13px] flex items-center gap-2 transition-all">
             <ChevronLeftIcon className="w-4 h-4" /> Back
           </button>
-          <button 
+          <button
             disabled={!taskType}
             onClick={() => setStep(3)}
             className="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-[13px] flex items-center gap-2 transition-all shadow-[0_4px_16px_rgba(147,51,234,0.3)] hover:-translate-y-0.5"
@@ -255,12 +254,12 @@ export default function AdminPanelOutlet() {
         <h3 className="text-[15px] font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
           <BookOpenIcon className="w-6 h-6 text-blue-500 bg-blue-50 dark:bg-blue-500/10 p-1 rounded-md" /> Concepts to Cover
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {concepts.map((c, i) => (
             <div key={i} className="flex items-center justify-between bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 p-4 rounded-xl">
               <div className="flex items-center gap-3">
-                <div className="w-7 h-7 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center text-[12px] font-bold shrink-0">{i+1}</div>
+                <div className="w-7 h-7 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center text-[12px] font-bold shrink-0">{i + 1}</div>
                 <div className="text-[13px] font-bold text-slate-700 dark:text-white">{c.name}</div>
               </div>
               <button onClick={() => {
@@ -282,7 +281,7 @@ export default function AdminPanelOutlet() {
         <h3 className="text-[15px] font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
           <VideoCameraIcon className="w-6 h-6 text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 p-1 rounded-md" /> Recommended Resources
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {resources.map((r, i) => (
             <div key={i} className="flex items-center gap-3 bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 p-3 rounded-xl">
@@ -310,7 +309,7 @@ export default function AdminPanelOutlet() {
       <div className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl p-6 sm:p-8">
         <label className="block text-[12px] font-bold uppercase tracking-widest text-slate-500 mb-2">Learning Outcomes (Markdown Support)</label>
         <textarea rows={4} value={outcomes} onChange={e => setOutcomes(e.target.value)} className="w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 rounded-xl px-4 py-4 text-[13px] outline-none text-slate-800 dark:text-white focus:border-purple-500 transition-colors resize-none font-mono" placeholder="By the end of this day, students will be able to..."></textarea>
-        
+
         <div className="flex justify-between pt-6 mt-4 border-t border-slate-100 dark:border-white/5">
           <button onClick={() => setStep(2)} className="px-5 py-2.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-white rounded-xl font-bold text-[13px] flex items-center gap-2 transition-all">
             <ChevronLeftIcon className="w-4 h-4" /> Back
@@ -337,7 +336,7 @@ export default function AdminPanelOutlet() {
         <h3 className="text-[15px] font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
           <ClipboardDocumentCheckIcon className="w-6 h-6 text-purple-500 bg-purple-50 dark:bg-purple-500/10 p-1 rounded-md" /> Requirements / Checklist
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {requirements.map((r, i) => (
             <div key={i} className="flex items-center gap-3 bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 p-3 rounded-xl">
@@ -370,11 +369,11 @@ export default function AdminPanelOutlet() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 flex items-center gap-1.5"><PhotoIcon className="w-4 h-4 text-slate-400"/> Task Image / Pipeline URL</label>
+            <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 flex items-center gap-1.5"><PhotoIcon className="w-4 h-4 text-slate-400" /> Task Image / Pipeline URL</label>
             <input type="text" value={imageUrl} onChange={e => setImageUrl(e.target.value)} className="w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-[13px] outline-none text-slate-800 dark:text-white focus:border-orange-500 transition-colors" placeholder="https://image.url/diagram.png" />
           </div>
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 flex items-center gap-1.5"><VideoCameraIcon className="w-4 h-4 text-slate-400"/> YouTube Reference Link</label>
+            <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2 flex items-center gap-1.5"><VideoCameraIcon className="w-4 h-4 text-slate-400" /> YouTube Reference Link</label>
             <input type="text" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} className="w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-[13px] outline-none text-slate-800 dark:text-white focus:border-orange-500 transition-colors" placeholder="https://youtube.com/watch?v=..." />
           </div>
         </div>
@@ -401,7 +400,7 @@ export default function AdminPanelOutlet() {
     <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
       <div className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl p-8 mb-6 relative overflow-hidden">
         <div className={`absolute top-0 right-0 w-48 h-48 rounded-bl-full opacity-5 ${taskType === 'learning' ? 'bg-blue-500' : 'bg-orange-500'}`}></div>
-        
+
         <div className="flex items-center gap-5 mb-8">
           <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white shadow-lg ${taskType === 'learning' ? 'bg-blue-500 shadow-[0_4px_20px_rgba(59,130,246,0.3)]' : 'bg-orange-500 shadow-[0_4px_20px_rgba(249,115,22,0.3)]'}`}>
             {taskType === 'learning' ? <BookOpenIcon className="w-7 h-7" /> : <BoltIcon className="w-7 h-7" />}
@@ -422,7 +421,7 @@ export default function AdminPanelOutlet() {
           <p className="text-[14px] text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
             {shortDesc || 'No description provided.'}
           </p>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {taskType === 'learning' ? (
               <>
@@ -501,13 +500,13 @@ export default function AdminPanelOutlet() {
 
       {/* TABS */}
       <div className="flex border-b border-slate-200 dark:border-white/10 mb-8 w-full">
-        <button 
+        <button
           onClick={() => setActiveTab('create')}
           className={`px-8 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'create' ? 'border-purple-600 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
         >
           ➕ Create New Task
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('tasks')}
           className={`px-8 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'tasks' ? 'border-purple-600 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
         >
@@ -561,8 +560,8 @@ export default function AdminPanelOutlet() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 mr-4 border border-slate-200 dark:border-white/10">{t.difficulty}</span>
-                      <button className="p-2.5 text-slate-400 hover:text-blue-500 transition-colors bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl shadow-sm hover:shadow-md"><PencilSquareIcon className="w-4 h-4"/></button>
-                      <button onClick={() => setAdminTasks(adminTasks.filter(x => x.id !== t.id))} className="p-2.5 text-slate-400 hover:text-red-500 transition-colors bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl shadow-sm hover:shadow-md"><TrashIcon className="w-4 h-4"/></button>
+                      <button className="p-2.5 text-slate-400 hover:text-blue-500 transition-colors bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl shadow-sm hover:shadow-md"><PencilSquareIcon className="w-4 h-4" /></button>
+                      <button onClick={() => setAdminTasks(adminTasks.filter(x => x.id !== t.id))} className="p-2.5 text-slate-400 hover:text-red-500 transition-colors bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl shadow-sm hover:shadow-md"><TrashIcon className="w-4 h-4" /></button>
                     </div>
                   </div>
                 ))}

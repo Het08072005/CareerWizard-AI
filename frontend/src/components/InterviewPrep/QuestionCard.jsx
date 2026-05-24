@@ -1,50 +1,26 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeContext } from '../../context/ThemeContext';
-import { StickyNoteIcon, SparklesIcon, CodeIcon, ChevronDownIcon } from '../ui/Icons';
+import { StickyNoteIcon, SparklesIcon, CodeIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '../ui/Icons';
 
 const AnimatedCheck = ({ checked, isDark }) => {
     return (
-        <div className={`relative w-[22px] h-[22px] rounded-full border-[1.5px] transition-all duration-300 flex items-center justify-center ${
+        <div className={`relative w-6 h-6 rounded-full transition-all duration-300 flex items-center justify-center ${
             checked
                 ? isDark
-                    ? 'bg-emerald-500/15 border-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.15)] text-emerald-400'
-                    : 'bg-emerald-50 border-emerald-500 text-emerald-600'
+                    ? 'text-emerald-400 bg-emerald-500/10'
+                    : 'text-emerald-600 bg-emerald-50'
                 : isDark 
-                    ? 'bg-transparent border-white/20 hover:border-emerald-500 hover:bg-emerald-500/5'
-                    : 'bg-white border-slate-300 hover:border-emerald-500 hover:bg-emerald-50'
+                    ? 'text-slate-500 hover:text-emerald-400'
+                    : 'text-slate-400 hover:text-emerald-600'
         }`}>
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                className="w-3.5 h-3.5 relative z-10"
-                stroke="currentColor"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
-                <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{
-                        pathLength: checked ? 1 : 0,
-                        opacity: checked ? 1 : 0
-                    }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    d="M5 13l4 4L19 7"
-                    className={checked ? (isDark ? 'text-emerald-400' : 'text-emerald-600') : 'text-transparent'}
-                />
-            </svg>
-            <AnimatePresence>
-                {checked && (
-                    <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1.3, opacity: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className="absolute inset-0 rounded-full border border-emerald-500/40 pointer-events-none"
-                    />
-                )}
-            </AnimatePresence>
+            {checked ? (
+                <CheckCircleIcon size={18} />
+            ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                </svg>
+            )}
         </div>
     );
 };
@@ -105,8 +81,8 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
             animate={{ opacity: 1, y: 0 }}
             className={`group relative border transition-all duration-300 rounded-xl overflow-hidden ${
                 isDark 
-                    ? 'bg-[#0c0c0e] border-white/[0.05] hover:border-white/[0.1]' 
-                    : 'bg-white border-slate-200/80 shadow-sm hover:border-slate-300 hover:shadow-md'
+                    ? 'bg-[#080808] border-white/5 hover:border-white/10 hover:shadow-xl' 
+                    : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:border-[var(--gold)]/40 hover:shadow-md'
             }`}
         >
             <div className="p-3.5 md:p-4.5 relative z-10">
@@ -120,7 +96,7 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
                             <AnimatedCheck checked={question.completed} isDark={isDark} />
                         </button>
 
-                        <h4 className="text-[14px] md:text-[15px] font-medium tracking-tight text-[var(--text-main)] transition-all duration-300">
+                        <h4 className="text-[16px] md:text-[17px] font-semibold tracking-tight text-[var(--text-main)] transition-all duration-300 leading-snug">
                             {question.title}
                         </h4>
                     </div>
@@ -143,14 +119,14 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
                     <button
                         type="button"
                         onClick={() => setShowAnswer(!showAnswer)}
-                        className={`flex items-center gap-1.5 px-3.5 py-1.5 h-8 rounded-lg border text-[11px] font-bold tracking-tight transition-all duration-300 outline-none select-none ${
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 h-8 md:h-9 rounded-lg border text-[12px] md:text-[13px] font-bold tracking-tight transition-all duration-300 outline-none select-none ${
                             showAnswer
                                 ? isDark 
                                     ? 'bg-white/10 border-white/20 text-white shadow-sm' 
-                                    : 'bg-black border-black text-white shadow-sm'
+                                    : 'bg-[#0f172a] border-[#0f172a] text-white shadow-sm'
                                 : isDark
                                     ? 'bg-white/[0.02] border-white/[0.05] text-slate-400 hover:border-white/[0.1] hover:text-white hover:bg-white/[0.04]'
-                                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900 hover:bg-slate-100'
+                                    : 'bg-white border-[var(--gold)]/20 text-slate-600 hover:border-[var(--gold)]/40 hover:text-slate-900 hover:bg-[#fffcf7] shadow-sm'
                         }`}
                     >
                         <ChevronDownIcon size={10} className={`transition-transform duration-300 ${showAnswer ? 'rotate-180' : ''}`} />
@@ -160,14 +136,14 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
                     <button
                         type="button"
                         onClick={() => setShowNote(!showNote)}
-                        className={`flex items-center gap-1.5 px-3.5 py-1.5 h-8 rounded-lg border text-[11px] font-bold tracking-tight transition-all duration-300 outline-none select-none ${
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 h-8 md:h-9 rounded-lg border text-[12px] md:text-[13px] font-bold tracking-tight transition-all duration-300 outline-none select-none ${
                             currentNote
                                 ? isDark
                                     ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 shadow-sm'
                                     : 'bg-amber-50 border-amber-500/20 text-amber-700 shadow-sm'
                                 : isDark
                                     ? 'bg-white/[0.02] border-white/[0.05] text-slate-400 hover:border-white/[0.1] hover:text-white hover:bg-white/[0.04]'
-                                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900 hover:bg-slate-100'
+                                    : 'bg-white border-[var(--gold)]/20 text-slate-600 hover:border-[var(--gold)]/40 hover:text-slate-900 hover:bg-[#fffcf7] shadow-sm'
                         }`}
                     >
                         <StickyNoteIcon size={10} />
@@ -178,12 +154,12 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
                         type="button"
                         onClick={() => onExplainWithAI(question)}
                         disabled={question.ai_explanation_loading}
-                        className={`flex items-center gap-1.5 px-3.5 py-1.5 h-8 rounded-lg border text-[11px] font-bold tracking-tight transition-all duration-300 outline-none select-none ${
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 h-8 md:h-9 rounded-lg border text-[12px] md:text-[13px] font-bold tracking-tight transition-all duration-300 outline-none select-none ${
                             question.ai_explanation_loading
                                 ? 'opacity-40 cursor-not-allowed'
                                 : isDark
                                     ? 'bg-white/[0.02] border-white/[0.05] text-slate-400 hover:border-white/30 hover:text-white hover:bg-white/5'
-                                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-black hover:text-black hover:bg-slate-100'
+                                    : 'bg-white border-[var(--gold)]/20 text-slate-600 hover:border-[var(--gold)] hover:text-slate-900 hover:bg-[#fffcf7] shadow-sm'
                         }`}
                     >
                         <SparklesIcon size={10} className={question.ai_explanation_loading ? 'animate-spin text-black dark:text-white' : 'text-slate-400 group-hover:text-black dark:group-hover:text-white'} />
@@ -254,22 +230,22 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
                                                 <span className="text-[9px] font-black uppercase tracking-[0.5em]">Answer:</span>
                                             </div>
                                             <div className={`border rounded-lg overflow-hidden ${
-                                                isDark ? 'bg-[#040404] border-white/[0.02]' : 'bg-[var(--bg-main)] border-slate-200'
+                                                isDark ? 'bg-[#040404] border-white/[0.02]' : 'bg-white border-[var(--gold)]/20 shadow-sm'
                                             }`}>
                                                 <div
-                                                    className="text-[var(--text-main)] text-xs leading-relaxed prose max-w-none p-4 md:p-5 font-medium border-b border-white/[0.01]"
+                                                    className="text-[var(--text-main)] text-[15px] leading-[1.7] prose max-w-none p-4 md:p-6 font-medium border-b border-white/[0.01]"
                                                     dangerouslySetInnerHTML={{ __html: question.answer.explanation }}
                                                 />
                                                 {formattedCode && (
                                                     <div className={`p-4 md:p-5 border-t ${
-                                                        isDark ? 'bg-[#060608] border-white/[0.02]' : 'bg-[var(--bg-main)]/60 border-slate-200/50'
+                                                        isDark ? 'bg-[#060608] border-white/[0.02]' : 'bg-[#fffcf7] border-[var(--gold)]/20'
                                                     }`}>
                                                         <div className="flex items-center gap-2.5 mb-3 opacity-30">
                                                             <CodeIcon size={9} className="text-black dark:text-white" />
                                                             <span className="text-[8px] font-black uppercase tracking-[0.4em]">Code:</span>
                                                         </div>
                                                         <div className={`relative p-4 border rounded-lg ${
-                                                            isDark ? 'bg-black/40 border-white/[0.03]' : 'bg-[var(--bg-sidebar)] border-slate-200'
+                                                            isDark ? 'bg-black/40 border-white/[0.03]' : 'bg-[#fbf8f1] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
                                                         }`}>
                                                             <pre className="text-[10px] font-mono text-slate-800 dark:text-slate-200 leading-relaxed overflow-x-auto">
                                                                 <code>{formattedCode}</code>

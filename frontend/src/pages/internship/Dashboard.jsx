@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function InternshipDashboard() {
@@ -7,7 +7,25 @@ export default function InternshipDashboard() {
   const [gitLink, setGitLink] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedDay, setSelectedDay] = useState(6);
+  const [scoreCount, setScoreCount] = useState(0);
 
+  useEffect(() => {
+    let start = 0;
+    const target = 89;
+    const duration = 1500;
+    const increment = target / (duration / 16);
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        setScoreCount(target);
+        clearInterval(timer);
+      } else {
+        setScoreCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, []);
   const handleGitSubmit = (e) => {
     e.preventDefault();
     if (!gitLink) {
@@ -24,9 +42,9 @@ export default function InternshipDashboard() {
   return (
     <div className="space-y-6 pb-12 font-sans">
       {/* TOP BANNER / PROGRESS SECTION */}
-      <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] rounded-2xl shadow-sm relative overflow-hidden">
+      <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 rounded-2xl shadow-[0_8px_30px_rgba(160,120,64,0.06)] relative overflow-hidden">
         {/* Pills strip — subtle bg + bottom border */}
-        <div className="flex flex-wrap items-center gap-2 px-5 sm:px-7 py-3 bg-[var(--cw-bg2)]/40 border-b border-[var(--cw-border)]">
+        <div className="flex flex-wrap items-center gap-2 px-5 sm:px-7 pt-5 pb-0">
           <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 font-mono flex items-center gap-1.5">
             <i className="fa-solid fa-microchip text-[10px]" /> AI / ML Internship
           </span>
@@ -44,7 +62,7 @@ export default function InternshipDashboard() {
 
             {/* Left: Headline + subtitle */}
             <div className="flex-1">
-              <div className="text-[22px] sm:text-[26px] font-extrabold text-[var(--cw-text)] tracking-tight leading-snug font-sans">
+              <div className="text-[26px] sm:text-[30px] font-bold text-[var(--cw-text)] tracking-tight leading-snug" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
                 Build Real Projects & Improve your skills.
               </div>
               <div className="mt-4 pl-3 border-l-[3px] border-emerald-500">
@@ -55,7 +73,7 @@ export default function InternshipDashboard() {
             </div>
 
             {/* Right: Score Card */}
-            <div className="flex-shrink-0 bg-[var(--cw-bg2)]/40 border border-[var(--cw-border)] rounded-2xl px-8 py-5 shadow-sm min-w-[240px]">
+            <div className="flex-shrink-0 bg-[#fbf8f1] border border-[var(--cw-border)] rounded-2xl px-8 py-5 shadow-[0_4px_20px_rgba(160,120,64,0.06)] min-w-[240px]">
               {/* Header label */}
               <div className="text-[9px] font-black tracking-[0.22em] text-[var(--cw-muted)] uppercase font-mono mb-4 text-center">
                 Your Score
@@ -65,13 +83,15 @@ export default function InternshipDashboard() {
                 {/* Ring */}
                 <div className="relative w-[76px] h-[76px] flex-shrink-0">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" stroke="currentColor" className="text-[var(--cw-border)]" strokeWidth="9" fill="transparent" />
-                    <circle cx="50" cy="50" r="40" stroke="#10b981" strokeWidth="9" fill="transparent"
-                      strokeDasharray="251.3" strokeDashoffset="27.6" strokeLinecap="round" />
+                    <circle cx="50" cy="50" r="40" stroke="currentColor" className="text-[var(--gold)] opacity-20" strokeWidth="9" fill="transparent" />
+                    <circle cx="50" cy="50" r="40" stroke="var(--gold)" strokeWidth="9" fill="transparent"
+                      strokeDasharray="251.3" strokeDashoffset={251.3 - (251.3 * scoreCount) / 100} strokeLinecap="round"
+                      style={{ transition: 'stroke-dashoffset 0.1s linear' }} />
                   </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-[22px] font-black text-[var(--cw-text)] leading-none num-font">89</span>
-                    <span className="text-[9px] font-semibold text-[var(--cw-muted)] num-font leading-tight">/100</span>
+                  <div className="absolute inset-0 flex items-center justify-center pt-0.5 pl-1.5">
+                    <span className="text-[32px] text-[var(--cw-text)] leading-none italic" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
+                      {scoreCount}<span className="text-[14px] text-[var(--cw-muted)] ml-0.5">%</span>
+                    </span>
                   </div>
                 </div>
 
@@ -81,7 +101,7 @@ export default function InternshipDashboard() {
                 {/* Rank */}
                 <div className="flex flex-col items-start gap-0.5">
                   <div className="text-[9px] font-black tracking-[0.18em] text-[var(--cw-muted)] uppercase font-mono">Rank</div>
-                  <div className="text-[26px] font-black text-[var(--cw-text)] num-font leading-tight">#312</div>
+                  <div className="text-[28px] text-[var(--cw-text)] leading-tight tracking-tight italic" style={{ fontFamily: '"Cormorant Garamond", serif' }}>#312</div>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold border border-emerald-200">
                     ↑ Top 2%
                   </span>
@@ -119,7 +139,7 @@ export default function InternshipDashboard() {
                   {d}
                 </div>
               ))}
-              {[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].map(d => (
+              {[9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map(d => (
                 <div key={d} className="flex-shrink-0 w-8 h-8 rounded-lg bg-[var(--cw-bg2)] border border-[var(--cw-border)] flex items-center justify-center text-[11px] font-medium text-[var(--cw-muted)] opacity-40 cursor-not-allowed num-font">
                   {d}
                 </div>
@@ -140,19 +160,19 @@ export default function InternshipDashboard() {
 
       {/* 4 SUMMARY STATS TILES (Screenshot 2 bottom) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[var(--cw-white)] p-4 sm:p-5 rounded-2xl border border-[var(--cw-border)] shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg flex-shrink-0 border border-emerald-100">
-            <i className="fa-solid fa-check" />
+        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
+            <i className="fa-solid fa-clipboard-check" />
           </div>
           <div>
             <div className="text-xl sm:text-2xl font-bold text-[var(--cw-text)] leading-tight num-font tracking-tight">5</div>
             <div className="text-xs font-bold text-[var(--cw-muted)] mt-0.5">Tasks done</div>
-            <div className="text-[11px] font-bold text-emerald-600 mt-1 flex items-center gap-0.5 num-font">↑ 1 today</div>
+            <div className="text-[11px] font-bold text-[var(--gold)] mt-1 flex items-center gap-0.5 num-font opacity-90">↑ 1 today</div>
           </div>
         </div>
 
-        <div className="bg-[var(--cw-white)] p-4 sm:p-5 rounded-2xl border border-[var(--cw-border)] shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg flex-shrink-0 border border-amber-100">
+        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
             <i className="fa-solid fa-fire" />
           </div>
           <div>
@@ -162,8 +182,8 @@ export default function InternshipDashboard() {
           </div>
         </div>
 
-        <div className="bg-[var(--cw-white)] p-4 sm:p-5 rounded-2xl border border-[var(--cw-border)] shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg flex-shrink-0 border border-blue-100">
+        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
             <i className="fa-solid fa-calendar-day" />
           </div>
           <div>
@@ -173,8 +193,8 @@ export default function InternshipDashboard() {
           </div>
         </div>
 
-        <div className="bg-[var(--cw-white)] p-4 sm:p-5 rounded-2xl border border-[var(--cw-border)] shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg flex-shrink-0 border border-purple-100">
+        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
             <i className="fa-solid fa-trophy" />
           </div>
           <div>
@@ -189,9 +209,9 @@ export default function InternshipDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: ACTIVE TASK (7 COLS) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] rounded-2xl p-5 sm:p-6 shadow-sm">
+          <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 rounded-2xl p-5 sm:p-6 shadow-[0_8px_30px_rgba(160,120,64,0.06)]">
             <div className="flex justify-between items-center mb-3.5">
-              <div className="text-xs font-bold text-[var(--cw-text)] flex items-center gap-2 font-mono uppercase tracking-wide">
+              <div className="text-[15px] font-extrabold text-[var(--cw-text)] flex items-center gap-2 uppercase tracking-wide" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 800 }}>
                 <i className="fa-solid fa-clipboard-list text-base text-[var(--cw-muted)]" />
                 <span>Today's task — Day {selectedDay}</span>
               </div>
@@ -206,7 +226,7 @@ export default function InternshipDashboard() {
               </span>
             </div>
 
-            <div className="text-xl sm:text-2xl font-extrabold text-[var(--cw-text)] tracking-tight leading-snug mb-2.5 font-sans">
+            <div className="text-[22px] sm:text-[26px] font-bold text-[var(--cw-text)] tracking-tight leading-snug mb-2.5" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
               Build a REST API with JWT Authentication
             </div>
             <p className="text-xs sm:text-sm text-[var(--cw-text2)] leading-relaxed mb-5">
@@ -220,8 +240,8 @@ export default function InternshipDashboard() {
                   key={lvl}
                   onClick={() => setActiveLevel(lvl)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all capitalize flex items-center gap-1.5 ${activeLevel === lvl
-                      ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 font-extrabold'
-                      : 'text-[var(--cw-muted)] hover:text-[var(--cw-text)]'
+                    ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 font-extrabold'
+                    : 'text-[var(--cw-muted)] hover:text-[var(--cw-text)]'
                     }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${lvl === 'beginner' ? 'bg-emerald-400' : lvl === 'intermediate' ? 'bg-emerald-600' : 'bg-red-500'}`} />
@@ -231,12 +251,15 @@ export default function InternshipDashboard() {
             </div>
 
             {/* REQUIREMENTS BOX */}
-            <div className="bg-[var(--cw-bg2)] rounded-xl p-4 border-l-[3px] border-l-red-600 mb-5">
-              <div className="text-xs font-bold text-red-600 flex items-center gap-2 mb-2 tracking-wide uppercase font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping" />
+            <div className="bg-[#f2eee1] rounded-r-xl p-4 border-l-[3px] border-l-red-600 mb-4">
+              <div className="text-[16px] font-extrabold text-[var(--cw-text)] flex items-center gap-2.5 mb-3.5 tracking-wide" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 800 }}>
+                <div className="relative flex items-center justify-center">
+                  <span className="w-3.5 h-3.5 rounded-full bg-red-500 shadow-sm" />
+                  <span className="absolute w-3.5 h-3.5 rounded-full bg-red-500 animate-ping opacity-30" />
+                </div>
                 Advanced requirements
               </div>
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {[
                   'Full auth system with RBAC + rate limiting',
                   'Docker containerisation with docker-compose.yml',
@@ -244,8 +267,8 @@ export default function InternshipDashboard() {
                   'CI/CD pipeline via GitHub Actions (lint → test → deploy)',
                   'Live deployment to Railway or Render with env config'
                 ].map((req, idx) => (
-                  <div key={idx} className="text-xs font-medium text-[var(--cw-text2)] flex items-start gap-2">
-                    <span className="text-emerald-600 font-bold mt-0.5">→</span>
+                  <div key={idx} className="text-[13px] font-medium text-[var(--cw-text2)] flex items-start gap-2.5">
+                    <span className="text-[var(--cw-muted)] mt-0.5 text-sm">→</span>
                     <span>{req}</span>
                   </div>
                 ))}
@@ -262,7 +285,7 @@ export default function InternshipDashboard() {
             </div>
 
             {/* GITHUB SUBMISSION BOX FIX (Screenshot 3) */}
-            <div className="bg-[var(--cw-bg2)] border border-[var(--cw-border)] rounded-2xl p-4 sm:p-5 mb-6 shadow-inner">
+            <div className="bg-[#fbf8f1] border border-[var(--cw-border)] rounded-2xl p-4 sm:p-5 mb-6 shadow-sm">
               <div className="text-[11px] font-mono font-bold text-[var(--cw-muted)] uppercase tracking-wider mb-2.5 flex items-center gap-2">
                 <i className="fa-brands fa-github text-sm text-[var(--cw-text)]" /> SUBMIT GITHUB REPOSITORY LINK
               </div>
@@ -275,7 +298,7 @@ export default function InternshipDashboard() {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleGitSubmit} className="flex flex-col sm:flex-row gap-2 bg-[var(--cw-white)] border border-[var(--cw-border)] p-1 rounded-xl shadow-xs">
+                <form onSubmit={handleGitSubmit} className="flex flex-col sm:flex-row gap-2 bg-transparent border border-[var(--gold)]/20 p-1 rounded-xl shadow-[0_2px_10px_rgba(160,120,64,0.04)]">
                   <input
                     type="url"
                     className="flex-1 px-3 py-1.5 bg-transparent text-xs text-[var(--cw-text)] focus:outline-none font-mono"
@@ -311,8 +334,8 @@ export default function InternshipDashboard() {
         {/* RIGHT COLUMN: RESOURCES & CERTIFICATE (5 COLS) */}
         <div className="lg:col-span-5 space-y-6">
           {/* RESOURCES BOX */}
-          <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] p-5 sm:p-6 rounded-2xl shadow-sm">
-            <div className="text-base font-bold text-[var(--cw-text)] flex items-center gap-2 mb-4 font-sans">
+          <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 p-5 sm:p-6 rounded-2xl shadow-[0_8px_30px_rgba(160,120,64,0.06)]">
+            <div className="text-xl font-bold text-[var(--cw-text)] flex items-center gap-2 mb-4" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
               <i className="fa-solid fa-book-open text-[var(--cw-muted)]" /> Resources for today
             </div>
             <div className="space-y-2.5">
@@ -322,7 +345,7 @@ export default function InternshipDashboard() {
                 { title: 'Node Auth Starter Template', subtitle: 'GitHub · Clone ready', icon: 'fa-brands fa-github', bg: 'bg-blue-50 text-blue-600 border border-blue-100', link: 'https://github.com' },
                 { title: 'Download All Resources', subtitle: 'PDFs, Cheatsheets, Templates', icon: 'fa-solid fa-box-archive', bg: 'bg-purple-50 text-purple-600 border border-purple-100', link: '#' }
               ].map((res, idx) => (
-                <a key={idx} href={res.link} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--cw-border)] bg-[var(--cw-bg2)]/60 hover:bg-[var(--cw-bg2)] transition group shadow-xs">
+                <a key={idx} href={res.link} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--cw-border)] bg-[#f2eee1] hover:bg-[#eae4d3] transition group shadow-xs">
                   <div className="flex items-center gap-3.5">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${res.bg}`}>
                       <i className={res.icon} />
@@ -342,7 +365,7 @@ export default function InternshipDashboard() {
 
           {/* CERTIFICATE PROGRESS BOX */}
           <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-5 sm:p-6 shadow-sm relative overflow-hidden">
-            <div className="text-xs font-bold text-emerald-800 flex items-center gap-2 mb-2 uppercase tracking-wider font-mono">
+            <div className="text-[15px] font-extrabold text-emerald-800 flex items-center gap-2 mb-2 uppercase tracking-wider" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 800 }}>
               <i className="fa-solid fa-award text-base text-emerald-600" /> Certificate progress
             </div>
             <p className="text-xs text-emerald-900/80 leading-relaxed mb-5 font-medium">
@@ -371,58 +394,58 @@ export default function InternshipDashboard() {
 
       {/* BOTTOM SECTION — SUBMITTED TASKS TABLE (Screenshot 4) */}
       <div className="space-y-3.5 pt-2">
-        <div className="text-lg font-bold text-[var(--cw-text)] px-1 tracking-tight">Submitted tasks</div>
-        <div className="bg-[var(--cw-white)] border border-[var(--cw-border)] rounded-2xl shadow-sm overflow-hidden">
+        <div className="text-[26px] font-bold text-[var(--cw-text)] px-1 tracking-tight" style={{ fontFamily: '"Cormorant Garamond", serif' }}>Submitted tasks</div>
+        <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 rounded-2xl shadow-[0_8px_30px_rgba(160,120,64,0.06)] overflow-hidden">
           <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[650px]">
-            <thead>
-              <tr className="border-b border-[var(--cw-border)] text-[10px] font-mono tracking-wider text-[var(--cw-muted)] uppercase bg-[var(--cw-bg2)]/60">
-                <th className="py-3 pl-5 font-bold w-14">DAY</th>
-                <th className="py-3 font-bold">TASK</th>
-                <th className="py-3 font-bold text-center w-28">PHASE</th>
-                <th className="py-3 font-bold text-center w-24">SCORE</th>
-                <th className="py-3 font-bold text-center w-24">RESULT</th>
-                <th className="py-3 font-bold text-right pr-5 w-20">REVIEW</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--cw-border)] text-xs">
-              {[
-                { day: '01', title: 'HTML/CSS Responsive Landing Page', date: '5 days ago · github.com/het/day1', phase: 'Phase 1', score: 92 },
-                { day: '02', title: 'JavaScript Fetch API + DOM Manipulation', date: '4 days ago · github.com/het/day2', phase: 'Phase 1', score: 88 },
-                { day: '03', title: 'React Components + State Management', date: '3 days ago · github.com/het/day3', phase: 'Phase 1', score: 91 },
-                { day: '04', title: 'PostgreSQL Schema + CRUD Operations', date: '2 days ago · github.com/het/day4', phase: 'Phase 1', score: 78, isAmber: true },
-                { day: '05', title: 'Express Middleware + Error Handling', date: 'Yesterday · github.com/het/day5', phase: 'Phase 2', score: 94, isPurple: true }
-              ].map((sub, idx) => (
-                <tr key={idx} className="hover:bg-[var(--cw-bg2)]/40 transition group">
-                  <td className="py-3.5 pl-5 font-bold text-base text-[var(--cw-text)] num-font">{sub.day}</td>
-                  <td className="py-3.5">
-                    <div className="font-bold text-[var(--cw-text)] text-xs group-hover:text-emerald-600 transition">{sub.title}</div>
-                    <div className="text-[11px] text-[var(--cw-muted)] font-mono mt-0.5">{sub.date}</div>
-                  </td>
-                  <td className="py-3.5 text-center">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold font-mono border ${sub.isPurple ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                      {sub.phase}
-                    </span>
-                  </td>
-                  <td className="py-3.5 text-center">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono border shadow-xs num-font ${sub.isAmber ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
-                      {sub.score}
-                    </span>
-                  </td>
-                  <td className="py-3.5 text-center">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold font-mono border ${sub.isAmber ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200'}`}>
-                      PASS
-                    </span>
-                  </td>
-                  <td className="py-3.5 text-right pr-5">
-                    <button onClick={() => alert(`Opening repository and feedback for Day ${sub.day}...`)} className="text-blue-600 group-hover:text-blue-800 font-bold text-xs inline-flex items-center gap-1 transition">
-                      View →
-                    </button>
-                  </td>
+            <table className="w-full text-left border-collapse min-w-[650px]">
+              <thead>
+                <tr className="border-b border-[var(--cw-border)] text-[10px] font-mono tracking-wider text-[var(--cw-muted)] uppercase bg-[var(--cw-bg2)]/60">
+                  <th className="py-3 pl-5 font-bold w-14">DAY</th>
+                  <th className="py-3 font-bold">TASK</th>
+                  <th className="py-3 font-bold text-center w-28">PHASE</th>
+                  <th className="py-3 font-bold text-center w-24">SCORE</th>
+                  <th className="py-3 font-bold text-center w-24">RESULT</th>
+                  <th className="py-3 font-bold text-right pr-5 w-20">REVIEW</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-[var(--cw-border)] text-xs">
+                {[
+                  { day: '01', title: 'HTML/CSS Responsive Landing Page', date: '5 days ago · github.com/het/day1', phase: 'Phase 1', score: 92 },
+                  { day: '02', title: 'JavaScript Fetch API + DOM Manipulation', date: '4 days ago · github.com/het/day2', phase: 'Phase 1', score: 88 },
+                  { day: '03', title: 'React Components + State Management', date: '3 days ago · github.com/het/day3', phase: 'Phase 1', score: 91 },
+                  { day: '04', title: 'PostgreSQL Schema + CRUD Operations', date: '2 days ago · github.com/het/day4', phase: 'Phase 1', score: 78, isAmber: true },
+                  { day: '05', title: 'Express Middleware + Error Handling', date: 'Yesterday · github.com/het/day5', phase: 'Phase 2', score: 94, isPurple: true }
+                ].map((sub, idx) => (
+                  <tr key={idx} className="hover:bg-[var(--cw-bg2)]/40 transition group">
+                    <td className="py-3.5 pl-5 font-bold text-base text-[var(--cw-text)] num-font">{sub.day}</td>
+                    <td className="py-3.5">
+                      <div className="font-bold text-[var(--cw-text)] text-xs group-hover:text-emerald-600 transition">{sub.title}</div>
+                      <div className="text-[11px] text-[var(--cw-muted)] font-mono mt-0.5">{sub.date}</div>
+                    </td>
+                    <td className="py-3.5 text-center">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold font-mono border ${sub.isPurple ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+                        {sub.phase}
+                      </span>
+                    </td>
+                    <td className="py-3.5 text-center">
+                      <span className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono border shadow-xs num-font ${sub.isAmber ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
+                        {sub.score}
+                      </span>
+                    </td>
+                    <td className="py-3.5 text-center">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold font-mono border ${sub.isAmber ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200'}`}>
+                        PASS
+                      </span>
+                    </td>
+                    <td className="py-3.5 text-right pr-5">
+                      <button onClick={() => alert(`Opening repository and feedback for Day ${sub.day}...`)} className="text-blue-600 group-hover:text-blue-800 font-bold text-xs inline-flex items-center gap-1 transition">
+                        View →
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

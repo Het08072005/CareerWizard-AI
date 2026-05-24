@@ -26,7 +26,7 @@ const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilte
 
   return (
     <div className="space-y-4">
-      <div className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] p-4 md:p-6 rounded-2xl relative overflow-hidden group shadow-md">
+      <div className={`p-4 md:p-6 rounded-2xl relative overflow-hidden group border ${isDark ? 'bg-[var(--bg-sidebar)] border-[var(--border-color)] shadow-md' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
         <div className="absolute top-0 left-0 w-full h-[1px] bg-white/5" />
         
         <div className="flex flex-col md:flex-row gap-4 items-center relative z-10">
@@ -41,7 +41,7 @@ const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilte
               className={`w-full h-10 rounded-xl pl-11 pr-4 outline-none transition-all duration-700 font-medium text-[14px] border ${
                 isDark 
                   ? 'bg-white/[0.02] border-white/5 focus:border-cyan-500/30 text-white placeholder-slate-700' 
-                  : 'bg-[var(--bg-sidebar)] border-slate-200 focus:border-emerald-500/30 text-slate-800 placeholder-slate-400'
+                  : 'bg-[#fffcf7] border-[var(--gold)]/20 focus:border-[var(--gold)]/40 text-[var(--text-main)] placeholder-[var(--text-muted)] shadow-[inset_0_2px_4px_rgba(160,120,64,0.03)]'
               }`}
               value={filters.search}
               onChange={(e) => onFilterChange('search', e.target.value)}
@@ -61,10 +61,10 @@ const JobFilter = ({ filters, onFilterChange, filterOptions, resumeSlot, onFilte
             onClick={() => onFilterOpen()}
             className={`h-10 px-5 rounded-xl border transition-all duration-500 flex items-center gap-2 font-bold text-[13px] relative overflow-hidden group/btn ${
               activeFilterCount > 0 
-                ? isDark ? 'bg-cyan-500 text-black border-cyan-500' : 'bg-[#16a34a] text-white border-[#16a34a]' 
+                ? isDark ? 'bg-cyan-500 text-black border-cyan-500' : 'bg-[var(--gold-dark)] text-white border-[var(--gold-dark)]' 
                 : isDark 
                   ? 'bg-white/[0.02] border-white/5 text-slate-400 hover:border-white/20 hover:text-white' 
-                  : 'bg-[var(--bg-sidebar)] border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-950'
+                  : 'bg-[#fffcf7] border-[var(--gold)]/20 text-[var(--text-main)] hover:border-[var(--gold)]/40 hover:bg-[var(--gold)]/10'
             }`}
           >
             <AdjustmentsHorizontalIcon size={16} className={activeFilterCount > 0 ? 'animate-pulse' : ''} />

@@ -37,8 +37,8 @@
 
 /* Light Mode Theme matching career.html exactly */
 html.light {
-  --bg-main: #f0eeea;
-  --bg-sidebar: #fcfbf8;
+  --bg-main: #f5f0e8;
+  --bg-sidebar: #f5f0e8;
   --bg-card: #fcfbf8;
   --border-color: #e0ddd5;
   --text-main: #1a1916;
