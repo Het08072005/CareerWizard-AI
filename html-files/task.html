@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerWizard AI — Day Content Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f5f3ef;color:#1a1916;min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font-family:inherit}
+
+:root{
+  --cream:#faf8f4;--cream2:#f0eeea;--cream3:#e8e5df;
+  --white:#ffffff;--border:#e2dfd8;--border2:#cdc9c0;
+  --text:#1a1916;--text2:#4a4640;--muted:#8a8680;--muted2:#b8b4ac;
+  --green:#166534;--gm:#16a34a;--gl:#dcfce7;--gbg:#f0fdf4;
+  --amber:#92400e;--am:#d97706;--al:#fef3c7;--abg:#fffbeb;
+  --blue:#1e3a8a;--bm:#2563eb;--bl:#dbeafe;--bbg:#eff6ff;
+  --purple:#4c1d95;--pm:#7c3aed;--pl:#ede9fe;--pbg:#f5f3ff;
+  --red:#991b1b;--rm:#dc2626;--rl:#fee2e2;--rbg:#fef2f2;
+  --radius:8px;--radius-lg:12px;--radius-xl:16px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 4px 12px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.1),0 4px 8px rgba(0,0,0,.05);
+}
+
+/* ── SHELL ── */
+.shell{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:260px;min-width:260px;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:100}
+.s-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.s-logo-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#166534,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-logo-icon i{color:#fff;font-size:15px}
+.s-logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--text);letter-spacing:-.3px;line-height:1.2}
+.s-logo-sub{font-size:9.5px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.3px}
+.s-section{padding:14px 12px 6px;font-size:9.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:1.2px;font-weight:600;font-family:'DM Mono',monospace}
+.s-nav{padding:4px 10px;flex:1}
+.s-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius);font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;margin-bottom:2px;border:1px solid transparent;width:100%;background:none;text-align:left}
+.s-item i{width:16px;text-align:center;font-size:13px;flex-shrink:0;color:var(--muted)}
+.s-item:hover{background:var(--cream2);color:var(--text)}
+.s-item.active{background:var(--gbg);color:var(--green);border-color:#bbf7d0;font-weight:600}
+.s-item.active i{color:var(--gm)}
+.s-divider{height:1px;background:var(--border);margin:10px 12px}
+.s-bottom{padding:12px 10px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:9px;padding:9px 10px;background:var(--cream2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
+.u-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#166534,#16a34a);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.u-name{font-size:12.5px;font-weight:600;color:var(--text)}
+.u-plan{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.topbar{background:rgba(250,248,244,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:90;flex-shrink:0}
+.tb-left{display:flex;align-items:center;gap:12px}
+.bc{font-size:11.5px;color:var(--muted);font-family:'DM Mono',monospace}
+.bc span{color:var(--text);font-weight:500}
+.tb-right{display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;font-size:11px;font-weight:500;font-family:'DM Mono',monospace;border:1px solid;white-space:nowrap}
+.chip-green{background:var(--gbg);color:var(--green);border-color:#86efac}
+.chip-amber{background:var(--abg);color:var(--amber);border-color:#fcd34d}
+.chip-gray{background:var(--cream2);color:var(--muted);border-color:var(--border)}
+.icon-btn{width:34px;height:34px;border-radius:var(--radius);background:var(--cream2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;transition:all .15s}
+.icon-btn:hover{background:var(--cream3);color:var(--text2)}
+
+/* ── LAYOUT TWO PANE ── */
+.two-pane{flex:1;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.pane{display:flex;flex-direction:column;overflow:hidden}
+.pane-left{border-right:1px solid var(--border)}
+.pane-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--white);flex-shrink:0}
+.pane-title{font-family:'Fraunces',serif;font-weight:700;font-size:14px;color:var(--text);display:flex;align-items:center;gap:7px}
+.pane-title i{font-size:13px;color:var(--muted)}
+.pane-body{flex:1;overflow-y:auto;padding:0}
+
+/* ── MARKDOWN EDITOR ── */
+.md-toolbar{display:flex;align-items:center;gap:4px;padding:8px 14px;background:var(--cream2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.md-btn{padding:5px 9px;border-radius:var(--radius);border:1px solid var(--border);background:var(--white);color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;white-space:nowrap}
+.md-btn:hover{background:var(--cream3);color:var(--text)}
+.md-btn.md-active{background:var(--gm);border-color:var(--gm);color:#fff}
+.md-sep{width:1px;height:18px;background:var(--border);margin:0 3px;flex-shrink:0}
+.md-textarea{width:100%;border:none;outline:none;padding:20px;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.8;color:var(--text);background:var(--white);resize:none;height:100%;min-height:400px}
+.md-textarea::placeholder{color:var(--muted2)}
+
+/* ── PREVIEW ── */
+.preview-wrap{padding:20px;background:var(--cream2)}
+
+/* PREVIEW COMPONENTS */
+.p-day-hero{background:linear-gradient(135deg,var(--bbg),var(--gbg));border:1px solid #bfdbfe;border-radius:var(--radius-xl);padding:22px 24px;margin-bottom:16px;position:relative;overflow:hidden}
+.p-day-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#166534,#16a34a,#4ade80)}
+.p-day-meta{display:flex;align-items:center;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.p-day-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.4px;margin-bottom:6px;line-height:1.2}
+.p-day-title em{color:var(--gm);font-style:italic}
+.p-day-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.p-wyl{padding-top:14px;border-top:1px solid rgba(0,0,0,.07)}
+.p-wyl-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;font-weight:600}
+.p-wyl-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.p-wyl-item{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text2);line-height:1.4}
+.p-wyl-item i{color:var(--gm);font-size:10px;margin-top:2px;flex-shrink:0}
+
+/* Task hero */
+.p-task-hero{border-radius:var(--radius-xl);overflow:hidden;margin-bottom:16px;border:1px solid #fde68a;box-shadow:var(--shadow)}
+.p-task-top{background:linear-gradient(135deg,#1a1916,#292524);padding:20px 22px;position:relative}
+.p-task-top::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(217,119,6,.2),transparent 70%)}
+.p-task-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(217,119,6,.2);border:1px solid rgba(217,119,6,.35);border-radius:100px;padding:3px 10px;font-size:10px;font-family:'DM Mono',monospace;color:#fbbf24;margin-bottom:10px}
+.p-task-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:6px}
+.p-task-title em{color:#34d399;font-style:italic}
+.p-task-desc{font-size:12.5px;color:#a8a29e;line-height:1.6}
+.p-task-stats{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.p-task-stat{display:flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:#a8a29e}
+.p-task-stat i{color:#34d399;font-size:10px}
+.p-task-body{background:var(--abg);padding:14px 18px;border-top:1px solid #fde68a}
+
+/* Content blocks */
+.p-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.p-card-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;font-weight:600;display:flex;align-items:center;gap:5px}
+.p-h1{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;margin-bottom:4px;line-height:1.3}
+.p-h2{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;margin-top:14px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.p-h3{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px;margin-top:12px}
+.p-para{font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:10px}
+.p-bold{font-weight:700;color:var(--text)}
+.p-em{font-style:italic;color:var(--gm)}
+.p-inline-code{font-family:'DM Mono',monospace;font-size:11.5px;background:var(--cream2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--text2)}
+
+/* Concept block */
+.p-concept{background:var(--cream2);border-radius:var(--radius);border-left:3px solid var(--bm);padding:14px 16px;margin-bottom:12px}
+.p-concept-h{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:7px}
+.p-concept-b{font-size:12.5px;color:var(--text2);line-height:1.7}
+
+/* Image */
+.p-img-wrap{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.p-img-placeholder{background:linear-gradient(135deg,#e8e5df,#d4d0c8);height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;position:relative}
+.p-img-placeholder:hover .p-img-upload-hint{opacity:1}
+.p-img-upload-hint{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;transition:opacity .2s}
+.p-img-placeholder i{font-size:28px;color:var(--muted2)}
+.p-img-placeholder span{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.p-img-real{width:100%;max-height:280px;object-fit:cover;display:block}
+.p-img-caption{padding:9px 13px;background:var(--cream2);font-size:11.5px;color:var(--text2);font-style:italic;border-top:1px solid var(--border)}
+
+/* Video */
+.p-video{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px}
+.p-video-thumb{background:linear-gradient(135deg,#1a1916,#2d2b26);height:140px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
+.p-video-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6}
+.p-play{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;position:relative;z-index:2;transition:all .2s}
+.p-play:hover{background:var(--gm);border-color:var(--gm);transform:scale(1.08)}
+.p-video-dur{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:4px;z-index:2}
+.p-video-info{padding:10px 13px;display:flex;align-items:center;gap:9px;border-top:1px solid var(--border)}
+.p-yt-ic{width:26px;height:26px;border-radius:6px;background:var(--rl);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--rm);flex-shrink:0}
+.p-video-title{font-size:12px;font-weight:600;color:var(--text)}
+.p-video-meta{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* Code block */
+.p-code{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.p-code-hdr{background:#1a1916;padding:9px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.p-code-dots{display:flex;gap:5px}
+.p-code-dot{width:8px;height:8px;border-radius:50%}
+.p-code-lang{font-size:10.5px;font-family:'DM Mono',monospace;color:#a8a29e}
+.p-code-title{font-size:11px;font-family:'DM Mono',monospace;color:#e7e5e4;font-weight:500;flex:1;text-align:center}
+.p-copy-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:3px 8px;font-size:10px;font-family:'DM Mono',monospace;color:#a8a29e;cursor:pointer;transition:all .15s}
+.p-copy-btn:hover{background:rgba(255,255,255,.14);color:#e7e5e4}
+.p-code-body{background:#1e1e1e;padding:14px 16px;overflow-x:auto}
+.p-code-body pre{margin:0;font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;color:#d4d4d4;white-space:pre-wrap;word-break:break-word}
+
+/* Callout */
+.p-callout{border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;display:flex;align-items:flex-start;gap:9px;border-left:3px solid}
+.p-callout-tip{background:var(--gbg);border-color:var(--gm)}
+.p-callout-warning{background:var(--abg);border-color:var(--am)}
+.p-callout-important{background:var(--bbg);border-color:var(--bm)}
+.p-callout i{font-size:13px;flex-shrink:0;margin-top:1px}
+.p-callout-tip i{color:var(--gm)}
+.p-callout-warning i{color:var(--am)}
+.p-callout-important i{color:var(--bm)}
+.p-callout-lbl{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-bottom:4px;display:block}
+.p-callout-tip .p-callout-lbl{color:var(--green)}
+.p-callout-warning .p-callout-lbl{color:var(--amber)}
+.p-callout-important .p-callout-lbl{color:var(--blue)}
+.p-callout-text{font-size:12.5px;line-height:1.6}
+.p-callout-tip .p-callout-text{color:#166534}
+.p-callout-warning .p-callout-text{color:#713f12}
+.p-callout-important .p-callout-text{color:#1e3a8a}
+
+/* Key points */
+.p-keypoints{background:var(--pbg);border:1px solid #c4b5fd;border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:12px}
+.p-kp-title{font-size:11px;font-weight:700;color:var(--purple);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.p-kp-list{display:flex;flex-direction:column;gap:7px}
+.p-kp-item{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:#4c1d95;line-height:1.4}
+.p-kp-dot{width:17px;height:17px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.p-kp-dot i{font-size:8px;color:#fff}
+
+/* Quiz */
+.p-quiz{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.p-quiz-badge{display:inline-flex;background:#7c3aed;color:#fff;font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:4px;font-weight:500;margin-bottom:12px}
+.p-quiz-q{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.4}
+.p-quiz-opts{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+.p-quiz-opt{display:flex;align-items:center;gap:9px;padding:10px 13px;border-radius:var(--radius);border:1.5px solid var(--border);cursor:pointer;background:var(--cream2);transition:all .18s;font-size:12.5px;color:var(--text2)}
+.p-quiz-opt:hover{border-color:var(--border2);background:var(--cream3)}
+.p-quiz-opt.correct{border-color:var(--gm);background:var(--gl)}
+.p-quiz-opt.wrong{border-color:var(--rm);background:var(--rl)}
+.p-quiz-opt.selected{border-color:var(--bm);background:var(--bl)}
+.p-opt-ltr{width:24px;height:24px;border-radius:6px;background:var(--white);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text2);flex-shrink:0;transition:all .18s}
+.p-quiz-opt.correct .p-opt-ltr{background:var(--gm);border-color:var(--gm);color:#fff}
+.p-quiz-opt.wrong .p-opt-ltr{background:var(--rm);border-color:var(--rm);color:#fff}
+.p-quiz-opt.selected .p-opt-ltr{background:var(--bm);border-color:var(--bm);color:#fff}
+.p-quiz-exp{background:var(--gbg);border:1px solid #86efac;border-radius:var(--radius);padding:10px 13px;font-size:12px;color:var(--green);line-height:1.6;display:none;margin-bottom:10px}
+.p-quiz-exp.show{display:block}
+.p-quiz-submit{padding:8px 16px;border-radius:var(--radius);background:var(--gm);color:#fff;border:none;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .18s}
+.p-quiz-submit:hover{background:var(--green)}
+
+/* Diff tabs */
+.p-diff-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.p-diff-tab{padding:7px 14px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--cream2);color:var(--muted);transition:all .15s}
+.p-diff-tab:hover{background:var(--cream3);color:var(--text2)}
+.p-diff-tab.active{background:var(--gm);border-color:var(--gm);color:#fff}
+.p-req-box{padding:13px 15px;margin-bottom:12px;border-left:3px solid;border-radius:0 var(--radius) var(--radius) 0}
+.p-req-beg{background:#f0fdf4;border-color:#16a34a}
+.p-req-int{background:#fffbeb;border-color:#d97706}
+.p-req-adv{background:#fef2f2;border-color:#dc2626}
+.p-req-title{font-size:11px;font-weight:700;margin-bottom:9px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.p-req-beg .p-req-title{color:var(--green)}
+.p-req-int .p-req-title{color:var(--amber)}
+.p-req-adv .p-req-title{color:var(--red)}
+.p-req-list{display:flex;flex-direction:column;gap:6px}
+.p-req-item{font-size:12.5px;display:flex;align-items:flex-start;gap:6px;line-height:1.4}
+.p-req-beg .p-req-item{color:#166534}
+.p-req-int .p-req-item{color:#713f12}
+.p-req-adv .p-req-item{color:#991b1b}
+.p-req-item::before{content:"→";font-weight:700;flex-shrink:0;font-size:11px;margin-top:1px}
+.p-tags-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.p-tag{display:inline-flex;padding:3px 8px;border-radius:5px;font-size:10.5px;font-weight:500;font-family:'DM Mono',monospace;background:var(--cream2);color:var(--text2);border:1px solid var(--border)}
+
+/* Submit */
+.p-submit-box{background:var(--cream2);border:1.5px dashed var(--border2);border-radius:var(--radius);padding:13px 15px;margin-bottom:12px}
+.p-submit-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;font-weight:600}
+.p-input-row{display:flex;gap:7px}
+.p-input{flex:1;padding:8px 11px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11.5px;color:var(--text);outline:none;min-width:0}
+.p-input:focus{border-color:var(--gm)}
+
+/* Checklist */
+.p-checklist{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.p-check-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--radius);background:var(--cream2);border:1px solid var(--border);cursor:pointer;transition:all .15s;font-size:12px;color:var(--text2)}
+.p-check-item:hover{border-color:var(--border2)}
+.p-check-item.checked{background:var(--gbg);border-color:#86efac;color:var(--green);text-decoration:line-through;text-decoration-color:#86efac}
+.p-check-box{width:18px;height:18px;border-radius:5px;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--white);transition:all .18s}
+.p-check-item.checked .p-check-box{background:var(--gm);border-color:var(--gm)}
+.p-check-box i{font-size:9px;color:#fff;opacity:0}
+.p-check-item.checked .p-check-box i{opacity:1}
+
+/* Scoring */
+.p-score-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.p-score-item{background:var(--cream2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;text-align:center}
+.p-score-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--text);line-height:1}
+.p-score-max{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+.p-score-lbl{font-size:10.5px;color:var(--text2);margin-top:3px;font-weight:600}
+.p-score-item.pass{background:var(--gbg);border-color:#86efac}
+.p-score-item.pass .p-score-val{color:var(--gm)}
+
+/* HR */
+.p-hr{height:1px;background:var(--border);margin:14px 0}
+
+/* Section separator */
+.p-sec-lbl{font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-.2px;display:flex;align-items:center;gap:7px}
+.p-sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Analogy */
+.p-analogy{background:var(--abg);border:1px solid #fde68a;border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px}
+.p-analogy-emoji{font-size:22px;flex-shrink:0}
+.p-analogy-title{font-size:10.5px;font-weight:700;color:var(--amber);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.p-analogy-text{font-size:12.5px;color:var(--amber);line-height:1.6}
+
+/* Day complete btn */
+.p-complete-btn{width:100%;padding:12px;border-radius:var(--radius-lg);background:var(--gm);color:#fff;border:none;font-size:13.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s}
+.p-complete-btn:hover{background:var(--green);transform:translateY(-1px);box-shadow:0 6px 18px rgba(22,163,74,.28)}
+.p-complete-btn.done{background:var(--cream2);color:var(--green);border:2px solid #86efac;cursor:default;transform:none;box-shadow:none}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 14px;border-radius:var(--radius);font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--gm);color:#fff;border-color:var(--gm)}
+.btn-primary:hover{background:var(--green);transform:translateY(-1px);box-shadow:0 4px 12px rgba(22,163,74,.2)}
+.btn-ghost{background:var(--white);color:var(--text2);border-color:var(--border)}
+.btn-ghost:hover{background:var(--cream2)}
+.btn-sm{padding:5px 10px;font-size:11.5px;gap:4px}
+.btn-danger{background:transparent;color:var(--rm);border-color:var(--rl)}
+.btn-danger:hover{background:var(--rl)}
+
+/* Day list sidebar */
+.day-list{display:flex;flex-direction:column;gap:4px;padding:12px}
+.day-btn{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer;transition:all .15s;background:none;width:100%;text-align:left}
+.day-btn:hover{background:var(--cream2)}
+.day-btn.active{background:var(--gbg);border-color:#bbf7d0}
+.day-btn.active .day-btn-num{background:var(--gm);color:#fff}
+.day-btn.task-day .day-btn-num{background:var(--al);color:var(--amber);border-color:#fcd34d}
+.day-btn.task-day.active .day-btn-num{background:var(--am);color:#fff}
+.day-btn.done .day-btn-num{background:var(--gl);color:var(--green);border-color:#86efac}
+.day-btn-num{width:26px;height:26px;border-radius:7px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:var(--muted);flex-shrink:0;background:var(--cream2)}
+.day-btn-info{flex:1;min-width:0}
+.day-btn-title{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-btn-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px}
+.day-btn-type{font-size:9.5px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:4px;flex-shrink:0}
+.day-btn-type.learn{background:var(--bbg);color:var(--bm)}
+.day-btn-type.task{background:var(--al);color:var(--amber)}
+
+/* Import modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:500;padding:20px;backdrop-filter:blur(5px)}
+.modal{background:var(--white);border-radius:var(--radius-xl);max-width:720px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);display:flex;flex-direction:column}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-ttl{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
+.modal-cls{background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px}
+.modal-cls:hover{background:var(--cream2);color:var(--text)}
+.modal-body{padding:22px;flex:1}
+.modal-lbl{font-size:10.5px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:6px;font-weight:600;margin-top:12px}
+.modal-lbl:first-child{margin-top:0}
+.modal-input{width:100%;padding:9px 12px;background:var(--cream2);border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;color:var(--text);outline:none;transition:border-color .15s}
+.modal-input:focus{border-color:var(--gm);background:var(--white)}
+.modal-textarea{width:100%;padding:12px 14px;background:#1e1e1e;border:1px solid #333;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11.5px;color:#d4d4d4;outline:none;resize:vertical;min-height:280px;line-height:1.7;transition:border-color .15s}
+.modal-textarea:focus{border-color:var(--gm)}
+.modal-textarea::placeholder{color:#555}
+.modal-footer{padding:16px 22px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+.syntax-guide{background:var(--cream2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.8;color:var(--text2)}
+.sg-head{font-weight:700;color:var(--text);margin-bottom:8px;font-size:12px;font-family:'DM Sans',sans-serif}
+.sg-row{display:flex;gap:16px;margin-bottom:3px;align-items:flex-start;flex-wrap:wrap}
+.sg-key{color:var(--gm);min-width:80px;flex-shrink:0}
+.sg-val{color:var(--text2)}
+
+/* Inline image upload */
+.img-upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--cream2);margin-bottom:10px}
+.img-upload-zone:hover{border-color:var(--gm);background:var(--gbg)}
+.img-upload-zone i{font-size:28px;color:var(--muted2);margin-bottom:8px}
+.img-upload-zone p{font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.img-upload-zone span{font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace}
+
+/* Toast */
+.toast{position:fixed;bottom:22px;right:22px;background:#1a1916;color:#fff;padding:11px 16px;border-radius:var(--radius-lg);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none;z-index:999;display:flex;align-items:center;gap:8px;max-width:320px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast i{color:#4ade80}
+
+/* Setup screen */
+.setup{background:var(--cream);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.setup-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-xl);max-width:560px;width:100%;padding:36px;box-shadow:var(--shadow-lg)}
+.setup-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
+.setup-logo-icon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#166534,#16a34a);display:flex;align-items:center;justify-content:center}
+.setup-logo-icon i{color:#fff;font-size:18px}
+.setup-logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:18px;color:var(--text)}
+.setup-title{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px;text-align:center}
+.setup-sub{font-size:13px;color:var(--muted);margin-bottom:28px;text-align:center;line-height:1.6}
+.setup-lbl{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:6px;font-weight:600}
+.setup-input{width:100%;padding:11px 14px;background:var(--cream2);border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;color:var(--text);outline:none;transition:all .18s;margin-bottom:16px}
+.setup-input:focus{border-color:var(--gm);background:var(--white);box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+.setup-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.setup-opt{padding:12px;border-radius:var(--radius);border:2px solid var(--border);cursor:pointer;transition:all .15s;text-align:center;background:var(--cream2)}
+.setup-opt:hover{border-color:var(--border2)}
+.setup-opt.sel{border-color:var(--gm);background:var(--gbg)}
+.setup-opt-icon{font-size:22px;margin-bottom:6px}
+.setup-opt-label{font-size:12.5px;font-weight:600;color:var(--text)}
+.setup-day-pills{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.setup-day-pill{padding:8px 16px;border-radius:100px;border:1.5px solid var(--border);background:var(--cream2);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text2)}
+.setup-day-pill:hover{border-color:var(--border2)}
+.setup-day-pill.sel{border-color:var(--gm);background:var(--gbg);color:var(--green)}
+
+/* Progress bar in nav */
+.sidebar-progress{padding:12px 12px 0}
+.sp-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px}
+.sp-track{height:4px;background:var(--cream3);border-radius:100px;overflow:hidden}
+.sp-fill{height:100%;background:linear-gradient(90deg,#166534,#16a34a);border-radius:100px;transition:width .4s}
+
+/* Diff content show/hide */
+.p-diff-content{display:none}
+.p-diff-content.active{display:block}
+
+/* Responsive */
+@media(max-width:960px){.two-pane{grid-template-columns:1fr}.pane-left{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     SETUP SCREEN
+══════════════════════════════════════════════════════════ -->
+<div id="setup-screen" class="setup">
+  <div class="setup-card">
+    <div class="setup-logo">
+      <div class="setup-logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div class="setup-logo-text">CareerWizard AI</div>
+    </div>
+    <div class="setup-title">Day Content Builder</div>
+    <div class="setup-sub">Create professional internship day content using simple Markdown. Images, videos, quizzes — sab auto-render hoga.</div>
+
+    <label class="setup-lbl">Your Name</label>
+    <input class="setup-input" id="setup-name" placeholder="e.g. Het Panchal" value="Het Panchal">
+
+    <label class="setup-lbl">Internship Track</label>
+    <input class="setup-input" id="setup-track" placeholder="e.g. AI/ML Engineering" value="AI/ML Engineering">
+
+    <label class="setup-lbl">Track Duration</label>
+    <div class="setup-day-pills" id="day-pills">
+      <div class="setup-day-pill" onclick="selDay(this,10)">10 Days</div>
+      <div class="setup-day-pill sel" onclick="selDay(this,15)">15 Days</div>
+      <div class="setup-day-pill" onclick="selDay(this,30)">30 Days</div>
+      <div class="setup-day-pill" onclick="selDay(this,45)">45 Days</div>
+    </div>
+
+    <label class="setup-lbl">Domain</label>
+    <div class="setup-options" id="domain-opts">
+      <div class="setup-opt sel" onclick="selDomain(this,'aiml')"><div class="setup-opt-icon">🤖</div><div class="setup-opt-label">AI / ML</div></div>
+      <div class="setup-opt" onclick="selDomain(this,'web')"><div class="setup-opt-icon">🌐</div><div class="setup-opt-label">Web Dev</div></div>
+      <div class="setup-opt" onclick="selDomain(this,'data')"><div class="setup-opt-icon">📊</div><div class="setup-opt-label">Data Science</div></div>
+      <div class="setup-opt" onclick="selDomain(this,'devops')"><div class="setup-opt-icon">☁️</div><div class="setup-opt-label">DevOps</div></div>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:14px;margin-top:8px" onclick="launchApp()">
+      <i class="fa-solid fa-rocket"></i> Launch Content Builder
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════════════════════ -->
+<div id="app" style="display:none">
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div>
+        <div class="s-logo-text">CareerWizard AI</div>
+        <div class="s-logo-sub" id="sb-track">AI/ML Track</div>
+      </div>
+    </div>
+
+    <div class="sidebar-progress">
+      <div class="sp-label">
+        <span>Progress</span>
+        <span id="sb-prog-txt">0 / 15</span>
+      </div>
+      <div class="sp-track"><div class="sp-fill" id="sb-prog-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="s-section">Days</div>
+    <div class="s-nav">
+      <div class="day-list" id="day-list"></div>
+      <div style="padding:8px 12px 0">
+        <button class="btn btn-ghost btn-sm" style="width:100%" onclick="addDay()">
+          <i class="fa-solid fa-plus"></i> Add Day
+        </button>
+      </div>
+    </div>
+
+    <div class="s-divider"></div>
+    <div style="padding:0 10px 6px">
+      <button class="s-item" onclick="openHelp()"><i class="fa-solid fa-circle-question"></i>Syntax Guide</button>
+      <button class="s-item" onclick="exportJSON()"><i class="fa-solid fa-download"></i>Export JSON</button>
+    </div>
+
+    <div class="s-bottom">
+      <div class="user-row">
+        <div class="u-av" id="sb-av">H</div>
+        <div>
+          <div class="u-name" id="sb-name">Het Panchal</div>
+          <div class="u-plan" id="sb-role">Admin · Content Builder</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="tb-left">
+        <div class="bc">Builder / <span id="tb-day">Day 1 — Learning</span></div>
+      </div>
+      <div class="tb-right">
+        <div class="chip chip-green" id="tb-status"><div style="width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 2s infinite"></div><span id="tb-status-txt">Editing Day 1</span></div>
+        <button class="icon-btn" onclick="openImport()"><i class="fa-solid fa-file-import"></i></button>
+        <button class="icon-btn" onclick="openHelp()"><i class="fa-solid fa-circle-question"></i></button>
+      </div>
+    </div>
+
+    <!-- TWO PANE -->
+    <div class="two-pane">
+      <!-- LEFT: EDITOR -->
+      <div class="pane pane-left">
+        <div class="pane-header">
+          <div class="pane-title"><i class="fa-solid fa-code"></i>Markdown Editor</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="openImport()"><i class="fa-solid fa-file-import"></i> Import Markdown</button>
+            <button class="btn btn-primary btn-sm" onclick="parseAndRender()"><i class="fa-solid fa-play"></i> Render Preview</button>
+          </div>
+        </div>
+        <div class="md-toolbar" id="md-toolbar">
+          <button class="md-btn" onclick="insertSnippet('concept')"><i class="fa-solid fa-book-open"></i> Concept</button>
+          <button class="md-btn" onclick="insertSnippet('image')"><i class="fa-solid fa-image"></i> Image</button>
+          <button class="md-btn" onclick="insertSnippet('video')"><i class="fa-brands fa-youtube"></i> Video</button>
+          <div class="md-sep"></div>
+          <button class="md-btn" onclick="insertSnippet('code')"><i class="fa-solid fa-code"></i> Code</button>
+          <button class="md-btn" onclick="insertSnippet('callout-tip')"><i class="fa-solid fa-lightbulb"></i> Tip</button>
+          <button class="md-btn" onclick="insertSnippet('callout-warning')"><i class="fa-solid fa-triangle-exclamation"></i> Warning</button>
+          <div class="md-sep"></div>
+          <button class="md-btn" onclick="insertSnippet('keypoints')"><i class="fa-solid fa-key"></i> Key Points</button>
+          <button class="md-btn" onclick="insertSnippet('quiz')"><i class="fa-solid fa-question"></i> Quiz</button>
+          <div class="md-sep"></div>
+          <button class="md-btn" onclick="insertSnippet('task-hero')"><i class="fa-solid fa-bolt"></i> Task Hero</button>
+          <button class="md-btn" onclick="insertSnippet('requirements')"><i class="fa-solid fa-list-check"></i> Requirements</button>
+        </div>
+        <div class="pane-body">
+          <textarea class="md-textarea" id="md-editor" placeholder="Type your day content here in CareerWizard Markdown...&#10;&#10;Click any toolbar button above to insert a snippet!&#10;Then click 'Render Preview' to see the result." oninput="autoRender()"></textarea>
+        </div>
+      </div>
+
+      <!-- RIGHT: PREVIEW -->
+      <div class="pane pane-right">
+        <div class="pane-header">
+          <div class="pane-title"><i class="fa-solid fa-eye"></i>Live Preview</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" id="complete-day-btn" onclick="completeCurrentDay()"><i class="fa-solid fa-check"></i> Mark Done</button>
+          </div>
+        </div>
+        <div class="pane-body">
+          <div class="preview-wrap" id="preview-wrap">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;color:var(--muted)">
+              <i class="fa-solid fa-eye-slash" style="font-size:36px;margin-bottom:14px;color:var(--muted2)"></i>
+              <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--text2);margin-bottom:6px">Preview appears here</div>
+              <div style="font-size:13px;line-height:1.6;max-width:300px">Write content in the editor and click <strong>Render Preview</strong> — or use the toolbar to insert blocks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     IMPORT MODAL
+══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="import-modal" style="display:none" onclick="closeModal('import-modal')">
+  <div class="modal" onclick="e=>e.stopPropagation()" style="max-width:680px">
+    <div class="modal-hdr">
+      <div class="modal-ttl"><i class="fa-solid fa-file-import" style="color:var(--gm)"></i>Import Day Content</div>
+      <button class="modal-cls" onclick="closeModal('import-modal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <label class="modal-lbl">Day Number</label>
+      <input class="modal-input" id="import-day-num" type="number" min="1" max="60" value="1" style="width:100px;margin-bottom:14px">
+      <label class="modal-lbl">Day Type</label>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="btn btn-ghost btn-sm" id="type-learn" onclick="setImportType('learn')" style="border-color:var(--bm);color:var(--bm)">📖 Learning Day</button>
+        <button class="btn btn-ghost btn-sm" id="type-task" onclick="setImportType('task')">⚡ Task Day</button>
+      </div>
+      <label class="modal-lbl">Paste your Markdown content below</label>
+      <textarea class="modal-textarea" id="import-md" placeholder="Paste your full day markdown content here...&#10;&#10;Examples:&#10;# Day 1 Title&#10;## Subtitle&#10;Body text here...&#10;&#10;:::concept&#10;### Heading&#10;Body text...&#10;:::&#10;&#10;:::image&#10;url: https://example.com/img.png&#10;caption: Your caption here&#10;:::&#10;&#10;:::code python&#10;### Code Title&#10;print('Hello World')&#10;:::&#10;&#10;:::tip&#10;### Tip Label&#10;Tip text here...&#10;:::&#10;&#10;:::quiz&#10;Q: Your question here?&#10;A: Option A text&#10;B: Option B text&#10;C: Option C text&#10;D: Option D text&#10;CORRECT: B&#10;EXPLAIN: Explanation text here&#10;:::"></textarea>
+      <div style="margin-top:12px;padding:12px 14px;background:var(--cream2);border-radius:var(--radius);border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px">Quick Syntax</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:1.9;color:var(--text2)">
+          <span style="color:var(--gm)">#</span> H1 Title &nbsp;|&nbsp; <span style="color:var(--gm)">##</span> H2 &nbsp;|&nbsp; <span style="color:var(--gm)">###</span> H3<br>
+          <span style="color:var(--gm)">:::concept</span> … <span style="color:var(--gm)">:::</span> &nbsp;|&nbsp; <span style="color:var(--gm)">:::image</span> url: … caption: … <span style="color:var(--gm)">:::</span><br>
+          <span style="color:var(--gm)">:::code python</span> … <span style="color:var(--gm)">:::</span> &nbsp;|&nbsp; <span style="color:var(--gm)">:::tip</span> … <span style="color:var(--gm)">:::</span> &nbsp;|&nbsp; <span style="color:var(--gm)">:::warning</span> … <span style="color:var(--gm)">:::</span><br>
+          <span style="color:var(--gm)">:::keypoints</span> - Point one - Point two <span style="color:var(--gm)">:::</span><br>
+          <span style="color:var(--gm)">:::quiz</span> Q: … A: … CORRECT: A EXPLAIN: … <span style="color:var(--gm)">:::</span><br>
+          <span style="color:var(--gm)">:::video</span> url: … title: … duration: 10:30 required: true <span style="color:var(--gm)">:::</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="importContent()"><i class="fa-solid fa-check"></i> Import & Render</button>
+      <button class="btn btn-ghost" onclick="closeModal('import-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     HELP MODAL
+══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="help-modal" style="display:none" onclick="closeModal('help-modal')">
+  <div class="modal" onclick="e=>e.stopPropagation()" style="max-width:640px">
+    <div class="modal-hdr">
+      <div class="modal-ttl"><i class="fa-solid fa-book" style="color:var(--gm)"></i>Complete Syntax Reference</div>
+      <button class="modal-cls" onclick="closeModal('help-modal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" style="font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.9;color:var(--text2)">
+      <div class="syntax-guide">
+        <div class="sg-head">📝 Basic Markdown</div>
+        <div class="sg-row"><span class="sg-key"># Title</span><span class="sg-val">→ H1 heading (Page/Day title)</span></div>
+        <div class="sg-row"><span class="sg-key">## Title</span><span class="sg-val">→ H2 section heading</span></div>
+        <div class="sg-row"><span class="sg-key">### Title</span><span class="sg-val">→ H3 sub-heading</span></div>
+        <div class="sg-row"><span class="sg-key">Normal text</span><span class="sg-val">→ Paragraph</span></div>
+        <div class="sg-row"><span class="sg-key">**bold**</span><span class="sg-val">→ Bold text</span></div>
+        <div class="sg-row"><span class="sg-key">*italic*</span><span class="sg-val">→ Italic / green accent</span></div>
+        <div class="sg-row"><span class="sg-key">`code`</span><span class="sg-val">→ Inline code</span></div>
+        <div class="sg-row"><span class="sg-key">---</span><span class="sg-val">→ Horizontal divider</span></div>
+      </div>
+      <div class="syntax-guide" style="margin-top:10px">
+        <div class="sg-head">🎯 Special Blocks (:::block … :::)</div>
+        <div class="sg-row"><span class="sg-key">:::concept</span><span class="sg-val">→ Blue concept explanation box</span></div>
+        <div class="sg-row"><span class="sg-key">:::analogy</span><span class="sg-val">→ Amber analogy box. First line = emoji, second = title</span></div>
+        <div class="sg-row"><span class="sg-key">:::image</span><span class="sg-val">→ Image. url: link, caption: text, alt: text</span></div>
+        <div class="sg-row"><span class="sg-key">:::video</span><span class="sg-val">→ Video player. url:, title:, duration:, required: true/false</span></div>
+        <div class="sg-row"><span class="sg-key">:::code python</span><span class="sg-val">→ Code block. Language after :::code. First ### line = title</span></div>
+        <div class="sg-row"><span class="sg-key">:::tip</span><span class="sg-val">→ Green tip callout. First ### = label</span></div>
+        <div class="sg-row"><span class="sg-key">:::warning</span><span class="sg-val">→ Amber warning callout</span></div>
+        <div class="sg-row"><span class="sg-key">:::important</span><span class="sg-val">→ Blue important callout</span></div>
+        <div class="sg-row"><span class="sg-key">:::keypoints</span><span class="sg-val">→ Purple key points. First ### = title, - items = points</span></div>
+        <div class="sg-row"><span class="sg-key">:::quiz</span><span class="sg-val">→ Interactive quiz. Q:, A:, B:, C:, D:, CORRECT:, EXPLAIN:</span></div>
+        <div class="sg-row"><span class="sg-key">:::task-hero</span><span class="sg-val">→ Task day dark hero. #=task prefix, ##=title, body=desc</span></div>
+        <div class="sg-row"><span class="sg-key">:::requirements</span><span class="sg-val">→ 3-level req box. ### BEGINNER / INTERMEDIATE / ADVANCED sections</span></div>
+        <div class="sg-row"><span class="sg-key">:::checklist</span><span class="sg-val">→ Pre-submit checklist. - Item one - Item two</span></div>
+        <div class="sg-row"><span class="sg-key">:::scoring</span><span class="sg-val">→ AI scoring grid. SCORE: label|val|max, PASS: label|val|max</span></div>
+        <div class="sg-row"><span class="sg-key">:::submit</span><span class="sg-val">→ GitHub submit box</span></div>
+        <div class="sg-row"><span class="sg-key">:::wyl</span><span class="sg-val">→ "What you'll learn" grid. - Item one - Item two</span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('help-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toast-msg"></span></div>
+
+<script>
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+var state = {
+  name: 'Het Panchal',
+  track: 'AI/ML Engineering',
+  totalDays: 15,
+  domain: 'aiml',
+  currentDay: 1,
+  days: [],
+  quizAnswers: {},
+  quizSubmitted: {},
+  checkedItems: {},
+  activeDiff: {}
+};
+
+// ══════════════════════════════════════
+// SETUP
+// ══════════════════════════════════════
+var selDayCount = 15;
+var selDomainVal = 'aiml';
+
+function selDay(el, n) {
+  document.querySelectorAll('.setup-day-pill').forEach(function(p) { p.classList.remove('sel'); });
+  el.classList.add('sel');
+  selDayCount = n;
+}
+
+function selDomain(el, d) {
+  document.querySelectorAll('.setup-opt').forEach(function(o) { o.classList.remove('sel'); });
+  el.classList.add('sel');
+  selDomainVal = d;
+}
+
+function launchApp() {
+  var name = document.getElementById('setup-name').value.trim() || 'Admin';
+  var track = document.getElementById('setup-track').value.trim() || 'AI/ML Engineering';
+  state.name = name;
+  state.track = track;
+  state.totalDays = selDayCount;
+  state.domain = selDomainVal;
+
+  // Init days array
+  state.days = [];
+  for (var i = 1; i <= selDayCount; i++) {
+    state.days.push({ num: i, type: i % 5 === 0 ? 'task' : 'learn', done: false, markdown: '' });
+  }
+
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+
+  document.getElementById('sb-track').textContent = track;
+  document.getElementById('sb-name').textContent = name;
+  document.getElementById('sb-av').textContent = name.charAt(0).toUpperCase();
+
+  renderDayList();
+  selectDay(1);
+  loadDefaultContent(1);
+}
+
+// ══════════════════════════════════════
+// DAY LIST
+// ══════════════════════════════════════
+function renderDayList() {
+  var dl = document.getElementById('day-list');
+  dl.innerHTML = '';
+  state.days.forEach(function(d, i) {
+    var btn = document.createElement('div');
+    btn.className = 'day-btn' +
+      (d.num === state.currentDay ? ' active' : '') +
+      (d.type === 'task' ? ' task-day' : '') +
+      (d.done ? ' done' : '');
+    btn.innerHTML =
+      '<div class="day-btn-num">' + d.num + '</div>' +
+      '<div class="day-btn-info">' +
+        '<div class="day-btn-title">' + (d.title || (d.type === 'task' ? 'Task Day ' + Math.ceil(d.num / 5) : 'Learning Day')) + '</div>' +
+        '<div class="day-btn-sub">Day ' + d.num + ' of ' + state.totalDays + '</div>' +
+      '</div>' +
+      '<span class="day-btn-type ' + d.type + '">' + (d.type === 'task' ? '⚡' : '📖') + '</span>';
+    btn.onclick = (function(n) { return function() { selectDay(n); }; })(d.num);
+    dl.appendChild(btn);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  var done = state.days.filter(function(d) { return d.done; }).length;
+  var pct = Math.round(done / state.days.length * 100);
+  document.getElementById('sb-prog-txt').textContent = done + ' / ' + state.days.length;
+  document.getElementById('sb-prog-fill').style.width = pct + '%';
+}
+
+function selectDay(n) {
+  // Save current editor content
+  if (state.currentDay) {
+    var idx = state.currentDay - 1;
+    if (state.days[idx]) state.days[idx].markdown = document.getElementById('md-editor').value;
+  }
+  state.currentDay = n;
+  var day = state.days[n - 1];
+  document.getElementById('md-editor').value = day.markdown || '';
+  document.getElementById('tb-day').textContent = 'Day ' + n + ' — ' + (day.type === 'task' ? 'Task Day 🔥' : 'Learning');
+  document.getElementById('tb-status-txt').textContent = 'Editing Day ' + n;
+  var cdBtn = document.getElementById('complete-day-btn');
+  cdBtn.innerHTML = day.done ? '<i class="fa-solid fa-check-circle"></i> Completed ✓' : '<i class="fa-solid fa-check"></i> Mark Done';
+  renderDayList();
+  if (day.markdown) parseAndRender();
+  else document.getElementById('preview-wrap').innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;color:var(--muted)"><i class="fa-solid fa-pencil" style="font-size:36px;margin-bottom:14px;color:var(--muted2)"></i><div style="font-family:\'Fraunces\',serif;font-size:18px;font-weight:600;color:var(--text2);margin-bottom:6px">Start writing!</div><div style="font-size:13px;line-height:1.6;max-width:300px">Type markdown in the editor or click toolbar buttons to build your day content</div></div>';
+}
+
+function addDay() {
+  var n = state.days.length + 1;
+  state.days.push({ num: n, type: n % 5 === 0 ? 'task' : 'learn', done: false, markdown: '' });
+  state.totalDays = n;
+  renderDayList();
+  selectDay(n);
+  toast('Day ' + n + ' added!');
+}
+
+function completeCurrentDay() {
+  var idx = state.currentDay - 1;
+  state.days[idx].done = !state.days[idx].done;
+  renderDayList();
+  var day = state.days[idx];
+  var cdBtn = document.getElementById('complete-day-btn');
+  cdBtn.innerHTML = day.done ? '<i class="fa-solid fa-check-circle"></i> Completed ✓' : '<i class="fa-solid fa-check"></i> Mark Done';
+  toast(day.done ? 'Day ' + state.currentDay + ' marked complete! 🎉' : 'Marked incomplete');
+}
+
+// ══════════════════════════════════════
+// MARKDOWN PARSER + RENDERER
+// ══════════════════════════════════════
+var renderTimeout;
+function autoRender() {
+  clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(parseAndRender, 800);
+}
+
+function parseAndRender() {
+  var md = document.getElementById('md-editor').value;
+  if (!md.trim()) return;
+  var html = renderMarkdown(md);
+  document.getElementById('preview-wrap').innerHTML = '<div class="preview-inner">' + html + '</div>';
+  // Save title
+  var day = state.days[state.currentDay - 1];
+  var titleMatch = md.match(/^#\s+(.+)$/m);
+  if (titleMatch) day.title = titleMatch[1].trim().replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1');
+  renderDayList();
+  initPreviewInteractions();
+}
+
+function renderMarkdown(md) {
+  var html = '';
+  var lines = md.split('\n');
+  var i = 0;
+
+  function getLine() { return i < lines.length ? lines[i] : null; }
+  function nextLine() { i++; }
+
+  function collectBlock(openTag) {
+    var content = [];
+    nextLine(); // skip opening tag
+    while (i < lines.length) {
+      var l = lines[i].trimEnd();
+      if (l.trim() === ':::') { nextLine(); break; }
+      content.push(lines[i]);
+      nextLine();
+    }
+    return content.join('\n');
+  }
+
+  while (i < lines.length) {
+    var line = lines[i] ? lines[i].trimEnd() : '';
+
+    // Special blocks
+    if (line.match(/^:::/)) {
+      var blockType = line.replace(/^:::/, '').trim();
+      var blockContent = collectBlock(blockType);
+      html += renderBlock(blockType, blockContent);
+      continue;
+    }
+
+    // H1
+    if (line.match(/^#\s+/)) {
+      var txt = line.replace(/^#\s+/, '');
+      html += '<div class="p-day-hero"><div class="p-day-meta"><span class="chip chip-green" style="font-size:10px">Day ' + state.currentDay + '</span>' +
+        (state.days[state.currentDay-1].type === 'task' ? '<span class="chip chip-amber" style="font-size:10px">⚡ Task Day</span>' : '<span class="chip chip-gray" style="font-size:10px">📖 Learning</span>') +
+        '</div>' +
+        '<div class="p-day-title">' + inlineFormat(txt) + '</div>';
+      // Check for subtitle on next line
+      nextLine();
+      while (i < lines.length && lines[i] && !lines[i].match(/^#/) && !lines[i].match(/^:::/)) {
+        var subline = lines[i].trimEnd();
+        if (subline.startsWith('## ') || subline.startsWith('### ')) break;
+        if (subline.trim()) html += '<div class="p-day-desc">' + inlineFormat(subline) + '</div>';
+        nextLine();
+        if (!lines[i] || !lines[i].trim()) { nextLine(); break; }
+      }
+      html += '</div>';
+      continue;
+    }
+
+    // H2
+    if (line.match(/^##\s+/)) {
+      var txt2 = line.replace(/^##\s+/, '');
+      html += '<div class="p-card"><div class="p-h2">' + inlineFormat(txt2) + '</div>';
+      nextLine();
+      var inner = '';
+      while (i < lines.length) {
+        var nl = lines[i] ? lines[i].trimEnd() : '';
+        if (nl.match(/^#/)) break;
+        if (nl.match(/^:::/)) {
+          var bt = nl.replace(/^:::/, '').trim();
+          var bc = collectBlock(bt);
+          inner += renderBlock(bt, bc);
+          continue;
+        }
+        if (nl.trim()) inner += '<div class="p-para">' + inlineFormat(nl) + '</div>';
+        else inner += '';
+        nextLine();
+      }
+      html += inner + '</div>';
+      continue;
+    }
+
+    // H3
+    if (line.match(/^###\s+/)) {
+      var txt3 = line.replace(/^###\s+/, '');
+      html += '<div class="p-h3">' + inlineFormat(txt3) + '</div>';
+      nextLine();
+      continue;
+    }
+
+    // HR
+    if (line.trim() === '---') {
+      html += '<div class="p-hr"></div>';
+      nextLine();
+      continue;
+    }
+
+    // Empty line
+    if (!line.trim()) { nextLine(); continue; }
+
+    // Regular paragraph
+    html += '<div class="p-para">' + inlineFormat(line) + '</div>';
+    nextLine();
+  }
+
+  return html;
+}
+
+function inlineFormat(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<span class="p-bold">$1</span>')
+    .replace(/\*(.+?)\*/g, '<em class="p-em">$1</em>')
+    .replace(/`(.+?)`/g, '<code class="p-inline-code">$1</code>');
+}
+
+function renderBlock(type, content) {
+  var lines = content.split('\n');
+
+  // CONCEPT
+  if (type === 'concept') {
+    var html = '<div class="p-card"><div class="p-concept">';
+    var head = '', body = [];
+    lines.forEach(function(l) {
+      if (l.match(/^###\s+/)) head = l.replace(/^###\s+/, '');
+      else if (l.trim()) body.push(inlineFormat(l.trim()));
+    });
+    if (head) html += '<div class="p-concept-h">' + inlineFormat(head) + '</div>';
+    if (body.length) html += '<div class="p-concept-b">' + body.join('<br>') + '</div>';
+    html += '</div></div>';
+    return html;
+  }
+
+  // ANALOGY
+  if (type === 'analogy') {
+    var emoji = '💡', atitle = 'Analogy', abody = [];
+    lines.forEach(function(l, li) {
+      if (li === 0 && l.trim().match(/^\S{1,4}$/)) emoji = l.trim();
+      else if (l.match(/^###\s+/)) atitle = l.replace(/^###\s+/, '');
+      else if (l.trim()) abody.push(l.trim());
+    });
+    return '<div class="p-card"><div class="p-analogy"><div class="p-analogy-emoji">' + emoji + '</div><div><div class="p-analogy-title">' + atitle + '</div><div class="p-analogy-text">' + inlineFormat(abody.join(' ')) + '</div></div></div></div>';
+  }
+
+  // IMAGE
+  if (type === 'image') {
+    var iurl = '', icap = '', ialt = '';
+    lines.forEach(function(l) {
+      var lm = l.trim();
+      if (lm.startsWith('url:')) iurl = lm.replace('url:', '').trim();
+      else if (lm.startsWith('caption:')) icap = lm.replace('caption:', '').trim();
+      else if (lm.startsWith('alt:')) ialt = lm.replace('alt:', '').trim();
+    });
+    var uid = 'img-' + Math.random().toString(36).substr(2, 6);
+    return '<div class="p-img-wrap">' +
+      (iurl ? '<img class="p-img-real" src="' + escHtml(iurl) + '" alt="' + escHtml(ialt || icap) + '" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">' : '') +
+      '<div class="p-img-placeholder" style="' + (iurl ? 'display:none' : '') + '" onclick="document.getElementById(\'' + uid + '\').click()">' +
+        '<i class="fa-solid fa-image"></i>' +
+        '<span>' + (iurl ? iurl : 'Click to upload image') + '</span>' +
+        '<span style="font-size:10px;color:var(--muted2)">Or paste URL in markdown</span>' +
+        '<input type="file" id="' + uid + '" accept="image/*" style="display:none" onchange="handleImgUpload(this,this.closest(\'.p-img-wrap\'))">' +
+        '<div class="p-img-upload-hint"><i class="fa-solid fa-upload" style="font-size:20px;color:#fff"></i><span style="font-size:12px;color:#fff">Upload Image</span></div>' +
+      '</div>' +
+      '<div class="p-img-caption">' + escHtml(icap || 'Add caption in markdown') + '</div>' +
+    '</div>';
+  }
+
+  // VIDEO
+  if (type === 'video') {
+    var vurl = '', vtitle = 'Video', vmeta = 'YouTube', vdur = '', vreq = true;
+    lines.forEach(function(l) {
+      var lm = l.trim();
+      if (lm.startsWith('url:')) vurl = lm.replace('url:', '').trim();
+      else if (lm.startsWith('title:')) vtitle = lm.replace('title:', '').trim();
+      else if (lm.startsWith('meta:')) vmeta = lm.replace('meta:', '').trim();
+      else if (lm.startsWith('duration:')) vdur = lm.replace('duration:', '').trim();
+      else if (lm.startsWith('required:')) vreq = lm.replace('required:', '').trim() !== 'false';
+    });
+    var ytid = vurl.match(/(?:youtu\.be\/|v=|embed\/)([a-zA-Z0-9_-]{11})/);
+    var ytid_val = ytid ? ytid[1] : null;
+    return '<div class="p-video">' +
+      '<div class="p-video-thumb" onclick="' + (vurl ? 'window.open(\'' + vurl + '\',\'_blank\')' : '') + '">' +
+        (ytid_val ? '<img src="https://img.youtube.com/vi/' + ytid_val + '/hqdefault.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.65">' : '') +
+        '<div class="p-play"><i class="fa-solid fa-play"></i></div>' +
+        (vdur ? '<div class="p-video-dur">' + vdur + '</div>' : '') +
+      '</div>' +
+      '<div class="p-video-info">' +
+        '<div class="p-yt-ic"><i class="fa-brands fa-youtube"></i></div>' +
+        '<div style="flex:1"><div class="p-video-title">' + escHtml(vtitle) + '</div><div class="p-video-meta">' + escHtml(vmeta) + '</div></div>' +
+        '<span class="chip ' + (vreq ? 'chip-green' : 'chip-gray') + '" style="font-size:10px">' + (vreq ? 'Required' : 'Optional') + '</span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // CODE
+  if (type.startsWith('code')) {
+    var lang = type.replace('code', '').trim() || 'python';
+    var ctitle = 'Code Example', clines = [];
+    lines.forEach(function(l) {
+      if (l.match(/^###\s+/)) ctitle = l.replace(/^###\s+/, '').trim();
+      else clines.push(l);
+    });
+    var code = clines.join('\n').replace(/^\n/, '');
+    var cid = 'code-' + Math.random().toString(36).substr(2, 6);
+    return '<div class="p-code">' +
+      '<div class="p-code-hdr">' +
+        '<div class="p-code-dots"><div class="p-code-dot" style="background:#ff5f57"></div><div class="p-code-dot" style="background:#febc2e"></div><div class="p-code-dot" style="background:#28c840"></div></div>' +
+        '<span class="p-code-lang">' + lang + '</span>' +
+        '<span class="p-code-title">' + escHtml(ctitle) + '</span>' +
+        '<button class="p-copy-btn" onclick="copyCodeBlock(\'' + cid + '\')"><i class="fa-regular fa-copy"></i> Copy</button>' +
+      '</div>' +
+      '<div class="p-code-body"><pre id="' + cid + '">' + escHtml(code) + '</pre></div>' +
+    '</div>';
+  }
+
+  // CALLOUTS
+  if (type === 'tip' || type === 'warning' || type === 'important') {
+    var clabel = type.toUpperCase(), cbody = [];
+    var icons = {tip:'fa-lightbulb', warning:'fa-triangle-exclamation', important:'fa-circle-info'};
+    lines.forEach(function(l) {
+      if (l.match(/^###\s+/)) clabel = l.replace(/^###\s+/, '').trim();
+      else if (l.trim()) cbody.push(inlineFormat(l.trim()));
+    });
+    return '<div class="p-callout p-callout-' + type + '">' +
+      '<i class="fa-solid ' + icons[type] + ' p-callout-icon"></i>' +
+      '<div><span class="p-callout-lbl">' + clabel + '</span><div class="p-callout-text">' + cbody.join('<br>') + '</div></div>' +
+    '</div>';
+  }
+
+  // KEY POINTS
+  if (type === 'keypoints') {
+    var kptitle = 'Key Takeaways', kppts = [];
+    lines.forEach(function(l) {
+      if (l.match(/^###\s+/)) kptitle = l.replace(/^###\s+/, '').trim();
+      else if (l.trim().startsWith('-')) kppts.push(l.trim().replace(/^-\s*/, ''));
+    });
+    var kphtml = kppts.map(function(p) {
+      return '<div class="p-kp-item"><div class="p-kp-dot"><i class="fa-solid fa-check"></i></div>' + inlineFormat(p) + '</div>';
+    }).join('');
+    return '<div class="p-keypoints"><div class="p-kp-title"><i class="fa-solid fa-key"></i>' + kptitle + '</div><div class="p-kp-list">' + kphtml + '</div></div>';
+  }
+
+  // QUIZ
+  if (type === 'quiz') {
+    var qid = 'quiz-' + Date.now() + Math.random().toString(36).substr(2,4);
+    var question = '', opts = {A:'',B:'',C:'',D:''}, correct = 'A', explain = '';
+    lines.forEach(function(l) {
+      var lm = l.trim();
+      if (lm.startsWith('Q:')) question = lm.replace('Q:', '').trim();
+      else if (lm.startsWith('A:')) opts.A = lm.replace('A:', '').trim();
+      else if (lm.startsWith('B:')) opts.B = lm.replace('B:', '').trim();
+      else if (lm.startsWith('C:')) opts.C = lm.replace('C:', '').trim();
+      else if (lm.startsWith('D:')) opts.D = lm.replace('D:', '').trim();
+      else if (lm.startsWith('CORRECT:')) correct = lm.replace('CORRECT:', '').trim();
+      else if (lm.startsWith('EXPLAIN:')) explain = lm.replace('EXPLAIN:', '').trim();
+    });
+    var optsHtml = ['A','B','C','D'].filter(function(l) { return opts[l]; }).map(function(l) {
+      return '<div class="p-quiz-opt" onclick="selectQuizOpt(this,\'' + l + '\',\'' + qid + '\')">' +
+        '<div class="p-opt-ltr">' + l + '</div>' +
+        '<div>' + escHtml(opts[l]) + '</div>' +
+      '</div>';
+    }).join('');
+    return '<div class="p-quiz" data-qid="' + qid + '" data-correct="' + correct + '">' +
+      '<div class="p-quiz-badge">📝 Mini Quiz</div>' +
+      '<div class="p-quiz-q">' + escHtml(question) + '</div>' +
+      '<div class="p-quiz-opts" id="opts-' + qid + '">' + optsHtml + '</div>' +
+      '<div class="p-quiz-exp" id="exp-' + qid + '"><i class="fa-solid fa-check-circle" style="margin-right:5px;color:var(--gm)"></i>' + escHtml(explain) + '</div>' +
+      '<button class="p-quiz-submit" onclick="submitQuiz(\'' + qid + '\')"><i class="fa-solid fa-paper-plane"></i> Submit Answer</button>' +
+    '</div>';
+  }
+
+  // TASK HERO
+  if (type === 'task-hero') {
+    var tprefix = 'Task —', ttitle = 'Project Challenge', tdesc = '', tstats = [];
+    lines.forEach(function(l) {
+      var lm = l.trim();
+      if (lm.match(/^#\s+/)) tprefix = lm.replace(/^#\s+/, '');
+      else if (lm.match(/^##\s+/)) ttitle = lm.replace(/^##\s+/, '');
+      else if (lm.startsWith('- ')) tstats.push(lm.replace(/^-\s*/, ''));
+      else if (lm && !lm.match(/^#/)) tdesc = lm;
+    });
+    var statsHtml = tstats.map(function(s) {
+      return '<div class="p-task-stat"><i class="fa-solid fa-circle-dot"></i>' + escHtml(s) + '</div>';
+    }).join('');
+    return '<div class="p-task-hero">' +
+      '<div class="p-task-top">' +
+        '<div class="p-task-badge"><i class="fa-solid fa-bolt" style="font-size:9px"></i>Task Day · Day ' + state.currentDay + '</div>' +
+        '<div class="p-task-title"><span style="color:#a8a29e">' + escHtml(tprefix) + ' </span><em>' + escHtml(ttitle) + '</em></div>' +
+        (tdesc ? '<div class="p-task-desc">' + escHtml(tdesc) + '</div>' : '') +
+        (statsHtml ? '<div class="p-task-stats">' + statsHtml + '</div>' : '') +
+      '</div>' +
+    '</div>';
+  }
+
+  // REQUIREMENTS
+  if (type === 'requirements') {
+    var reqId = 'req-' + Math.random().toString(36).substr(2,5);
+    var sections = {beg: [], int: [], adv: []};
+    var curSection = 'int';
+    lines.forEach(function(l) {
+      var lm = l.trim().toUpperCase();
+      if (lm.includes('BEGINNER')) { curSection = 'beg'; return; }
+      if (lm.includes('INTERMEDIATE')) { curSection = 'int'; return; }
+      if (lm.includes('ADVANCED')) { curSection = 'adv'; return; }
+      if (l.trim().startsWith('-')) sections[curSection].push(l.trim().replace(/^-\s*/,''));
+    });
+    var makeReqBox = function(cls, label, items) {
+      return '<div class="p-req-' + cls + ' p-req-box"><div class="p-req-title">' + label + '</div>' +
+        '<div class="p-req-list">' + items.map(function(it) { return '<div class="p-req-item">' + escHtml(it) + '</div>'; }).join('') + '</div></div>';
+    };
+    return '<div class="p-card">' +
+      '<div class="p-card-label"><i class="fa-solid fa-sliders"></i>Difficulty Level</div>' +
+      '<div class="p-diff-tabs">' +
+        '<div class="p-diff-tab ' + (sections.beg.length ? '' : 'disabled') + '" onclick="switchDiff(this,\'' + reqId + '\',\'beg\')">🟢 Beginner</div>' +
+        '<div class="p-diff-tab active" onclick="switchDiff(this,\'' + reqId + '\',\'int\')">🟡 Intermediate</div>' +
+        '<div class="p-diff-tab" onclick="switchDiff(this,\'' + reqId + '\',\'adv\')">🔴 Advanced</div>' +
+      '</div>' +
+      '<div class="p-diff-content" id="' + reqId + '-beg">' + makeReqBox('beg','🟢 Beginner Requirements', sections.beg) + '</div>' +
+      '<div class="p-diff-content active" id="' + reqId + '-int">' + makeReqBox('int','🟡 Intermediate Requirements', sections.int) + '</div>' +
+      '<div class="p-diff-content" id="' + reqId + '-adv">' + makeReqBox('adv','🔴 Advanced Requirements', sections.adv) + '</div>' +
+    '</div>';
+  }
+
+  // CHECKLIST
+  if (type === 'checklist') {
+    var clId = 'cl-' + Math.random().toString(36).substr(2,5);
+    var items = lines.filter(function(l) { return l.trim().startsWith('-'); })
+      .map(function(l) { return l.trim().replace(/^-\s*/,''); });
+    var itemsHtml = items.map(function(item, idx) {
+      var iid = clId + '-' + idx;
+      return '<div class="p-check-item" id="' + iid + '" onclick="toggleCheck(\'' + iid + '\')">' +
+        '<div class="p-check-box"><i class="fa-solid fa-check"></i></div>' +
+        escHtml(item) +
+      '</div>';
+    }).join('');
+    return '<div class="p-card"><div class="p-card-label"><i class="fa-solid fa-list-check"></i>Pre-Submit Checklist</div><div class="p-checklist">' + itemsHtml + '</div></div>';
+  }
+
+  // SCORING
+  if (type === 'scoring') {
+    var scoreItems = [];
+    lines.forEach(function(l) {
+      var lm = l.trim();
+      if (lm.startsWith('SCORE:')) {
+        var parts = lm.replace('SCORE:', '').trim().split('|');
+        if (parts.length >= 3) scoreItems.push({label:parts[0].trim(), val:parts[1].trim(), max:parts[2].trim(), isPass:false});
+      }
+      if (lm.startsWith('PASS:')) {
+        var parts2 = lm.replace('PASS:', '').trim().split('|');
+        if (parts2.length >= 3) scoreItems.push({label:parts2[0].trim(), val:parts2[1].trim(), max:parts2[2].trim(), isPass:true});
+      }
+    });
+    var sgrid = scoreItems.map(function(s) {
+      return '<div class="p-score-item' + (s.isPass ? ' pass' : '') + '">' +
+        '<div class="p-score-val">' + s.val + '<span class="p-score-max">/' + s.max + '</span></div>' +
+        '<div class="p-score-lbl">' + escHtml(s.label) + '</div>' +
+      '</div>';
+    }).join('');
+    return '<div class="p-card"><div class="p-card-label"><i class="fa-solid fa-robot"></i>AI Scoring</div><div class="p-score-grid">' + sgrid + '</div></div>';
+  }
+
+  // SUBMIT
+  if (type === 'submit') {
+    return '<div class="p-card">' +
+      '<div class="p-submit-box">' +
+        '<div class="p-submit-lbl"><i class="fa-brands fa-github" style="margin-right:5px"></i>Submit GitHub Repository</div>' +
+        '<div class="p-input-row">' +
+          '<input class="p-input" type="url" placeholder="https://github.com/username/repo-name">' +
+          '<button class="btn btn-primary btn-sm" onclick="toast(\'Submitted! AI review in 2-5 min 🤖\')"><i class="fa-solid fa-paper-plane"></i> Submit</button>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:7px">' +
+        '<button class="btn btn-ghost btn-sm" onclick="toast(\'AI Help opened!\')"><i class="fa-solid fa-robot"></i> Ask AI</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="toast(\'Discussion opened!\')"><i class="fa-solid fa-comments"></i> Discuss</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="toast(\'Rubric: See scoring above\')"><i class="fa-solid fa-list-check"></i> Rubric</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // WYL (What you'll learn)
+  if (type === 'wyl') {
+    var wylItems = lines.filter(function(l) { return l.trim().startsWith('-'); })
+      .map(function(l) { return l.trim().replace(/^-\s*/,''); });
+    var wylHtml = wylItems.map(function(item) {
+      return '<div class="p-wyl-item"><i class="fa-solid fa-check"></i>' + escHtml(item) + '</div>';
+    }).join('');
+    return '<div class="p-wyl"><div class="p-wyl-lbl"><i class="fa-solid fa-graduation-cap" style="margin-right:4px"></i>What You Will Learn Today</div><div class="p-wyl-grid">' + wylHtml + '</div></div>';
+  }
+
+  // Fallback — render as concept
+  return '<div class="p-card"><div class="p-concept"><div class="p-concept-b">' + inlineFormat(content.trim()) + '</div></div></div>';
+}
+
+// ══════════════════════════════════════
+// PREVIEW INTERACTIONS
+// ══════════════════════════════════════
+function initPreviewInteractions() {
+  // Nothing needed — all onclick inline
+}
+
+function selectQuizOpt(el, letter, qid) {
+  var opts = el.closest('.p-quiz-opts').querySelectorAll('.p-quiz-opt');
+  opts.forEach(function(o) { o.classList.remove('selected'); o.querySelector('.p-opt-ltr').classList.remove('selected'); });
+  el.classList.add('selected');
+  el.querySelector('.p-opt-ltr').classList.add('selected');
+  state.quizAnswers[qid] = letter;
+}
+
+function submitQuiz(qid) {
+  var quiz = document.querySelector('[data-qid="' + qid + '"]');
+  if (!quiz) return;
+  var ans = state.quizAnswers[qid];
+  if (!ans) { toast('Pehle ek option select karo!'); return; }
+  var correct = quiz.getAttribute('data-correct');
+  var opts = quiz.querySelectorAll('.p-quiz-opt');
+  var letters = ['A','B','C','D'];
+  opts.forEach(function(opt, i) {
+    opt.onclick = null;
+    var ltr = opt.querySelector('.p-opt-ltr');
+    if (letters[i] === correct) { opt.classList.add('correct'); ltr.classList.add('correct'); }
+    else if (letters[i] === ans && ans !== correct) { opt.classList.add('wrong'); ltr.classList.add('wrong'); }
+  });
+  var exp = document.getElementById('exp-' + qid);
+  if (exp) exp.classList.add('show');
+  toast(ans === correct ? 'Correct! Well done 🎉' : 'Galat — sahi answer dekho');
+}
+
+function switchDiff(el, id, level) {
+  el.closest('.p-card').querySelectorAll('.p-diff-tab').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  ['beg','int','adv'].forEach(function(l) {
+    var c = document.getElementById(id + '-' + l);
+    if (c) c.className = 'p-diff-content' + (l === level ? ' active' : '');
+  });
+}
+
+function toggleCheck(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('checked');
+}
+
+function copyCodeBlock(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(function() { toast('Code copied!'); });
+}
+
+function handleImgUpload(input, wrap) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = wrap.querySelector('.p-img-real') || document.createElement('img');
+    img.src = e.target.result;
+    img.className = 'p-img-real';
+    img.style.display = 'block';
+    var placeholder = wrap.querySelector('.p-img-placeholder');
+    if (placeholder) placeholder.style.display = 'none';
+    if (!wrap.querySelector('.p-img-real')) wrap.prepend(img);
+    toast('Image uploaded!');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ══════════════════════════════════════
+// TOOLBAR SNIPPETS
+// ══════════════════════════════════════
+var SNIPPETS = {
+  concept: ':::concept\n### Your Concept Heading\nExplanation text here. **Bold** and *italic* supported.\n\nMultiple paragraphs work too — add line breaks.\n:::',
+  image: ':::image\nurl: https://your-image-url.com/image.png\ncaption: Your image caption here\nalt: Alt text for accessibility\n:::',
+  video: ':::video\nurl: https://youtube.com/watch?v=YOUR_ID\ntitle: Video Title Here\nmeta: YouTube · 10 min · Overview\nduration: 10:30\nrequired: true\n:::',
+  code: ':::code python\n### Code Block Title\n# Your code here\nimport numpy as np\n\narr = np.array([1, 2, 3])\nprint(arr.mean())\n:::',
+  'callout-tip': ':::tip\n### Pro Tip\nYour helpful tip text goes here. **Bold** and `inline code` supported.\n:::',
+  'callout-warning': ':::warning\n### Warning\nImportant warning message here.\n:::',
+  quiz: ':::quiz\nQ: Your question here?\nA: Option A text\nB: Option B text\nC: Option C text\nD: Option D text\nCORRECT: B\nEXPLAIN: Explanation of the correct answer here.\n:::',
+  keypoints: ':::keypoints\n### Key Takeaways\n- First key point here\n- Second key point here\n- Third key point here\n- Fourth key point here\n:::',
+  'task-hero': ':::task-hero\n# Task 1 —\n## House Price Predictor\nApply everything from Day 1–4: NumPy, Pandas, Matplotlib, Seaborn, Sklearn. Full ML project.\n- Estimated: 3–4 hours\n- Due: 11:59 PM Today\n- Max 2 attempts\n- Pass score: 60/100\n:::',
+  requirements: ':::requirements\n### BEGINNER\n- pandas se CSV load karo\n- matplotlib se 2 charts banao\n- LinearRegression model train karo\n- R2 score print karo\n\n### INTERMEDIATE\n- Kaggle dataset use karo\n- Missing values handle karo\n- Seaborn heatmap banao\n- Cross-validation use karo\n\n### ADVANCED\n- 4 models compare karo\n- GridSearchCV use karo\n- Streamlit UI banao\n- Deploy karo\n:::'
+};
+
+function insertSnippet(type) {
+  var ta = document.getElementById('md-editor');
+  var snippet = SNIPPETS[type] || '';
+  var pos = ta.selectionEnd;
+  var before = ta.value.substring(0, pos);
+  var after = ta.value.substring(pos);
+  var insert = (before.length && !before.endsWith('\n\n') ? '\n\n' : '') + snippet + '\n\n';
+  ta.value = before + insert + after;
+  ta.selectionStart = ta.selectionEnd = pos + insert.length;
+  ta.focus();
+  parseAndRender();
+}
+
+// ══════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════
+function openImport() { document.getElementById('import-modal').style.display = 'flex'; }
+function openHelp() { document.getElementById('help-modal').style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+var importType = 'learn';
+function setImportType(t) {
+  importType = t;
+  document.getElementById('type-learn').style.borderColor = t === 'learn' ? 'var(--bm)' : '';
+  document.getElementById('type-learn').style.color = t === 'learn' ? 'var(--bm)' : '';
+  document.getElementById('type-task').style.borderColor = t === 'task' ? 'var(--am)' : '';
+  document.getElementById('type-task').style.color = t === 'task' ? 'var(--am)' : '';
+}
+
+function importContent() {
+  var md = document.getElementById('import-md').value.trim();
+  var dayNum = parseInt(document.getElementById('import-day-num').value) || 1;
+  if (!md) { toast('Paste some markdown first!'); return; }
+
+  // Map to correct day
+  if (dayNum >= 1 && dayNum <= state.days.length) {
+    state.days[dayNum - 1].markdown = md;
+    state.days[dayNum - 1].type = importType;
+    selectDay(dayNum);
+  } else {
+    document.getElementById('md-editor').value = md;
+    parseAndRender();
+  }
+  closeModal('import-modal');
+  toast('Day ' + dayNum + ' content imported! ✓');
+}
+
+// ══════════════════════════════════════
+// LOAD DEFAULT CONTENT
+// ══════════════════════════════════════
+function loadDefaultContent(dayNum) {
+  var day = state.days[dayNum - 1];
+  if (day.markdown) return;
+
+  if (dayNum === 1) {
+    day.markdown = DEFAULT_DAY1;
+  } else if (dayNum === 5) {
+    day.markdown = DEFAULT_DAY5;
+  } else {
+    day.markdown = '# Day ' + dayNum + ' — ' + (day.type === 'task' ? 'Task Day' : 'Learning Day') + '\n\nAdd your content here using the toolbar above or paste markdown using the Import button.\n\n:::tip\n### Getting Started\nClick any toolbar button to insert a content block, or use Import Markdown to paste your prepared content.\n:::';
+  }
+  document.getElementById('md-editor').value = day.markdown;
+  parseAndRender();
+}
+
+// ══════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════
+function exportJSON() {
+  var data = state.days.map(function(d) {
+    return { day: d.num, type: d.type, done: d.done, title: d.title || '', markdown: d.markdown };
+  });
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'careerwizard-internship-content.json';
+  a.click(); URL.revokeObjectURL(url);
+  toast('JSON exported!');
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function escHtml(text) {
+  return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var toastTimer;
+function toast(msg) {
+  var el = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2800);
+}
+
+// ══════════════════════════════════════
+// DEFAULT CONTENT
+// ══════════════════════════════════════
+var DEFAULT_DAY1 = `# Day 1 — What is Machine Learning?
+Understand ML fundamentals, its 3 types, real-world applications, and set up your Python environment for the internship.
+
+:::wyl
+- What ML is and why it matters in 2025
+- 3 types: Supervised, Unsupervised, Reinforcement
+- Real-world ML apps you use daily
+- Setup Python + Jupyter environment
+:::
+
+## 📖 Core Concept
+
+:::concept
+### ML kya hota hai?
+Machine Learning ek AI ka part hai jisme computer data se khud seekhta hai bina explicitly program kiye. Traditional programming mein aap rules likhte the — ML mein aap data dete ho aur machine khud rules discover karti hai.
+
+**Simple example:** Spam filter — aapne manually rules nahi likhe. Aapne 10,000 spam emails dikhaye aur model ne khud patterns seekhe.
+:::
+
+:::analogy
+🍕
+### SIMPLE ANALOGY
+Bacche ko pizza pehchanna sikhana — 1000 pizza photos aur 1000 non-pizza photos dikhao. Baccha patterns seekh leta hai (round, cheesy, toppings) bina koi rule bataye. Yahi ML karta hai, but millions of examples ke saath.
+:::
+
+:::image
+url: https://r2.careerwizard.ai/aiml/day1/ml-types-diagram.png
+caption: 3 Types of Machine Learning — Supervised, Unsupervised aur Reinforcement ka comparison
+alt: ML types diagram
+:::
+
+:::concept
+### 3 Types of ML — Ek Ek Samjho
+**1. Supervised Learning** — Labelled data dete ho. Model input → output mapping seekhta hai. Example: House price prediction, spam detection, image classification.
+
+**2. Unsupervised Learning** — Unlabelled data. Model khud groups/patterns dhundta hai. Example: Customer segmentation, anomaly detection.
+
+**3. Reinforcement Learning** — Agent environment mein actions leta hai, reward/penalty milta hai. Example: Chess AI, game bots, robot control.
+:::
+
+## 🎥 Video Resources
+
+:::video
+url: https://www.youtube.com/watch?v=ukzFI9rgwfU
+title: Machine Learning in 100 Seconds — Fireship
+meta: YouTube · 2 min · Quick overview
+duration: 1:42
+required: true
+:::
+
+:::video
+url: https://www.youtube.com/watch?v=aircAruvnKk
+title: Neural Networks from Scratch — 3Blue1Brown
+meta: YouTube · 19 min · Deep dive (optional)
+duration: 19:13
+required: false
+:::
+
+## 💻 Hands-On — Environment Setup
+
+:::important
+### Before You Code
+Python 3.9+ installed hona chahiye. Check karo: \`python --version\` terminal mein. Agar nahi hai toh python.org se install karo pehle.
+:::
+
+:::code python
+### Step 1 — Library Installation
+# Terminal mein run karo (not in Python file)
+pip install numpy pandas matplotlib scikit-learn jupyter
+
+# Verify installation
+pip list | grep -E "numpy|pandas|matplotlib|scikit"
+:::
+
+:::code python
+### Step 2 — Test Setup in Jupyter
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import datasets
+
+# Test karo
+print("NumPy version:", np.__version__)
+print("Pandas version:", pd.__version__)
+print("✅ Setup complete! Ready for Day 2.")
+
+# Jupyter start karo — terminal mein:
+# jupyter notebook
+:::
+
+:::image
+url: https://r2.careerwizard.ai/aiml/day1/jupyter-screenshot.png
+caption: Jupyter Notebook interface — yahan aapka saara ML code chalega is internship mein
+alt: Jupyter notebook screenshot
+:::
+
+:::tip
+### Pro Tip
+NumPy aur Pandas — yeh 2 libraries practically har ML project mein use hoti hain. Aaj ka goal sirf: environment ready karo aur Jupyter mein ek cell run karo.
+:::
+
+:::keypoints
+### Key Takeaways — Day 1
+- ML = data se patterns seekhna, explicit rules nahi likhne
+- Supervised: labelled data → predict output
+- Unsupervised: unlabelled data → find patterns
+- Reinforcement: reward/penalty se seekhna
+- Python + Jupyter = industry standard ML setup
+:::
+
+:::quiz
+Q: Supervised Learning mein kya hota hai?
+A: Data mein koi labels nahi hote, model khud groups dhundta hai
+B: Model labelled examples se input-output mapping seekhta hai
+C: Model environment mein actions lekar reward se seekhta hai
+D: Koi bhi data ki zarurat nahi hoti
+CORRECT: B
+EXPLAIN: Supervised = labelled data. Jaise spam/not-spam emails — model ne examples dekhe aur seekha. Unsupervised mein labels nahi hote.
+:::`;
+
+var DEFAULT_DAY5 = `:::task-hero
+# Task 1 —
+## House Price Predictor
+Apply everything from Day 1–4: NumPy, Pandas, Matplotlib, Seaborn, aur Scikit-Learn. Ek complete ML project banao — data load se model evaluation tak. GitHub pe submit karo.
+- Estimated: 3–4 hours
+- Due: 11:59 PM Today
+- Max 2 attempts
+- Pass score: 60/100
+:::
+
+:::warning
+### Pre-Task Reminder
+Day 1–4 mein jo seekha — NumPy, Pandas, Visualization, Sklearn — aaj sab use hoga. Koi bhi concept bhool gaye? **Upar wale days review karo pehle** task shuru karne se.
+:::
+
+## 🎯 Choose Your Level
+
+:::requirements
+### BEGINNER
+- pandas se CSV file load karo aur explore karo
+- df.head(), df.info(), df.describe() run karo
+- matplotlib se minimum 2 charts banao (line + bar)
+- LinearRegression model train karo
+- R2 score aur MSE print karo
+- README.md mein project explain karo
+
+### INTERMEDIATE
+- Kaggle House Prices dataset use karo (link neeche)
+- Missing values handle karo — imputation strategy explain karo
+- Seaborn correlation heatmap banao — top features identify karo
+- LinearRegression aur Ridge Regression compare karo
+- Cross-validation (k=5) se model validate karo
+- Feature importance plot banao
+- Jupyter notebook properly documented ho — Markdown cells
+
+### ADVANCED
+- 4 models compare karo: LinearRegression, Ridge, Lasso, RandomForest
+- GridSearchCV se hyperparameter tuning karo
+- sklearn Pipeline use karo (preprocessing + model together)
+- Model joblib se save karo aur load back karo
+- Simple Streamlit UI banao — user input le ke price predict kare
+- Streamlit Cloud pe deploy karo — live URL submit karo
+:::
+
+## 📦 Dataset
+
+:::concept
+### House Prices Dataset — Kaggle
+**Source:** kaggle.com/c/house-prices | **Format:** CSV | **Size:** ~1,400 rows
+
+Key columns:
+- **GrLivArea** — Living area in sqft
+- **BedroomAbvGr** — Bedroom count
+- **FullBath** — Full bathrooms
+- **YearBuilt** — Construction year
+- **SalePrice** — 🎯 Target variable (what you predict)
+
+Download from Kaggle → unzip → place \`house_prices.csv\` in your project folder.
+:::
+
+## 🎥 Resources
+
+:::video
+url: https://www.youtube.com/watch?v=Y0L4-Zq5TGY
+title: House Price Prediction — Full ML Project Tutorial
+meta: YouTube · 25 min · Watch before starting
+duration: 25:00
+required: true
+:::
+
+:::video
+url: https://www.youtube.com/watch?v=pYOVoSBU0aM
+title: Sklearn LinearRegression + Cross Validation
+meta: YouTube · 15 min · Intermediate concept
+duration: 15:00
+required: false
+:::
+
+## 💻 Starter Code
+
+:::code python
+### house_price_predictor.py — Start Here
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_squared_error
+
+# ── TODO 1: Load dataset ───────────────────────────
+df = pd.read_csv('house_prices.csv')
+
+# ── TODO 2: Explore data ───────────────────────────
+print(df.head())
+print(df.info())
+print(df.describe())
+
+# ── TODO 3: Handle missing values ──────────────────
+print(df.isnull().sum())
+# df.fillna(df.mean(), inplace=True)
+
+# ── TODO 4: Visualize (min 2 charts) ──────────────
+# Chart 1: SalePrice distribution
+plt.hist(df['SalePrice'], bins=40, color='steelblue')
+plt.title('Sale Price Distribution')
+plt.show()
+
+# Chart 2: Correlation heatmap
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.title('Feature Correlation')
+plt.show()
+
+# ── TODO 5: Features and target ────────────────────
+X = df[['GrLivArea', 'BedroomAbvGr', 'FullBath', 'YearBuilt']]
+y = df['SalePrice']
+
+# ── TODO 6: Train/Test split ───────────────────────
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# ── TODO 7: Train model ────────────────────────────
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# ── TODO 8: Evaluate ───────────────────────────────
+y_pred = model.predict(X_test)
+print(f"R2 Score:  {r2_score(y_test, y_pred):.3f}")
+print(f"RMSE:      {np.sqrt(mean_squared_error(y_test, y_pred)):.0f}")
+
+# ── TODO 9: Predict new house ──────────────────────
+new_house = [[2200, 3, 2, 2005]]
+price = model.predict(new_house)
+print(f"Predicted price: \${price[0]:,.0f}")
+:::
+
+:::tip
+### Pro Tip
+Pehle data explore karo fully. \`df.head()\`, \`df.isnull().sum()\`, \`df.describe()\` — yeh 3 commands sabse pehle run karo. Data samjhe bina model mat banao.
+:::
+
+:::warning
+### Important
+GitHub pe CSV file mat daalo agar badi hai. \`.gitignore\` mein \`*.csv\` add karo. README mein Kaggle download link do.
+:::
+
+:::important
+### R2 Score Guide
+\`> 0.85\` = Excellent | \`0.70–0.85\` = Good | \`0.50–0.70\` = Okay | \`< 0.50\` = Improve karo | **Negative** = Model galat hai — features check karo
+:::
+
+## 📊 AI Scoring
+
+:::scoring
+SCORE: Correctness|25|25
+SCORE: Approach & Logic|25|25
+SCORE: Code Quality|25|25
+SCORE: Documentation|25|25
+PASS: Minimum Pass Score|60|100
+:::
+
+## ✅ Pre-Submit Checklist
+
+:::checklist
+- GitHub repo public hai (private nahi)
+- README.md hai aur project explain karta hai
+- Jupyter notebook mein sare cells run hue hain
+- R2 score printed in output
+- Minimum 2 visualization charts hain
+- No API keys ya passwords code mein hain
+- CSV file .gitignore mein add ki hai
+:::
+
+:::submit
+:::
+
+:::important
+### After Submit
+AI review 2–5 minutes mein complete hoga. Score aur detailed feedback email pe aayega. **Pass (60+)** → Day 6 unlock hoga. **Fail** → ek aur attempt milega 48 ghante ke andar.
+:::`;
+
+// Prevent modal close on inner click
+document.getElementById('import-modal').querySelector('.modal').onclick = function(e) { e.stopPropagation(); };
+document.getElementById('help-modal').querySelector('.modal').onclick = function(e) { e.stopPropagation(); };
+
+</script>
+
+<style>
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</body>
+</html>
