@@ -38,6 +38,7 @@ import {
 const tabs = [
     { name: "Overview", path: "/overview", icon: ChartBarIcon },
     { name: "My Internship", path: "/internship", icon: RocketLaunchIcon, hasSubmenu: true },
+    { name: "Create Task", path: "/admin", icon: ClipboardDocumentListIcon, hasSubmenu: true, adminOnly: true },
     { name: "Analysis", path: "/overview/resume-analysis", icon: DocumentMagnifyingGlassIcon },
     { name: "Jobs", path: "/overview/job-match", icon: BriefcaseIcon },
     { name: "Skills", path: "/overview/skills-gap", icon: AcademicCapIcon },
@@ -55,6 +56,30 @@ const internshipSubmenu = [
     { name: "Certificates", path: "/internship/certificates", icon: CertificateIcon },
 ];
 
+const dummyTitles = [
+    "What is Machine Learning?",
+    "Python Basics for ML",
+    "Data Preprocessing",
+    "Supervised Learning",
+    "Unsupervised Learning",
+    "Model Evaluation",
+    "Deep Learning Intro",
+    "Neural Networks",
+    "NLP Basics",
+    "Computer Vision",
+    "Recommender Systems",
+    "Reinforcement Learning",
+    "Model Deployment",
+    "Capstone Project",
+    "Final Review"
+];
+
+const adminSubmenu = Array.from({length: 15}, (_, i) => ({
+    name: `Day ${i + 1} - ${dummyTitles[i] || 'New Topic'}`,
+    path: `/admin?day=${i + 1}`,
+    icon: CalendarIcon
+}));
+
 const Overview = () => {
     const scrollRef = useRef(null);
     const location = useLocation();
@@ -67,9 +92,11 @@ const Overview = () => {
     const isAdminView = location.pathname === '/admin';
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-    const isInternshipRoute = location.pathname.startsWith('/internship') || location.pathname === '/admin';
+    const isInternshipRoute = location.pathname.startsWith('/internship');
+    const isAdminRoute = location.pathname.startsWith('/admin');
     const isHome = location.pathname === '/' || location.pathname === '/overview' || location.pathname === '/overview/';
     const [isInternshipExpanded, setIsInternshipExpanded] = useState(isInternshipRoute);
+    const [isAdminExpanded, setIsAdminExpanded] = useState(isAdminRoute);
 
     const accountTabs = [
         { name: "My Plan", path: "/internship/enroll", icon: CreditCardIcon },
@@ -85,6 +112,9 @@ const Overview = () => {
     useEffect(() => {
         if (location.pathname.startsWith('/internship')) {
             setIsInternshipExpanded(true);
+        }
+        if (location.pathname.startsWith('/admin')) {
+            setIsAdminExpanded(true);
         }
     }, [location.pathname]);
 
@@ -182,12 +212,15 @@ const Overview = () => {
                 >
                     <nav className="flex-1 py-8 px-3 space-y-1 scrollbar-hide overflow-y-auto overflow-x-hidden">
                         {tabs.map((tab) => {
+                            const isAllowedAdmin = ['het', 'Het Panchal'].includes(user?.name) || user?.email === 'het80630@gmail.com';
+                            if (tab.adminOnly && !isAdminView) return null;
+
                             const active = location.pathname === tab.path ||
                                 (tab.path === '/overview' && location.pathname === '/overview/') ||
-                                (tab.hasSubmenu && location.pathname.startsWith(tab.path)) ||
-                                (tab.path === '/internship' && location.pathname === '/admin');
+                                (tab.hasSubmenu && location.pathname.startsWith(tab.path));
                             const IconComponent = tab.icon;
                             const hasSub = tab.hasSubmenu && !isCollapsed;
+                            const isThisExpanded = tab.path === '/admin' ? isAdminExpanded : isInternshipExpanded;
 
                             return (
                                 <div key={tab.path} className="flex flex-col space-y-1">
@@ -195,7 +228,8 @@ const Overview = () => {
                                         to={tab.path}
                                         onClick={(e) => {
                                             if (tab.hasSubmenu) {
-                                                setIsInternshipExpanded(!isInternshipExpanded);
+                                                if (tab.path === '/admin') setIsAdminExpanded(!isAdminExpanded);
+                                                else setIsInternshipExpanded(!isInternshipExpanded);
                                             }
                                         }}
                                         className={`
@@ -240,7 +274,7 @@ const Overview = () => {
                                         )}
 
                                         {!isCollapsed && tab.hasSubmenu && (
-                                            <ChevronDownIcon className={`w-3.5 h-3.5 ml-auto opacity-60 transition-transform duration-500 ${isInternshipExpanded ? 'rotate-180' : ''}`} strokeWidth={2} />
+                                            <ChevronDownIcon className={`w-3.5 h-3.5 ml-auto opacity-60 transition-transform duration-500 ${isThisExpanded ? 'rotate-180' : ''}`} strokeWidth={2} />
                                         )}
 
                                         {/* REFINED PREMIUM TOOLTIP: GLASSMORPHISM */}
@@ -266,22 +300,25 @@ const Overview = () => {
 
                                     {/* COLLAPSIBLE SUBMENU */}
                                     <AnimatePresence initial={false}>
-                                        {hasSub && isInternshipExpanded && (
+                                        {hasSub && isThisExpanded && (
                                             <motion.div
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: 'auto', opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
                                                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                                className="overflow-hidden flex flex-col pl-4 pr-1 py-1 space-y-1 border-l border-slate-500/10 ml-6"
+                                                className={`flex flex-col pl-3 pr-2 py-2 space-y-[6px] border-l border-slate-500/10 ml-7 ${tab.path === '/admin' ? 'max-h-[268px] overflow-y-auto scrollbar-thin' : 'overflow-hidden'}`}
                                             >
-                                                {internshipSubmenu.map((sub) => {
-                                                    const subActive = location.pathname === sub.path || (sub.path === '/internship' && (location.pathname === '/internship/' || location.pathname === '/internship'));
+                                                {(tab.path === '/admin' ? adminSubmenu : internshipSubmenu).map((sub) => {
+                                                    const currentDay = new URLSearchParams(location.search).get('day') || '1';
+                                                    const subActive = location.pathname === sub.path || 
+                                                                    (sub.path === '/internship' && (location.pathname === '/internship/' || location.pathname === '/internship')) ||
+                                                                    (location.pathname === '/admin' && sub.path === `/admin?day=${currentDay}`);
                                                     return (
                                                         <Link
                                                             key={sub.path}
                                                             to={sub.path}
                                                             className={`
-                                                                flex items-center h-8 pl-4 pr-3 rounded-lg text-[13px] font-medium transition-all duration-300
+                                                                flex items-center min-h-[38px] px-3.5 rounded-xl text-[13px] font-medium transition-all duration-300
                                                                 ${subActive
                                                                     ? isDark
                                                                         ? 'text-cyan-400 bg-cyan-400/[0.05]'
@@ -294,7 +331,7 @@ const Overview = () => {
                                                             {sub.icon && (
                                                                 <sub.icon className={`w-3.5 h-3.5 shrink-0 mr-2 ${subActive ? (isDark ? 'text-cyan-400' : 'text-[var(--gold-dark)]') : (isDark ? 'text-slate-400' : 'text-[var(--gold-dark)]')}`} strokeWidth={2} />
                                                             )}
-                                                            <span>{sub.name}</span>
+                                                            <span className="truncate max-w-[115px]" title={sub.name}>{sub.name}</span>
                                                         </Link>
                                                     );
                                                 })}
