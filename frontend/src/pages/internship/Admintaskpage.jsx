@@ -173,8 +173,8 @@ const GARAMOND_STYLE = `
 
 .p-h2 {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 26px;
+  font-weight: 700;
   color: var(--text);
   letter-spacing: -0.01em;
   padding-bottom: 14px;
@@ -182,17 +182,17 @@ const GARAMOND_STYLE = `
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   line-height: 1.3;
 }
-.p-h2 i { font-size: 16px; flex-shrink: 0; opacity: 0.7; }
+.p-h2 i { font-size: 18px; flex-shrink: 0; opacity: 0.8; }
 
 .p-h3 {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 600;
   color: var(--text);
-  margin: 16px 0 8px;
+  margin: 18px 0 10px;
   letter-spacing: -0.01em;
 }
 
@@ -281,15 +281,25 @@ const GARAMOND_STYLE = `
 .p-c-icon {
   width: 32px; height: 32px;
   border-radius: 8px;
-  background: #dbeafe;
+  background: #1e293b;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.p-c-icon i { color: #2563eb; font-size: 14px; }
+.p-c-icon i { color: #f8fafc; font-size: 15px; transition: transform 0.2s; }
+.p-concept:hover .p-c-icon {
+  background: #0f172a;
+  transform: scale(1.05) translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.p-concept:hover .p-c-icon i {
+  transform: scale(1.1);
+}
 .p-concept-h span {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
 }
@@ -299,52 +309,59 @@ const GARAMOND_STYLE = `
 .p-cc-section-hdr {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 26px;
+  font-weight: 700;
   color: var(--text);
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
   border-bottom: 1px dashed var(--border);
 }
-.p-cc-section-hdr i { color: var(--pm); font-size: 12px; }
-.p-cc-para { font-size: 14px; color: var(--text2); line-height: 1.75; margin-bottom: 8px; }
+.p-cc-section-hdr i { color: var(--gm); font-size: 18px; }
+.p-cc-para { font-size: 18px; color: #000; line-height: 1.75; margin-bottom: 14px; }
 .p-cc-sub {
   display: flex; align-items: flex-start; gap: 8px;
   margin-bottom: 8px;
 }
 .p-cc-sub-ic {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: #ede9fe;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; margin-top: 1px;
+  flex-shrink: 0; margin-top: 5px;
 }
-.p-cc-sub-ic i { color: #7c3aed; font-size: 9px; }
-.p-cc-sub span { font-size: 13.5px; color: var(--text2); line-height: 1.6; }
-.p-cc-list { list-style: none; padding: 0; margin: 0 0 8px; }
+.p-cc-sub-ic i { color: var(--gm); font-size: 13px; }
+.p-cc-sub span { 
+  font-family: 'EB Garamond', Georgia, serif; 
+  font-size: 18px; 
+  font-weight: 600; 
+  color: var(--text); 
+  line-height: 1.4; 
+  letter-spacing: -0.01em; 
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--text);
+}
+.p-cc-list { list-style: none; padding: 0; margin: 0 0 12px; }
 .p-cc-li {
-  display: flex; align-items: flex-start; gap: 8px;
+  display: flex; align-items: flex-start; gap: 10px;
   padding: 5px 0;
 }
-.p-cc-li-dot i { color: var(--gm); font-size: 10px; margin-top: 4px; }
-.p-cc-li span { font-size: 13.5px; color: var(--text2); line-height: 1.6; }
+.p-cc-li-dot i { color: #000; font-size: 14px; margin-top: 4px; }
+.p-cc-li span { font-size: 16.5px; color: #000; line-height: 1.6; }
 .p-cc-ol { padding-left: 0; margin: 0 0 8px; list-style: none; counter-reset: ol-counter; }
 .p-cc-oli {
   display: flex; align-items: flex-start; gap: 10px;
   padding: 5px 0;
 }
 .p-cc-oli-num {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   border-radius: 50%;
-  background: var(--cream2);
-  border: 1px solid var(--border);
+  background: #3b82f6;
+  color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 600;
-  color: var(--text2); flex-shrink: 0; margin-top: 1px;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0; margin-top: 2px;
 }
-.p-cc-oli span { font-size: 13.5px; color: var(--text2); line-height: 1.6; }
+.p-cc-oli span { font-size: 16.5px; color: #000; line-height: 1.6; }
 .p-cc-code {
   background: #0d1117;
   border-radius: 10px;
@@ -919,7 +936,7 @@ const GARAMOND_STYLE = `
 }
 
 /* ── INLINE FORMATTING ── */
-.p-bold { font-weight: 700; color: var(--text); }
+.p-bold { font-family: 'EB Garamond', Georgia, serif; font-weight: 600; font-size: 1.05em; color: var(--text); letter-spacing: -0.01em; }
 .p-em { font-style: italic; }
 .p-inline-code {
   font-family: 'DM Mono', Consolas, monospace;
@@ -1061,19 +1078,17 @@ export default function Admintaskpage() {
   const [resourceDragOver, setResourceDragOver] = useState(false);
   const resourceInputRef = useRef(null);
 
-  // Inject Garamond font styles into document head once
+  // Inject Garamond font styles into document head
   useEffect(() => {
     const styleId = 'garamond-preview-styles';
-    if (!document.getElementById(styleId)) {
-      const styleEl = document.createElement('style');
+    let styleEl = document.getElementById(styleId);
+    if (!styleEl) {
+      styleEl = document.createElement('style');
       styleEl.id = styleId;
-      styleEl.textContent = GARAMOND_STYLE;
       document.head.appendChild(styleEl);
     }
-    return () => {
-      // keep styles mounted for performance
-    };
-  }, []);
+    styleEl.textContent = GARAMOND_STYLE;
+  });
 
   const loadFromDB = async () => {
     if (!setup) return;
@@ -1315,6 +1330,8 @@ export default function Admintaskpage() {
     const renderConceptContent = (contentLines) => {
       let html = '';
       let i = 0;
+      let subColorIdx = 0;
+      const subColors = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#f43f5e', '#0ea5e9'];
 
       while (i < contentLines.length) {
         const line = contentLines[i++];
@@ -1323,7 +1340,9 @@ export default function Admintaskpage() {
 
         if (trimmed.match(/^####\s+/)) {
           const subtxt = trimmed.replace(/^####\s+/, '');
-          html += `<div class="p-cc-sub"><div class="p-cc-sub-ic"><i class="fa-solid fa-chevron-right"></i></div><span>${inlineFormat(subtxt)}</span></div>`;
+          const color = subColors[subColorIdx % subColors.length];
+          subColorIdx++;
+          html += `<div class="p-cc-sub"><div class="p-cc-sub-ic"><i class="fa-solid fa-chevron-right" style="color:${color} !important"></i></div><span style="text-decoration-color:${color} !important">${inlineFormat(subtxt)}</span></div>`;
           continue;
         }
 
@@ -1350,7 +1369,7 @@ export default function Admintaskpage() {
               i++;
             } else break;
           }
-          html += `<ul class="p-cc-list">${bullets.map(b => `<li class="p-cc-li"><span class="p-cc-li-dot"><i class="fa-solid fa-circle-dot"></i></span><span>${inlineFormat(b)}</span></li>`).join('')}</ul>`;
+          html += `<ul class="p-cc-list">${bullets.map(b => `<li class="p-cc-li"><span class="p-cc-li-dot"><i class="fa-solid fa-arrow-right-long"></i></span><span>${inlineFormat(b)}</span></li>`).join('')}</ul>`;
           continue;
         }
 
@@ -1418,7 +1437,7 @@ export default function Admintaskpage() {
       }).join('');
 
       return `<div class="p-concept">
-        ${mainTitle ? `<div class="p-concept-h"><div class="p-c-icon"><i class="fa-solid fa-book-open"></i></div><span>${inlineFormat(mainTitle)}</span></div>` : ''}
+        ${mainTitle ? `<div class="p-concept-h"><div class="p-c-icon"><i class="fa-solid fa-layer-group"></i></div><span>${inlineFormat(mainTitle)}</span></div>` : ''}
         <div class="p-cc-body">${sectionsHtml || renderConceptContent(lines.slice(mainTitle ? 1 : 0))}</div>
       </div>`;
     }
@@ -1784,7 +1803,7 @@ export default function Admintaskpage() {
         const txt = line.replace(/^#\s+/, '');
         const dayTypeStr = (days[currentDay - 1] && days[currentDay - 1][activeLevel] && days[currentDay - 1][activeLevel].type === 'task')
           ? '<span class="chip chip-amber" style="font-size:10px">⚡ Task Day</span>'
-          : '<span class="chip chip-gray" style="font-size:10px">📖 Learning</span>';
+          : '<span class="chip chip-gray" style="font-size:10px"><i class="fa-solid fa-book-open" style="margin-right:4px; color:var(--pm);"></i>Learning</span>';
 
         let levelChip = '';
         if (activeLevel === 'beginner') levelChip = '<span class="chip" style="font-size:10px;background:var(--cream2);color:var(--text);border:1px solid var(--border)">🟢 Beginner</span>';
@@ -1811,7 +1830,7 @@ export default function Admintaskpage() {
         let icon = '<i class="fa-solid fa-bookmark" style="color:var(--gm)"></i>';
         const lowerTxt = txt2.toLowerCase();
         if (lowerTxt.includes('concept')) icon = '<i class="fa-solid fa-book-open" style="color:#3b82f6"></i>';
-        else if (lowerTxt.includes('video') || lowerTxt.includes('resources')) icon = '<i class="fa-solid fa-circle-play" style="color:#ef4444"></i>';
+        else if (lowerTxt.includes('video') || lowerTxt.includes('resources')) icon = '<i class="fa-brands fa-youtube" style="color:#ef4444"></i>';
         else if (lowerTxt.includes('hands-on') || lowerTxt.includes('setup') || lowerTxt.includes('code')) icon = '<i class="fa-solid fa-laptop-code" style="color:#f59e0b"></i>';
         else if (lowerTxt.includes('level')) icon = '<i class="fa-solid fa-layer-group" style="color:#8b5cf6"></i>';
         else if (lowerTxt.includes('dataset')) icon = '<i class="fa-solid fa-database" style="color:#10b981"></i>';
@@ -2431,7 +2450,7 @@ export default function Admintaskpage() {
               <input className="modal-input" type="number" min="1" max="60" value={importDayNum} onChange={e => setImportDayNum(Number(e.target.value))} style={{ width: '100px', marginBottom: '14px' }} />
               <label className="modal-lbl">Day Type</label>
               <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                <button className="btn btn-ghost btn-sm" onClick={() => setImportType('learn')} style={importType === 'learn' ? { borderColor: 'var(--bm)', color: 'var(--bm)' } : {}}>📖 Learning Day</button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setImportType('learn')} style={importType === 'learn' ? { borderColor: 'var(--bm)', color: 'var(--bm)' } : {}}><i className="fa-solid fa-book-open" style={{ marginRight: '6px' }}></i>Learning Day</button>
                 <button className="btn btn-ghost btn-sm" onClick={() => setImportType('task')} style={importType === 'task' ? { borderColor: 'var(--am)', color: 'var(--am)' } : {}}>⚡ Task Day</button>
               </div>
               <label className="modal-lbl">Paste your Markdown content below</label>
