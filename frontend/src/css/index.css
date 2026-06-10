@@ -3,6 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes shimmer {
+  0% { transform: skewX(-20deg) translateX(-150%); }
+  50% { transform: skewX(-20deg) translateX(150%); }
+  100% { transform: skewX(-20deg) translateX(150%); }
+}
+
+@utility animate-[shimmer_2s_infinite] {
+  animation: shimmer 2.5s infinite;
+}
+
+
 :root {
   --font-serif: 'Instrument Serif', serif;
   --font-primary: 'Plus Jakarta Sans', sans-serif;

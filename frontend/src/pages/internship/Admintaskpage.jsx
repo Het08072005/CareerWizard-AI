@@ -1046,9 +1046,25 @@ const GARAMOND_STYLE = `
 `;
 
 export default function Admintaskpage() {
-  const [setup, setSetup] = useState(null);
+  const [setup, setSetup] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem("adminSetup");
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
 
-  const [days, setDays] = useState([]);
+  const [days, setDays] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem("adminDays");
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  useEffect(() => {
+    if (setup) sessionStorage.setItem("adminSetup", JSON.stringify(setup));
+    if (days && days.length > 0) sessionStorage.setItem("adminDays", JSON.stringify(days));
+  }, [setup, days]);
+
   const [activeLevel, setActiveLevel] = useState('beginner');
   const [groupSize, setGroupSize] = useState(2);
   const [searchParams, setSearchParams] = useSearchParams();

@@ -124,6 +124,11 @@ const Overview = () => {
             scrollRef.current.scrollTo({ top: 0, behavior: "instant" });
         }
 
+        // Wait for AuthContext to finish loading from localStorage
+        if (!user && localStorage.getItem("user")) {
+            return;
+        }
+
         // ADMIN ROUTE PROTECTION
         const isAllowedAdmin = ['het', 'Het Panchal'].includes(user?.name) || user?.email === 'het80630@gmail.com';
         if (location.pathname === '/admin' && !isAllowedAdmin) {
