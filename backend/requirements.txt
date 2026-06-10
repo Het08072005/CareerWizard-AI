@@ -9,4 +9,5 @@ python-jose
 PyPDF2
 python-docx
 python-multipart
-requestssupabase
+requests
+supabase

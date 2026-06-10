@@ -11,32 +11,153 @@ Understand ML fundamentals, its 3 types, real-world applications, and set up you
 ## 📖 Core Concept
 
 :::concept
-### ML kya hota hai?
-Machine Learning ek AI ka part hai jisme computer data se khud seekhta hai bina explicitly program kiye. Traditional programming mein aap rules likhte the — ML mein aap data dete ho aur machine khud rules discover karti hai.
+### Machine Learning — Complete Deep Dive
 
-**Simple example:** Spam filter — aapne manually rules nahi likhe. Aapne 10,000 spam emails dikhaye aur model ne khud patterns seekhe.
-:::
+## What is Machine Learning?
 
-:::analogy
-🍕
-### SIMPLE ANALOGY
-Bacche ko pizza pehchanna sikhana — 1000 pizza photos aur 1000 non-pizza photos dikhao. Baccha patterns seekh leta hai (round, cheesy, toppings) bina koi rule bataye. Yahi ML karta hai, but millions of examples ke saath.
-:::
+Machine Learning (ML) ek aisa AI technology hai jisme computers data se automatically patterns seekhte hain bina explicitly program kiye. Yeh idea 1950s mein Alan Turing ne propose ki thi, aur aaj 2025 mein ML har jagah hai. [Read the full history on Wikipedia](https://en.wikipedia.org/wiki/Machine_learning)
 
-:::image
-url: https://r2.careerwizard.ai/aiml/day1/ml-types-diagram.png
-caption: 3 Types of Machine Learning — Supervised, Unsupervised aur Reinforcement ka comparison
-alt: ML types diagram
+Traditional programming mein aap **rules likhte the** aur computer unhe follow karta tha. ML mein aap **data dete ho** aur machine khud rules discover karti hai.
+
+#### Traditional Programming vs. Machine Learning
+
+- **Traditional:** Rules + Data → Output
+- **Machine Learning:** Data + Output → Rules (automatically)
+- **Real-world difference:** Spam filter ka example — manually "free money", "click here" jaise 500 rules likhna vs. 10,000 emails dikhao aur model khud seekh le
+
+#### Why ML in 2025?
+
+- Data explosion: Har din 2.5 quintillion bytes data generate hota hai
+- Computing power: GPUs ne training 100x faster bana di
+- Open-source tools: TensorFlow, PyTorch, Scikit-learn free available hain
+- Industry demand: ML engineers top 3 most-hired roles mein hain
+
+## 3 Types of Machine Learning
+
+#### 1. Supervised Learning — Labelled Data
+
+Data mein **input aur correct output dono** hote hain. Model inhe dekhkar mapping seekhta hai.
+
+- **Examples:** Email spam detection, house price prediction, image classification, medical diagnosis
+- **Algorithm families:** Linear Regression, Decision Trees, SVMs, Neural Networks
+- **When to use:** Jab aapke paas labeled training data ho aur ek specific output predict karna ho
+
+\`\`\`python
+# Simple Supervised Learning Example
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Training data: [size_sqft] -> price_lakh
+X = np.array([[500], [800], [1000], [1200], [1500]])
+y = np.array([25, 40, 50, 60, 75])
+
+model = LinearRegression()
+model.fit(X, y)
+
+# Predict price for 1100 sqft house
+predicted = model.predict([[1100]])
+print("Predicted price: Rs.", round(predicted[0], 1), "Lakh")
+# Output: Predicted price: Rs. 55.0 Lakh
+\`\`\`
+
+#### 2. Unsupervised Learning — No Labels
+
+Data mein **sirf inputs hain, koi labels nahi.** Model khud groups ya patterns dhundta hai.
+
+- **Examples:** Customer segmentation, anomaly detection, topic modeling, recommendation systems
+- **Algorithm families:** K-Means, DBSCAN, PCA, Autoencoders
+- **When to use:** Jab labels nahi hain aur hidden structure discover karni ho
+
+\`\`\`python
+# Customer Segmentation Example
+from sklearn.cluster import KMeans
+import numpy as np
+
+# Customer data: [age, monthly_spend]
+customers = np.array([
+    [25, 2000], [28, 1800], [35, 8000],
+    [40, 9500], [22, 1500], [45, 10000]
+])
+
+kmeans = KMeans(n_clusters=2, random_state=42)
+labels = kmeans.fit_predict(customers)
+print("Segments:", labels)
+# 0 = Budget customers, 1 = Premium customers
+\`\`\`
+
+#### 3. Reinforcement Learning — Trial & Error
+
+Agent ek **environment mein actions leta hai** aur reward ya penalty paata hai. Woh maximize karna seekhta hai total reward.
+
+- **Examples:** Game AI (Chess, Go, Dota2), Robot locomotion, Trading bots, Self-driving cars
+- **Key concepts:** Agent, Environment, State, Action, Reward, Policy
+- **When to use:** Jab koi labeled dataset nahi hai aur sequential decision-making chahiye
+
+## Real-World ML Applications You Use Daily
+
+1. **Google Search** — Query understanding aur result ranking (BERT model)
+2. **Netflix/YouTube** — Content recommendation (Collaborative Filtering + Deep Learning)
+3. **Gmail Spam Filter** — Text classification (Naive Bayes → now Transformer-based)
+4. **Face Unlock** — Facial recognition (Convolutional Neural Networks)
+5. **Voice Assistants** — Speech-to-text aur intent classification (RNNs + Attention)
+6. **Credit Scoring** — Risk prediction (Gradient Boosting — XGBoost/LightGBM)
+7. **Medical Imaging** — Tumor detection in X-rays (ResNet, U-Net architectures)
+8. **GPT/Gemini/Claude** — Language understanding aur generation (Transformers)
+
+## Key Terminology to Know
+
+#### Core Terms
+
+- **Feature (X):** Input variables jo model use karta hai (e.g., house size, age, income)
+- **Label (y):** Output variable jo predict karna hai (e.g., price, category)
+- **Training Data:** Data jis par model seekhta hai
+- **Test Data:** Unseen data jis par model evaluate hota hai
+- **Model:** Mathematical function jo input → output map karta hai
+- **Overfitting:** Model training data bahut well seekh leta hai but test data par fail karta hai
+- **Underfitting:** Model kuch bhi sahi se nahi seekhta — too simple
+
+#### Evaluation Metrics
+
+- **Accuracy:** Kitne predictions sahi the (classification ke liye)
+- **R² Score:** Kitna variance explain hua (regression ke liye, 0–1, higher = better)
+- **RMSE:** Root Mean Square Error — prediction ki average error in same units
+- **Precision/Recall:** Imbalanced datasets ke liye (e.g., fraud detection, medical diagnosis)
 :::
 
 :::concept
-### 3 Types of ML — Ek Ek Samjho
-**1. Supervised Learning** — Labelled data dete ho. Model input → output mapping seekhta hai. Example: House price prediction, spam detection, image classification.
+### 3 Types of ML — Visual Summary
 
-**2. Unsupervised Learning** — Unlabelled data. Model khud groups/patterns dhundta hai. Example: Customer segmentation, anomaly detection.
+## Quick Reference Table
 
-**3. Reinforcement Learning** — Agent environment mein actions leta hai, reward/penalty milta hai. Example: Chess AI, game bots, robot control.
+#### Supervised Learning
+
+- **Data:** Labelled (input + correct output)
+- **Goal:** Predict output for new inputs
+- **Algorithms:** Linear Regression, Logistic Regression, SVM, Random Forest, Neural Nets
+- **Use cases:** Price prediction, spam detection, image classification
+
+#### Unsupervised Learning
+
+- **Data:** Unlabelled (only inputs)
+- **Goal:** Discover hidden structure/patterns
+- **Algorithms:** K-Means, Hierarchical Clustering, PCA, Autoencoders
+- **Use cases:** Customer segmentation, dimensionality reduction, anomaly detection
+
+#### Reinforcement Learning
+
+- **Data:** No dataset — learns from interaction
+- **Goal:** Maximize cumulative reward
+- **Algorithms:** Q-Learning, Policy Gradient, PPO, A3C
+- **Use cases:** Game AI, robotics, autonomous vehicles, trading
+
+## Choosing the Right Type
+
+1. **Kya tumhare paas labelled data hai?** → Yes → Supervised Learning
+2. **Labels nahi hain, patterns dhundne hain?** → Unsupervised Learning
+3. **Sequential decisions + feedback environment?** → Reinforcement Learning
+4. **Nahi pata kya use karna hai?** → Start with Supervised — sabse zyada industry applications hain
 :::
+
 
 ## 🎥 Video Resources
 
@@ -96,16 +217,25 @@ alt: Jupyter notebook screenshot
 
 :::tip
 ### Pro Tip
-NumPy aur Pandas — yeh 2 libraries practically har ML project mein use hoti hain. Aaj ka goal sirf: environment ready karo aur Jupyter mein ek cell run karo.
+NumPy aur Pandas — yeh 2 libraries practically har ML project mein use hoti hain. Aaj ka goal sirf environment ready karna hai, detail mein next days mein cover hoga.
+
+Kuch important tips:
+- Jupyter notebook ko hamesha same folder se start karein jahan data hai.
+- \`!pip install pkg\` use karke Jupyter ke andar se hi packages install kar sakte hain.
+- Google Colab ek best alternative hai agar PC slow hai toh.
 :::
 
 :::keypoints
 ### Key Takeaways — Day 1
-- ML = data se patterns seekhna, explicit rules nahi likhne
-- Supervised: labelled data → predict output
-- Unsupervised: unlabelled data → find patterns
-- Reinforcement: reward/penalty se seekhna
-- Python + Jupyter = industry standard ML setup
+Aaj humne ML ke absolute basics aur landscape ko samjha. 
+
+- **ML = data se patterns seekhna**, explicit rules nahi likhne
+- **Supervised:** labelled data → predict output
+- **Unsupervised:** unlabelled data → find patterns
+- **Reinforcement:** reward/penalty se seekhna
+- **Python + Jupyter** = industry standard ML setup
+
+Next day hum seedha hands-on coding shuru karenge Pandas ke sath!
 :::
 
 :::quiz
@@ -256,18 +386,29 @@ print(f"Predicted price: \${price[0]:,.0f}")
 :::
 
 :::tip
-### Pro Tip
-Pehle data explore karo fully. \`df.head()\`, \`df.isnull().sum()\`, \`df.describe()\` — yeh 3 commands sabse pehle run karo. Data samjhe bina model mat banao.
+### Pro Tip — Data Exploration First!
+Hamesha yaad rakhein, **Garbage In = Garbage Out**. Modeling se pehle apna zyada time data ko samajhne mein lagayein:
+- \`df.head(10)\` aur \`df.sample(5)\` use karke actual data dekhein.
+- \`df.describe()\` se numerical columns ka mean, min, max aur outliers check karein.
+- \`df.info()\` se missing values aur data types confirm karein.
+Bina soche model fit karne se results humesha kharab aayenge!
 :::
 
 :::warning
-### Important
-GitHub pe CSV file mat daalo agar badi hai. \`.gitignore\` mein \`*.csv\` add karo. README mein Kaggle download link do.
+### ⚠️ Version Control Warning
+- **Never commit large datasets:** GitHub par 100MB se badi files allow nahi hoti. Hamesha apni \`.csv\` files ko \`.gitignore\` mein add karein.
+- **API Keys:** Agar aap koi API use kar rahe hain, toh keys ko \`.env\` file mein rakhein.
+- **Readme is mandatory:** Evaluator aapka code nahi, apka \`README.md\` padhega. Usme project summary zarur likhein.
 :::
 
 :::important
-### R2 Score Guide
-\`> 0.85\` = Excellent | \`0.70–0.85\` = Good | \`0.50–0.70\` = Okay | \`< 0.50\` = Improve karo | **Negative** = Model galat hai — features check karo
+### 📊 Understanding R² Score (Accuracy Metric)
+Model banane ke baad uski accuracy check karna sabse zaroori hai. Regression models ke liye R² score use hota hai:
+- **\`> 0.85\` (Excellent):** Aapka model bohot accha predict kar raha hai.
+- **\`0.70 – 0.85\` (Good):** Model theek hai, but hyperparameter tuning se better ho sakta hai.
+- **\`0.50 – 0.70\` (Average):** Thodi aur feature engineering ki zaroorat hai.
+- **\`< 0.50\` (Poor):** Model sahi se patterns nahi pakad paa raha.
+- **Negative (\`< 0\`):** Model mean se bhi kharab perform kar raha hai! Data leakage check karein.
 :::
 
 ## 📊 AI Scoring
@@ -301,7 +442,7 @@ AI review 2–5 minutes mein complete hoga. Score aur detailed feedback email pe
 :::`;
 
 export const SNIPPETS = {
-  concept: ':::concept\n### Your Concept Heading\nExplanation text here. **Bold** and *italic* supported.\n\nMultiple paragraphs work too — add line breaks.\n:::',
+  concept: `:::concept\n### Your Main Topic Title\n\n## Section 1 — Introduction\n\nYour explanation paragraph here. Use **bold** for key terms and \`inline code\` for code references.\n\n#### Sub-heading\n\n- Bullet point one\n- Bullet point two with **bold** text\n- Third point here\n\n\`\`\`python\n# Code example\nx = 10\nprint(x * 2)\n\`\`\`\n\n## Section 2 — Deep Dive\n\n1. Numbered item one\n2. Numbered item two\n3. Numbered item three\n:::`,
   image: ':::image\nurl: https://your-image-url.com/image.png\ncaption: Your image caption here\nalt: Alt text for accessibility\n:::',
   video: ':::video\nurl: https://youtube.com/watch?v=YOUR_ID\ntitle: Video Title Here\nmeta: YouTube · 10 min · Overview\nduration: 10:30\nrequired: true\n:::',
   code: ':::code python\n### Code Block Title\n# Your code here\nimport numpy as np\n\narr = np.array([1, 2, 3])\nprint(arr.mean())\n:::',
@@ -310,5 +451,7 @@ export const SNIPPETS = {
   quiz: ':::quiz\nQ: Your question here?\nA: Option A text\nB: Option B text\nC: Option C text\nD: Option D text\nCORRECT: B\nEXPLAIN: Explanation of the correct answer here.\n:::',
   keypoints: ':::keypoints\n### Key Takeaways\n- First key point here\n- Second key point here\n- Third key point here\n- Fourth key point here\n:::',
   'task-hero': ':::task-hero\n# Task 1 —\n## House Price Predictor\nApply everything from Day 1–4: NumPy, Pandas, Matplotlib, Seaborn, Sklearn. Full ML project.\n- Estimated: 3–4 hours\n- Due: 11:59 PM Today\n- Max 2 attempts\n- Pass score: 60/100\n:::',
-  requirements: ':::requirements\n### BEGINNER\n- pandas se CSV load karo\n- matplotlib se 2 charts banao\n- LinearRegression model train karo\n- R2 score print karo\n\n### INTERMEDIATE\n- Kaggle dataset use karo\n- Missing values handle karo\n- Seaborn heatmap banao\n- Cross-validation use karo\n\n### ADVANCED\n- 4 models compare karo\n- GridSearchCV use karo\n- Streamlit UI banao\n- Deploy karo\n:::'
+  requirements: ':::requirements\n### BEGINNER\n- pandas se CSV load karo\n- matplotlib se 2 charts banao\n- LinearRegression model train karo\n- R2 score print karo\n\n### INTERMEDIATE\n- Kaggle dataset use karo\n- Missing values handle karo\n- Seaborn heatmap banao\n- Cross-validation use karo\n\n### ADVANCED\n- 4 models compare karo\n- GridSearchCV use karo\n- Streamlit UI banao\n- Deploy karo\n:::',
+  resources: ':::resources\ntitle: Resources & Learning Understanding\ndesc: Upload learning materials — images, PDFs, documents, and more.\n:::',
+  link: '[Your Link Text](https://example.com)'
 };

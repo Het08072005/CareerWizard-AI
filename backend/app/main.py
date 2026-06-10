@@ -9,6 +9,7 @@ from app.routes.job_routes import router as job_router
 from app.routes.roadmap_routes import router as roadmap_router
 from app.routes.interview_routes import router as interview_router
 from app.routes.dashboard_routes import router as dashboard_router
+from app.routes.admin_internship_routes import router as admin_internship_router
 from app.models.activity import UserActivity
 from app.models.roadmap import SkillProgress
 from app.models.user import User
@@ -22,6 +23,7 @@ from app.models.enrollment import Enrollment
 from app.models.task_submission import TaskSubmission
 from app.models.certificate import Certificate
 from app.models.interview import InterviewQuestion, InterviewProgress
+from app.models.day_content import DayContent
 
 Base.metadata.create_all(bind=engine)
 
@@ -55,4 +57,4 @@ app.include_router(job_router)
 app.include_router(roadmap_router)
 app.include_router(interview_router)
 app.include_router(dashboard_router)
-
+app.include_router(admin_internship_router)
