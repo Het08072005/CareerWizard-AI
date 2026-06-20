@@ -25,6 +25,7 @@
   gap: 12px;
   margin-bottom: 28px;
   width: 794px; /* match cert width to align nicely */
+  max-width: calc(100vw - 48px);
 }
 .certificate-view-container .tool-btn {
   padding: 10px 22px;
@@ -108,6 +109,7 @@
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 24px 100px rgba(0,0,0,0.7);
+  max-width: calc(100vw - 48px);
 }
 
 /* Paper dot texture */
@@ -220,7 +222,15 @@
   user-select: none;
 }
 
-.certificate-view-container .content { position: relative; z-index: 2; width: 100%; display: flex; flex-direction: column; align-items: center; }
+.certificate-view-container .content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
 
 .certificate-view-container .eyebrow {
   font-family: 'DM Sans', sans-serif;
@@ -234,22 +244,24 @@
 
 .certificate-view-container .cert-title-1 {
   font-family: 'EB Garamond', serif;
-  font-size: 50px;
+  font-size: 40px;
   font-weight: 400;
   color: #1C1C1C;
   letter-spacing: 0.01em;
-  line-height: 1;
+  line-height: 1.06;
   text-align: center;
+  white-space: nowrap;
 }
 .certificate-view-container .cert-title-2 {
   font-family: 'EB Garamond', serif;
-  font-size: 50px;
+  font-size: 40px;
   font-weight: 400;
   font-style: italic;
   color: #C4A96B;
   letter-spacing: 0.01em;
-  line-height: 1.2;
+  line-height: 1.1;
   text-align: center;
+  margin-top: 4px;
 }
 
 /* Ornament divider */
@@ -424,17 +436,23 @@
 .certificate-view-container .sig-section {
   width: 100%;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 0 8px;
-  margin-top: 4px;
+  gap: 18px;
+  padding: 0 4px;
+  margin-top: 2px;
 }
 .certificate-view-container .sig-block {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 96px;
+}
+.certificate-view-container .sig-block-left,
+.certificate-view-container .sig-block-right {
+  max-width: 230px;
 }
 
 /* SIGNATURE - Dancing Script */
@@ -442,20 +460,20 @@
   font-family: 'Dancing Script', cursive;
   font-size: 42px;
   color: #1C1C1C;
-  line-height: 1;
-  margin-bottom: 2px;
+  line-height: 0.92;
+  margin-bottom: 0;
   text-align: center;
   letter-spacing: 0.02em;
   transform: rotate(-2deg);
   font-weight: 600;
-  padding: 0 15px; /* Prevent clipping of cursive letters */
+  padding: 0 12px 2px; /* Prevent clipping of cursive letters */
   white-space: nowrap; /* Force signature to stay on one line */
 }
 .certificate-view-container .sig-line {
   width: 100%;
   height: 0.5px;
   background: rgba(139,115,85,0.55);
-  margin-bottom: 5px;
+  margin: 2px 0 5px;
 }
 .certificate-view-container .sig-label {
   font-family: 'DM Sans', sans-serif;
@@ -471,8 +489,9 @@
   font-size: 7.5px;
   font-weight: 300;
   color: #AAA090;
-  margin-top: 2px;
+  margin-top: 3px;
   text-align: center;
+  line-height: 1.35;
 }
 
 .certificate-view-container .date-display {
@@ -481,8 +500,8 @@
   font-weight: 400;
   font-style: italic;
   color: #3A3028;
-  line-height: 1.2;
-  margin-bottom: 5px;
+  line-height: 1;
+  margin-bottom: 1px;
   text-align: center;
 }
 
@@ -565,15 +584,15 @@
 @media print {
   @page {
     size: A4 portrait;
-    margin: 0;
+    margin: 5mm;
   }
   
   html, body {
     margin: 0;
     padding: 0;
     background: white;
-    width: 210mm;
-    height: 297mm;
+    width: 200mm;
+    height: 287mm;
   }
 
   .certificate-view-container {
@@ -581,7 +600,7 @@
     padding: 0;
     margin: 0;
     min-height: 0;
-    width: 210mm;
+    width: 200mm;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -593,96 +612,22 @@
 
   .certificate-view-container .cert { 
     box-shadow: none; 
-    width: 196mm;
-    min-height: 278mm;
-    height: 278mm;
-    margin: 8mm auto 0;
+    width: 794px;
+    min-height: 1123px;
+    height: 1123px;
+    margin: 0 auto;
     overflow: hidden;
     page-break-after: avoid;
     page-break-inside: avoid;
+    zoom: 0.89;
+    max-width: none;
   }
 
-  /* Compress vertical spacing specifically for print so it fits on 1 page without chopping */
-  .certificate-view-container .header {
-    margin: 6px 18px 0 18px !important;
-    padding: 8px 26px 8px !important;
-  }
-  .certificate-view-container .gold-bar,
-  .certificate-view-container .footer-bar {
-    width: calc(100% - 36px) !important;
-    margin-left: 18px !important;
-    margin-right: 18px !important;
-  }
-  .certificate-view-container .body {
-    padding: 10px 54px 8px !important;
-  }
-  .certificate-view-container .cert-title-1,
-  .certificate-view-container .cert-title-2 {
-    font-size: 42px !important;
-  }
-  .certificate-view-container .recipient {
-    font-size: 48px !important;
-    padding-bottom: 6px !important;
-  }
-  .certificate-view-container .recipient-role {
-    margin-bottom: 12px !important;
-  }
-  .certificate-view-container .cert-para {
-    font-size: 15px !important;
-    line-height: 1.65 !important;
-    margin-bottom: 14px !important;
-  }
-  .certificate-view-container .duration {
-    margin-bottom: 16px !important;
-    padding: 7px 20px !important;
-    font-size: 9px !important;
-    gap: 10px !important;
-  }
-  .certificate-view-container .section-lbl {
-    margin-bottom: 9px !important;
-  }
-  .certificate-view-container .work-grid {
-    gap: 7px !important;
-    margin-bottom: 14px !important;
-  }
-  .certificate-view-container .work-item {
-    padding: 8px 10px 9px !important;
-  }
-  .certificate-view-container .work-title {
-    font-size: 12px !important;
-  }
-  .certificate-view-container .work-desc {
-    font-size: 7.5px !important;
-    line-height: 1.4 !important;
-  }
-  .certificate-view-container .score-row {
-    gap: 7px !important;
-    margin-bottom: 14px !important;
-  }
-  .certificate-view-container .score-card {
-    padding: 9px 8px 8px !important;
-    max-width: 132px !important;
-  }
-  .certificate-view-container .score-val {
-    font-size: 24px !important;
+  .certificate-view-container .content {
+    flex: 1 !important;
   }
   .certificate-view-container .sig-section {
-    margin-top: 0 !important;
-    gap: 10px !important;
-  }
-  .certificate-view-container .eyebrow {
-    margin-bottom: 6px !important;
-  }
-  .certificate-view-container .sig-name {
-    font-size: 35px !important;
-  }
-  .certificate-view-container .seal-wrap svg {
-    width: 82px !important;
-    height: 82px !important;
-  }
-  .certificate-view-container .footer {
-    width: calc(100% - 36px) !important;
-    margin: 0 18px 18px 18px !important;
-    padding: 9px 24px !important;
+    margin-top: auto !important;
+    padding-top: 0 !important;
   }
 }

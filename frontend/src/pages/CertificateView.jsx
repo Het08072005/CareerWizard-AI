@@ -142,8 +142,6 @@ export default function CertificateView() {
             <div className="eyebrow">Certificate of Completion</div>
 
             <div className="cert-title-1">{certData.programTitle || 'Professional Internship'}</div>
-            <div className="cert-title-2">Achievement Award</div>
-
             <div className="divider">
               <div className="dline"></div>
               <div className="ddot"></div>
@@ -231,7 +229,7 @@ export default function CertificateView() {
             {/* SIGNATURE ROW */}
             <div className="sig-section">
               {/* Founder signature */}
-              <div className="sig-block">
+              <div className="sig-block sig-block-left">
                 <div className="sig-name">Het Panchal</div>
                 <div className="sig-line"></div>
                 <div className="sig-label">Het Panchal</div>
@@ -256,7 +254,7 @@ export default function CertificateView() {
               </div>
 
               {/* Date & ID */}
-              <div className="sig-block">
+              <div className="sig-block sig-block-right">
                 <div className="date-display">{certData.end}</div>
                 <div className="sig-line"></div>
                 <div className="sig-label">Date of Issue</div>
