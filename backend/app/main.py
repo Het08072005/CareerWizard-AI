@@ -1,6 +1,9 @@
-# Server reload triggered to refresh DB schema
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import SQLAlchemyError
+
 from app.db.database import Base, engine
 from app.routes.auth_routes import router as auth_router
 from app.routes.profile_routes import router as profile_router
@@ -25,7 +28,7 @@ from app.models.certificate import Certificate
 from app.models.interview import InterviewQuestion, InterviewProgress
 from app.models.day_content import DayContent
 
-Base.metadata.create_all(bind=engine)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -43,6 +46,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def startup():
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database schema check completed")
+    except SQLAlchemyError as error:
+        logger.exception("Database schema initialization failed: %s", error)
 
 
 

@@ -21,7 +21,11 @@ export default function Login() {
       login(res.data.token, { id: res.data.user_id, name: res.data.name });
       navigate("/");
     } catch (err) {
-      setMsg(err.response?.data?.detail || err.response?.data?.error || "Credentials rejected.");
+      setMsg(
+        err.response?.data?.detail ||
+        err.response?.data?.error ||
+        "Backend unreachable. Check backend server and database connection."
+      );
     } finally {
       setIsLoading(false);
     }

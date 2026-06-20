@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",        //  http://localhost:800/resume
+  baseURL: import.meta.env.VITE_API_BASE_URL || "",
 });
 
 // Automatically attach token from localStorage
