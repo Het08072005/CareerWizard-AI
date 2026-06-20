@@ -14,6 +14,15 @@ def _resume_fallback(score: int = 65, improvements: list[str] | None = None):
     return {
         "ats_score": score,
         "skills": [],
+        "missing_skills": [],
+        "score_breakdown": {
+            "skills_match": score,
+            "formatting": max(45, min(100, score + 4)),
+            "readability": max(40, min(100, score + 2)),
+            "experience_relevance": max(45, min(100, score + 5)),
+            "grammar_spelling": max(50, min(100, score + 6)),
+            "recruiter_compatibility": max(45, min(100, score + 3)),
+        },
         "strengths": [
             "Resume structure is clear",
             "Contains relevant work experience",
@@ -25,6 +34,23 @@ def _resume_fallback(score: int = 65, improvements: list[str] | None = None):
             "Include quantifiable metrics",
             "Optimize for ATS keywords",
             "Add certifications if available",
+        ],
+        "enhancements": [
+            {
+                "title": "Priority Fix 1",
+                "desc": "Add measurable impact and outcomes to your most important projects.",
+                "icon": "🎯",
+            },
+            {
+                "title": "Priority Fix 2",
+                "desc": "Highlight core technical skills closer to the top of the resume.",
+                "icon": "🧠",
+            },
+            {
+                "title": "Priority Fix 3",
+                "desc": "Tailor keywords to the exact role you are targeting.",
+                "icon": "📈",
+            },
         ],
     }
 
@@ -44,13 +70,30 @@ Return ONLY valid JSON in this exact format:
 {
   "ats_score": <integer between 0 and 100>,
   "skills": ["skill1", "skill2", "skill3"],
-  "strengths": ["point1", "point2", "point3", "point4"],
-  "improvements": ["point1", "point2", "point3", "point4"]
+  "missing_skills": ["missing_skill1", "missing_skill2", "missing_skill3"],
+  "score_breakdown": {
+    "skills_match": <integer between 0 and 100>,
+    "formatting": <integer between 0 and 100>,
+    "readability": <integer between 0 and 100>,
+    "experience_relevance": <integer between 0 and 100>,
+    "grammar_spelling": <integer between 0 and 100>,
+    "recruiter_compatibility": <integer between 0 and 100>
+  },
+  "strengths": ["point1", "point2", "point3", "point4", "point5", "point6"],
+  "improvements": ["point1", "point2", "point3", "point4", "point5", "point6"],
+  "enhancements": [
+    {"title": "Priority Fix 1", "desc": "specific improvement action", "icon": "🎯"},
+    {"title": "Priority Fix 2", "desc": "specific improvement action", "icon": "🧠"},
+    {"title": "Priority Fix 3", "desc": "specific improvement action", "icon": "📈"}
+  ]
 }
 
 Rules:
-- Extract 10 to 15 concrete resume skills when available
-- Keep strengths and improvements concise
+- Extract all clear technical, domain, tool, framework, cloud, database, language, and platform skills visible in the resume
+- Put only actual missing skills in "missing_skills" as short skill names, not long sentences
+- Give 6 to 8 concise bullet-style points each for strengths and improvements when possible
+- Make "enhancements" highly actionable and resume-specific
+- Keep all numeric scores realistic and internally consistent with the ATS score
 - Do not include markdown or code fences
 """.strip()
 
@@ -62,19 +105,47 @@ def _parse_resume_result(result_text: str):
 
     parsed = json.loads(result_text[start_idx:end_idx])
     skills = parsed.get("skills") if isinstance(parsed.get("skills"), list) else []
+    missing_skills = parsed.get("missing_skills") if isinstance(parsed.get("missing_skills"), list) else []
+    score_breakdown = parsed.get("score_breakdown") if isinstance(parsed.get("score_breakdown"), dict) else {}
     strengths = parsed.get("strengths") if isinstance(parsed.get("strengths"), list) else []
     improvements = parsed.get("improvements") if isinstance(parsed.get("improvements"), list) else []
+    enhancements = parsed.get("enhancements") if isinstance(parsed.get("enhancements"), list) else []
 
     try:
         ats_score = int(float(parsed.get("ats_score", 0)))
     except (TypeError, ValueError):
         ats_score = 0
 
+    normalized_breakdown = {
+        "skills_match": score_breakdown.get("skills_match", ats_score),
+        "formatting": score_breakdown.get("formatting", ats_score),
+        "readability": score_breakdown.get("readability", ats_score),
+        "experience_relevance": score_breakdown.get("experience_relevance", ats_score),
+        "grammar_spelling": score_breakdown.get("grammar_spelling", ats_score),
+        "recruiter_compatibility": score_breakdown.get("recruiter_compatibility", ats_score),
+    }
+
+    clean_enhancements = []
+    for index, item in enumerate(enhancements[:3]):
+        if not isinstance(item, dict):
+            continue
+        title = str(item.get("title", f"Priority Fix {index + 1}")).strip()
+        desc = str(item.get("desc", "")).strip()
+        icon = str(item.get("icon", "🎯")).strip() or "🎯"
+        if desc:
+            clean_enhancements.append({"title": title, "desc": desc, "icon": icon})
+
     return {
         "ats_score": max(0, min(100, ats_score)),
         "skills": [str(item).strip() for item in skills if str(item).strip()],
+        "missing_skills": [str(item).strip() for item in missing_skills if str(item).strip()],
+        "score_breakdown": {
+            key: max(0, min(100, int(float(value)))) if str(value).strip() else ats_score
+            for key, value in normalized_breakdown.items()
+        },
         "strengths": [str(item).strip() for item in strengths if str(item).strip()],
         "improvements": [str(item).strip() for item in improvements if str(item).strip()],
+        "enhancements": clean_enhancements,
     }
 
 def _analyze_resume_text(content: str):

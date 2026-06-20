@@ -13,26 +13,43 @@ const restoreFileFromStorage = (serialized) => {
 
 const buildBreakdown = (result) => {
   const overall = Number(result?.ats_score || 0);
+  const backendBreakdown = result?.score_breakdown || {};
   const skillCount = Array.isArray(result?.skills) ? result.skills.length : 0;
   const strengthsCount = Array.isArray(result?.strengths) ? result.strengths.length : 0;
   const improvementsCount = Array.isArray(result?.improvements) ? result.improvements.length : 0;
+  const fallbackBreakdown = {
+    skills_match: Math.min(100, overall + Math.min(skillCount * 2, 12)),
+    formatting: Math.max(45, Math.min(100, overall + 8 - improvementsCount * 2)),
+    readability: Math.max(40, Math.min(100, overall - 4 + strengthsCount * 3)),
+    experience_relevance: Math.max(45, Math.min(100, overall + strengthsCount * 4 - 3)),
+    grammar_spelling: Math.max(50, Math.min(100, overall + 10 - improvementsCount)),
+    recruiter_compatibility: Math.max(45, Math.min(100, overall + skillCount - improvementsCount * 2)),
+  };
 
   return [
-    { label: "Keywords Match", score: Math.min(100, overall + Math.min(skillCount * 2, 12)) },
-    { label: "Formatting", score: Math.max(45, Math.min(100, overall + 8 - improvementsCount * 2)) },
-    { label: "Readability", score: Math.max(40, Math.min(100, overall - 4 + strengthsCount * 3)) },
-    { label: "Experience Relevance", score: Math.max(45, Math.min(100, overall + strengthsCount * 4 - 3)) },
-    { label: "Grammar & Spelling", score: Math.max(50, Math.min(100, overall + 10 - improvementsCount)) },
-    { label: "Recruiter Compatibility", score: Math.max(45, Math.min(100, overall + skillCount - improvementsCount * 2)) },
+    { label: "Skills Match", score: Number(backendBreakdown.skills_match ?? fallbackBreakdown.skills_match) },
+    { label: "Formatting", score: Number(backendBreakdown.formatting ?? fallbackBreakdown.formatting) },
+    { label: "Readability", score: Number(backendBreakdown.readability ?? fallbackBreakdown.readability) },
+    { label: "Experience Relevance", score: Number(backendBreakdown.experience_relevance ?? fallbackBreakdown.experience_relevance) },
+    { label: "Grammar & Spelling", score: Number(backendBreakdown.grammar_spelling ?? fallbackBreakdown.grammar_spelling) },
+    { label: "Recruiter Compatibility", score: Number(backendBreakdown.recruiter_compatibility ?? fallbackBreakdown.recruiter_compatibility) },
   ];
 };
 
 const buildEnhancements = (result) => {
+  if (Array.isArray(result?.enhancements) && result.enhancements.length) {
+    return result.enhancements.slice(0, 3).map((item, index) => ({
+      title: item?.title || `Priority Fix ${index + 1}`,
+      desc: item?.desc || "",
+      icon: item?.icon || (index === 0 ? "🎯" : index === 1 ? "🧠" : "📈"),
+    })).filter((item) => item.desc);
+  }
+
   const improvements = Array.isArray(result?.improvements) ? result.improvements : [];
   return improvements.slice(0, 3).map((item, index) => ({
     title: `Priority Fix ${index + 1}`,
     desc: item,
-    icon: index === 0 ? "🎯" : index === 1 ? "✏️" : "📊",
+    icon: index === 0 ? "🎯" : index === 1 ? "🧠" : "📈",
   }));
 };
 
@@ -40,10 +57,8 @@ const ResultView = ({ result }) => {
   const { isDark } = useContext(ThemeContext);
   const overallScore = Number(result?.ats_score || 0);
   const scoreBreakdown = buildBreakdown(result);
-  const foundKeywords = Array.isArray(result?.skills) ? result.skills : [];
-  const missingKeywords = Array.isArray(result?.improvements)
-    ? result.improvements.slice(0, 6).map((item) => item.split(/[,:.-]/)[0].trim()).filter(Boolean)
-    : [];
+  const foundSkills = Array.isArray(result?.skills) ? result.skills : [];
+  const missingSkills = Array.isArray(result?.missing_skills) ? result.missing_skills : [];
   const strengths = Array.isArray(result?.strengths) ? result.strengths : [];
   const improvements = Array.isArray(result?.improvements) ? result.improvements : [];
   const enhancements = buildEnhancements(result);
@@ -95,24 +110,24 @@ const ResultView = ({ result }) => {
         <div className={`p-6 md:p-8 rounded-[1.5rem] border relative overflow-hidden ${isDark ? 'bg-[#080808] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
           <div className="flex justify-between items-center mb-6">
            <h4 style={{ fontSize: '19px', fontFamily: '"Cormorant Garamond", serif', fontWeight: 700 }} className="text-[var(--text-main)]">Keyword Analysis</h4>
-           <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[var(--gold)]/10 text-[var(--gold-dark)] border border-[var(--gold)]/20">{foundKeywords.length} found · {missingKeywords.length} missing</span>
+           <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[var(--gold)]/10 text-[var(--gold-dark)] border border-[var(--gold)]/20">{foundSkills.length} skills · {missingSkills.length} missing</span>
         </div>
-        <p className="text-[11px] font-bold tracking-widest text-[var(--text-muted)] uppercase mb-3">✓ FOUND KEYWORDS</p>
+        <p className="text-[11px] font-bold tracking-widest text-[var(--text-muted)] uppercase mb-3">✓ SKILLS</p>
         <div className="flex flex-wrap gap-2 mb-8">
-          {foundKeywords.length ? foundKeywords.map((kw, idx) => (
+          {foundSkills.length ? foundSkills.map((kw, idx) => (
             <span key={idx} className="px-3 py-1.5 rounded-full text-[12px] font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 flex items-center gap-1.5">
               ✓ {kw}
             </span>
-          )) : <span className="text-[13px] text-[var(--text-muted)]">No strong keywords detected yet.</span>}
+          )) : <span className="text-[13px] text-[var(--text-muted)]">No skills detected yet.</span>}
         </div>
 
-        <p className="text-[11px] font-bold tracking-widest text-rose-600/80 uppercase mb-3">✗ MISSING KEYWORDS</p>
+        <p className="text-[11px] font-bold tracking-widest text-rose-600/80 uppercase mb-3">✗ MISSING SKILLS</p>
         <div className="flex flex-wrap gap-2">
-          {missingKeywords.length ? missingKeywords.map((kw, idx) => (
+          {missingSkills.length ? missingSkills.map((kw, idx) => (
             <span key={idx} className="px-3 py-1.5 rounded-full text-[12px] font-bold bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-500/20 flex items-center gap-1.5">
               ✗ {kw}
             </span>
-          )) : <span className="text-[13px] text-[var(--text-muted)]">No critical gaps highlighted by the current analysis.</span>}
+          )) : <span className="text-[13px] text-[var(--text-muted)]">No major skill gaps identified.</span>}
         </div>
       </div>
 
@@ -121,7 +136,7 @@ const ResultView = ({ result }) => {
         <div className={`p-6 md:p-8 rounded-[1.5rem] border relative overflow-hidden ${isDark ? 'bg-[#080808] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
           <h4 style={{ fontSize: '19px', fontFamily: '"Cormorant Garamond", serif', fontWeight: 700 }} className="text-emerald-700 dark:text-emerald-400 mb-5">✓ Strengths</h4>
           <ul className="space-y-3">
-            {strengths.map((str, idx) => (
+            {strengths.slice(0, 8).map((str, idx) => (
               <li key={idx} className="text-[13px] font-medium text-[var(--text-muted)] flex items-start gap-2 leading-relaxed">
                 <span className="text-emerald-500">✓</span>
                 {str}
@@ -132,7 +147,7 @@ const ResultView = ({ result }) => {
         <div className={`p-6 md:p-8 rounded-[1.5rem] border relative overflow-hidden ${isDark ? 'bg-[#080808] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
           <h4 style={{ fontSize: '19px', fontFamily: '"Cormorant Garamond", serif', fontWeight: 700 }} className="text-rose-600 dark:text-rose-400 mb-5 flex items-center gap-2">⚠ Areas to Improve</h4>
           <ul className="space-y-3">
-            {improvements.map((imp, idx) => (
+            {improvements.slice(0, 8).map((imp, idx) => (
               <li key={idx} className="text-[13px] font-medium text-[var(--text-muted)] flex items-start gap-2 leading-relaxed">
                 <span className="text-rose-500">⚠</span>
                 {imp}

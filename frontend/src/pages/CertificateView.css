@@ -593,10 +593,10 @@
 
   .certificate-view-container .cert { 
     box-shadow: none; 
-    width: 210mm; 
-    min-height: 297mm;
-    height: 297mm;
-    margin: 0 auto;
+    width: 196mm;
+    min-height: 278mm;
+    height: 278mm;
+    margin: 8mm auto 0;
     overflow: hidden;
     page-break-after: avoid;
     page-break-inside: avoid;
@@ -604,29 +604,85 @@
 
   /* Compress vertical spacing specifically for print so it fits on 1 page without chopping */
   .certificate-view-container .header {
-    margin: 8px 23px 0 23px !important;
-    padding: 8px 34px 8px !important;
+    margin: 6px 18px 0 18px !important;
+    padding: 8px 26px 8px !important;
+  }
+  .certificate-view-container .gold-bar,
+  .certificate-view-container .footer-bar {
+    width: calc(100% - 36px) !important;
+    margin-left: 18px !important;
+    margin-right: 18px !important;
   }
   .certificate-view-container .body {
-    padding: 10px 70px 10px !important;
+    padding: 10px 54px 8px !important;
   }
-  .certificate-view-container .cert-title-container {
-    margin-bottom: 10px !important;
+  .certificate-view-container .cert-title-1,
+  .certificate-view-container .cert-title-2 {
+    font-size: 42px !important;
   }
-  .certificate-view-container .grid {
-    margin-bottom: 10px !important;
-    gap: 8px !important;
+  .certificate-view-container .recipient {
+    font-size: 48px !important;
+    padding-bottom: 6px !important;
   }
-  .certificate-view-container .signature-section {
-    margin-top: 10px !important;
+  .certificate-view-container .recipient-role {
+    margin-bottom: 12px !important;
   }
-  .certificate-view-container .recipient-name {
-    margin: 10px 0 !important;
+  .certificate-view-container .cert-para {
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+    margin-bottom: 14px !important;
+  }
+  .certificate-view-container .duration {
+    margin-bottom: 16px !important;
+    padding: 7px 20px !important;
+    font-size: 9px !important;
+    gap: 10px !important;
+  }
+  .certificate-view-container .section-lbl {
+    margin-bottom: 9px !important;
+  }
+  .certificate-view-container .work-grid {
+    gap: 7px !important;
+    margin-bottom: 14px !important;
+  }
+  .certificate-view-container .work-item {
+    padding: 8px 10px 9px !important;
+  }
+  .certificate-view-container .work-title {
+    font-size: 12px !important;
+  }
+  .certificate-view-container .work-desc {
+    font-size: 7.5px !important;
+    line-height: 1.4 !important;
+  }
+  .certificate-view-container .score-row {
+    gap: 7px !important;
+    margin-bottom: 14px !important;
+  }
+  .certificate-view-container .score-card {
+    padding: 9px 8px 8px !important;
+    max-width: 132px !important;
+  }
+  .certificate-view-container .score-val {
+    font-size: 24px !important;
+  }
+  .certificate-view-container .sig-section {
+    margin-top: 0 !important;
+    gap: 10px !important;
   }
   .certificate-view-container .eyebrow {
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
+  }
+  .certificate-view-container .sig-name {
+    font-size: 35px !important;
+  }
+  .certificate-view-container .seal-wrap svg {
+    width: 82px !important;
+    height: 82px !important;
   }
   .certificate-view-container .footer {
-    margin: 0 23px 15px 23px !important;
+    width: calc(100% - 36px) !important;
+    margin: 0 18px 18px 18px !important;
+    padding: 9px 24px !important;
   }
 }
