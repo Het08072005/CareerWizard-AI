@@ -74,6 +74,15 @@ export default function App() {
           }
         />
 
+        <Route
+          path="/internship/certificates/:certificateId"
+          element={
+            <ProtectedRoute>
+              <CertificateView />
+            </ProtectedRoute>
+          }
+        />
+
         {/* SHARED MASTER LAYOUT SHELL */}
         <Route
           element={
@@ -102,7 +111,6 @@ export default function App() {
             <Route path="projects" element={<InternshipProjects />} />
             <Route path="resources" element={<InternshipResources />} />
             <Route path="certificates" element={<InternshipCertificates />} />
-            <Route path="certificates/:certificateId" element={<CertificateView />} />
           </Route>
 
           {/* ADMIN PANEL */}

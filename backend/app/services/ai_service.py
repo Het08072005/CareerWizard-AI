@@ -10,6 +10,92 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
+def _resume_fallback(score: int = 65, improvements: list[str] | None = None):
+    return {
+        "ats_score": score,
+        "skills": [],
+        "strengths": [
+            "Resume structure is clear",
+            "Contains relevant work experience",
+            "Skills section present",
+            "Professional formatting",
+        ],
+        "improvements": improvements or [
+            "Add more action verbs",
+            "Include quantifiable metrics",
+            "Optimize for ATS keywords",
+            "Add certifications if available",
+        ],
+    }
+
+def _resume_prompt():
+    return """
+You are an expert ATS System + Senior Hiring Manager with 15+ years of recruitment experience in top companies.
+Evaluate the resume with the same rigor used in real interviews and automated screening systems.
+
+Your analysis must consider:
+- Keyword relevance to industry standards and target roles
+- Technical and soft skills visibility
+- Achievement quantification, impact, and metrics
+- Resume structure, formatting, clarity, and ATS friendliness
+- Employment consistency and role relevance
+
+Return ONLY valid JSON in this exact format:
+{
+  "ats_score": <integer between 0 and 100>,
+  "skills": ["skill1", "skill2", "skill3"],
+  "strengths": ["point1", "point2", "point3", "point4"],
+  "improvements": ["point1", "point2", "point3", "point4"]
+}
+
+Rules:
+- Extract 10 to 15 concrete resume skills when available
+- Keep strengths and improvements concise
+- Do not include markdown or code fences
+""".strip()
+
+def _parse_resume_result(result_text: str):
+    start_idx = result_text.find("{")
+    end_idx = result_text.rfind("}") + 1
+    if start_idx == -1 or end_idx <= start_idx:
+        raise ValueError("No JSON object found in Gemini response")
+
+    parsed = json.loads(result_text[start_idx:end_idx])
+    skills = parsed.get("skills") if isinstance(parsed.get("skills"), list) else []
+    strengths = parsed.get("strengths") if isinstance(parsed.get("strengths"), list) else []
+    improvements = parsed.get("improvements") if isinstance(parsed.get("improvements"), list) else []
+
+    try:
+        ats_score = int(float(parsed.get("ats_score", 0)))
+    except (TypeError, ValueError):
+        ats_score = 0
+
+    return {
+        "ats_score": max(0, min(100, ats_score)),
+        "skills": [str(item).strip() for item in skills if str(item).strip()],
+        "strengths": [str(item).strip() for item in strengths if str(item).strip()],
+        "improvements": [str(item).strip() for item in improvements if str(item).strip()],
+    }
+
+def _analyze_resume_text(content: str):
+    response = model.generate_content(
+        f"{_resume_prompt()}\n\nRESUME TEXT:\n{content[:12000]}"
+    )
+    return _parse_resume_result(response.text)
+
+def _analyze_resume_pdf(file_content: bytes, filename: str | None = None):
+    response = model.generate_content(
+        [
+            _resume_prompt(),
+            {
+                "mime_type": "application/pdf",
+                "data": file_content,
+            },
+            f"Filename: {filename or 'resume.pdf'}",
+        ]
+    )
+    return _parse_resume_result(response.text)
+
 async def improve_text(text: str, category: str):
     """
     Enhance user text concisely (3-4 lines), strictly one polished result.
@@ -65,6 +151,7 @@ User Input:
 
 async def analyze_resume_with_ai(file_content: bytes = None, filename: str = None, text: str = None):
     content_to_send = text
+    mimetype = None
 
     if file_content:
         if filename:
@@ -81,73 +168,29 @@ async def analyze_resume_with_ai(file_content: bytes = None, filename: str = Non
         else:
             content_to_send = file_content.decode('utf-8', errors='ignore')
 
-    if not content_to_send or len(content_to_send.strip()) == 0:
-        return {
-            "ats_score": 0,
-            "skills": [],
-            "strengths": [],
-            "improvements": ["Please provide a valid resume content"]
-        }
-
-
-    prompt = f"""
-You are an expert ATS System + Senior Hiring Manager with 15+ years of recruitment experience in top companies.
-Evaluate the resume with the same rigor used in real interviews and automated screening systems.
-
-Your analysis must consider:
-- Keyword relevance to industry standards and target roles
-- Technical and soft skills visibility (EXTRACT AS MANY TECHNICAL SKILLS AS POSSIBLE)
-- Achievement quantification, impact, and metrics
-- Resume structure, formatting, clarity, and ATS friendliness
-- Employment consistency and role relevance
-
-Return the evaluation ONLY in the following JSON format:
-{{
-    "ats_score": <number>,
-    "skills": ["skill1", "skill2", "skill3", "skill4", "skill5", ...],
-    "strengths": ["point1", "point2", "point3", "point4"],
-    "improvements": ["point1", "point2", "point3", "point4"]
-}}
-
-Note: Return at least 10-15 skills if available in the text.
-
-Now analyze the resume below:
-
-RESUME:
-{content_to_send[:8000]}
-"""
-
+    extracted_length = len((content_to_send or "").strip())
+    print(
+        f"Resume analysis started: filename={filename or 'text-input'}, "
+        f"mimetype={mimetype or 'text/plain'}, extracted_chars={extracted_length}"
+    )
 
     try:
-        response = model.generate_content(prompt)
-        result_text = response.text
+        if mimetype == "application/pdf" and extracted_length < 80:
+            print("PDF text extraction is too small, using Gemini PDF fallback")
+            return _analyze_resume_pdf(file_content, filename)
 
-        start_idx = result_text.find('{')
-        end_idx = result_text.rfind('}') + 1
-        if start_idx != -1 and end_idx > start_idx:
-            json_str = result_text[start_idx:end_idx]
-            result = json.loads(json_str)
-            return result
+        if not content_to_send or len(content_to_send.strip()) == 0:
+            return _resume_fallback(
+                score=0,
+                improvements=["Please provide a valid resume content"],
+            )
+
+        return _analyze_resume_text(content_to_send)
     except Exception as e:
         print(f"Error analyzing resume: {e}")
 
     # Fallback if AI fails
-    return {
-        "ats_score": 65,
-        "skills": [],
-        "strengths": [
-            "Resume structure is clear",
-            "Contains relevant work experience",
-            "Skills section present",
-            "Professional formatting"
-        ],
-        "improvements": [
-            "Add more action verbs",
-            "Include quantifiable metrics",
-            "Optimize for ATS keywords",
-            "Add certifications if available"
-        ]
-    }
+    return _resume_fallback()
 
 
 

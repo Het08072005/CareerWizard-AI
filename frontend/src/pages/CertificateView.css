@@ -572,12 +572,16 @@
     margin: 0;
     padding: 0;
     background: white;
+    width: 210mm;
+    height: 297mm;
   }
 
   .certificate-view-container {
     background: white;
     padding: 0;
     margin: 0;
+    min-height: 0;
+    width: 210mm;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -590,8 +594,10 @@
   .certificate-view-container .cert { 
     box-shadow: none; 
     width: 210mm; 
-    min-height: 296mm;
+    min-height: 297mm;
+    height: 297mm;
     margin: 0 auto;
+    overflow: hidden;
     page-break-after: avoid;
     page-break-inside: avoid;
   }
