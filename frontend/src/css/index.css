@@ -9,7 +9,7 @@
   100% { transform: skewX(-20deg) translateX(150%); }
 }
 
-@utility animate-[shimmer_2s_infinite] {
+@utility animate-shimmer {
   animation: shimmer 2.5s infinite;
 }
 

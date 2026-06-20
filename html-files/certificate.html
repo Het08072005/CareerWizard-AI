@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerWizard — Certificate of Completion</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .tool-btn {
+    padding: 10px 22px;
+    background: transparent;
+    color: #C4A96B;
+    border: 0.5px solid #C4A96B;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .tool-btn:hover { background: #C4A96B; color: #111; }
+  .tool-btn.primary { background: #C4A96B; color: #111; }
+  .tool-btn.primary:hover { background: #E8D5A3; }
+  .toolbar-sep { width: 0.5px; height: 28px; background: rgba(196,169,107,0.3); }
+
+  /* ── EDIT PANEL ── */
+  .edit-panel {
+    width: 794px;
+    background: #1a1a1a;
+    border: 0.5px solid rgba(196,169,107,0.25);
+    border-bottom: none;
+    padding: 20px 32px;
+    display: none;
+  }
+  .edit-panel.open { display: block; }
+  .edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .edit-field label {
+    display: block;
+    font-size: 8px;
+    font-weight: 400;
+    color: rgba(196,169,107,0.6);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .edit-field input, .edit-field select {
+    width: 100%;
+    background: #111;
+    border: 0.5px solid rgba(196,169,107,0.3);
+    color: #F5EFE3;
+    padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .edit-field input:focus { border-color: #C4A96B; }
+  .edit-apply {
+    margin-top: 14px;
+    padding: 9px 24px;
+    background: #C4A96B;
+    color: #111;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .edit-apply:hover { background: #E8D5A3; }
+
+  /* ── A4 CERTIFICATE ── */
+  .cert {
+    width: 794px;
+    min-height: 1123px;
+    background: #F5EFE3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 100px rgba(0,0,0,0.7);
+  }
+
+  /* Paper dot texture */
+  .cert::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(139,115,85,0.09) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Double gold border frame */
+  .frame-outer {
+    position: absolute;
+    inset: 16px;
+    border: 1.5px solid #C4A96B;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .frame-inner {
+    position: absolute;
+    inset: 22px;
+    border: 0.5px solid rgba(196,169,107,0.4);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Corner ornaments */
+  .corner { position: absolute; z-index: 11; }
+  .corner-tl { top: 10px; left: 10px; }
+  .corner-tr { top: 10px; right: 10px; transform: scaleX(-1); }
+  .corner-bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+  .corner-br { bottom: 10px; right: 10px; transform: scale(-1,-1); }
+
+  /* ── HEADER ── */
+  .header {
+    background: #1C1C1C;
+    width: 100%;
+    padding: 24px 56px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 5;
+    flex-shrink: 0;
+  }
+  .logo-wrap { display: flex; flex-direction: column; }
+  .logo-text {
+    font-family: 'EB Garamond', serif;
+    font-size: 27px;
+    font-weight: 400;
+    color: #F5EFE3;
+    line-height: 1;
+  }
+  .logo-text em {
+    font-style: italic;
+    color: #C4A96B;
+  }
+  .logo-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    font-weight: 300;
+    color: rgba(196,169,107,0.5);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 5px;
+  }
+
+  /* Gold bar */
+  .gold-bar {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #1C1C1C 0%, #8B7355 15%, #C4A96B 35%, #E8D5A3 50%, #C4A96B 65%, #8B7355 85%, #1C1C1C 100%);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 5;
+  }
+
+  /* ── BODY ── */
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 42px 70px 36px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Watermark */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-family: 'EB Garamond', serif;
+    font-size: 108px;
+    font-weight: 700;
+    color: rgba(196,169,107,0.05);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 1;
+    user-select: none;
+  }
+
+  .content { position: relative; z-index: 2; width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 400;
+    color: #8B7355;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 11px;
+  }
+
+  .cert-title-1 {
+    font-family: 'EB Garamond', serif;
+    font-size: 50px;
+    font-weight: 400;
+    color: #1C1C1C;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    text-align: center;
+  }
+  .cert-title-2 {
+    font-family: 'EB Garamond', serif;
+    font-size: 50px;
+    font-weight: 400;
+    font-style: italic;
+    color: #C4A96B;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  /* Ornament divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    max-width: 460px;
+    margin: 14px 0 17px;
+  }
+  .dline { flex: 1; height: 0.5px; background: rgba(196,169,107,0.55); }
+  .dgem { width: 6px; height: 6px; background: #C4A96B; transform: rotate(45deg); }
+  .ddot { width: 3px; height: 3px; border-radius: 50%; background: rgba(196,169,107,0.45); }
+
+  .presented {
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: #7A6A50;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+
+  .recipient {
+    font-family: 'EB Garamond', serif;
+    font-size: 54px;
+    font-weight: 500;
+    color: #1C1C1C;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    text-align: center;
+    border-bottom: 1px solid rgba(196,169,107,0.65);
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+  }
+
+  .recipient-role {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 400;
+    color: #8B7355;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .cert-para {
+    font-family: 'EB Garamond', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: #3A3028;
+    text-align: center;
+    line-height: 1.82;
+    max-width: 555px;
+    margin-bottom: 20px;
+  }
+  .cert-para strong { font-weight: 600; color: #1C1C1C; }
+
+  .duration {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: #1C1C1C;
+    color: #C4A96B;
+    padding: 9px 30px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+  .dur-gem { width: 5px; height: 5px; background: #C4A96B; transform: rotate(45deg); flex-shrink: 0; }
+
+  /* Work grid */
+  .section-lbl {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    font-weight: 400;
+    color: #8B7355;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 13px;
+    width: 100%;
+  }
+
+  .work-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 9px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .work-item {
+    background: rgba(28,28,28,0.04);
+    border: 0.5px solid rgba(196,169,107,0.45);
+    border-left: 2px solid #1C1C1C;
+    padding: 10px 13px 12px;
+    transition: background 0.2s, border-left-color 0.2s;
+  }
+  .work-item:hover {
+    background: rgba(196,169,107,0.08);
+    border-left-color: #C4A96B;
+  }
+  .work-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1C1C1C;
+    margin-bottom: 3px;
+  }
+  .work-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8.5px;
+    font-weight: 300;
+    color: #5A5040;
+    line-height: 1.55;
+  }
+
+  /* Score row */
+  .score-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 24px;
+    justify-content: center;
+  }
+  .score-card {
+    flex: 1;
+    background: #F5EFE3;
+    border: 0.5px solid rgba(196,169,107,0.5);
+    border-top: 2px solid #C4A96B;
+    padding: 12px 10px 10px;
+    text-align: center;
+    max-width: 148px;
+    transition: transform 0.18s, box-shadow 0.18s;
+    cursor: default;
+  }
+  .score-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196,169,107,0.15);
+  }
+  .score-lbl {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    font-weight: 400;
+    color: #8B7355;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .score-val {
+    font-family: 'EB Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1C1C1C;
+    line-height: 1;
+  }
+  .score-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7px;
+    color: #8B7355;
+    margin-top: 3px;
+    font-weight: 300;
+  }
+
+  /* Signature row */
+  .sig-section {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 8px;
+    margin-top: 4px;
+  }
+  .sig-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* SIGNATURE using Pinyon Script */
+  .sig-name {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 44px;
+    color: #1C1C1C;
+    line-height: 1.1;
+    margin-bottom: 5px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .sig-line {
+    width: 100%;
+    height: 0.5px;
+    background: rgba(139,115,85,0.55);
+    margin-bottom: 5px;
+  }
+  .sig-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    font-weight: 400;
+    color: #8B7355;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .sig-sub-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    font-weight: 300;
+    color: #AAA090;
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  .date-display {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    color: #3A3028;
+    line-height: 1.2;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  /* ── COMPASS SEAL (SVG inline) ── */
+  .seal-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+  }
+
+  /* Footer */
+  .footer-bar {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #1C1C1C 0%, #8B7355 15%, #C4A96B 35%, #E8D5A3 50%, #C4A96B 65%, #8B7355 85%, #1C1C1C 100%);
+    flex-shrink: 0;
+    z-index: 5;
+    position: relative;
+  }
+  .footer {
+    background: #1C1C1C;
+    width: 100%;
+    padding: 12px 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 5;
+    position: relative;
+  }
+  .footer-id {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    font-weight: 300;
+    color: rgba(196,169,107,0.45);
+    letter-spacing: 0.15em;
+  }
+  .footer-brand {
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #C4A96B;
+    letter-spacing: 0.04em;
+  }
+  .footer-brand em { font-style: italic; }
+  .footer-date {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    font-weight: 300;
+    color: rgba(196,169,107,0.45);
+    letter-spacing: 0.12em;
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .toolbar, .edit-panel { display: none !important; }
+    .cert { box-shadow: none; width: 210mm; min-height: 297mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- INTERACTIVE TOOLBAR -->
+<div class="toolbar">
+  <button class="tool-btn primary" onclick="window.print()">⬇ Download PDF</button>
+  <div class="toolbar-sep"></div>
+  <button class="tool-btn" onclick="toggleEdit()">✎ Customise Certificate</button>
+  <div class="toolbar-sep"></div>
+  <button class="tool-btn" onclick="applyChanges()">↻ Apply Changes</button>
+</div>
+
+<!-- EDIT PANEL -->
+<div class="edit-panel" id="editPanel">
+  <div class="edit-grid">
+    <div class="edit-field">
+      <label>Intern Name</label>
+      <input type="text" id="f-name" value="Aanya Sharma" placeholder="Full Name">
+    </div>
+    <div class="edit-field">
+      <label>Role / Track</label>
+      <input type="text" id="f-role" value="Full-Stack Development Track" placeholder="Track / Role">
+    </div>
+    <div class="edit-field">
+      <label>Duration (days)</label>
+      <input type="text" id="f-days" value="30" placeholder="e.g. 30">
+    </div>
+    <div class="edit-field">
+      <label>Start Date</label>
+      <input type="text" id="f-start" value="May 1, 2025" placeholder="May 1, 2025">
+    </div>
+    <div class="edit-field">
+      <label>End Date</label>
+      <input type="text" id="f-end" value="May 30, 2025" placeholder="May 30, 2025">
+    </div>
+    <div class="edit-field">
+      <label>Certificate ID</label>
+      <input type="text" id="f-certid" value="CW-2025-INT-0047" placeholder="CW-2025-INT-0001">
+    </div>
+    <div class="edit-field">
+      <label>Performance Score</label>
+      <input type="text" id="f-score" value="9.2" placeholder="9.2">
+    </div>
+    <div class="edit-field">
+      <label>Tasks Completed</label>
+      <input type="text" id="f-tasks" value="24/25" placeholder="24/25">
+    </div>
+    <div class="edit-field">
+      <label>Final Grade</label>
+      <input type="text" id="f-grade" value="A+" placeholder="A+">
+    </div>
+  </div>
+  <button class="edit-apply" onclick="applyChanges()">Apply to Certificate →</button>
+</div>
+
+<!-- CERTIFICATE -->
+<div class="cert" id="certificate">
+
+  <!-- Frame & texture -->
+  <div class="frame-outer"></div>
+  <div class="frame-inner"></div>
+
+  <!-- Corner ornaments -->
+  <div class="corner corner-tl">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 6 L6 30" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M6 6 L30 6" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M12 6 L12 24" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <path d="M6 12 L24 12" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <rect x="4" y="4" width="5" height="5" fill="#C4A96B"/>
+      <circle cx="6" cy="30" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+      <circle cx="30" cy="6" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+    </svg>
+  </div>
+  <div class="corner corner-tr">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 6 L6 30" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M6 6 L30 6" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M12 6 L12 24" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <path d="M6 12 L24 12" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <rect x="4" y="4" width="5" height="5" fill="#C4A96B"/>
+      <circle cx="6" cy="30" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+      <circle cx="30" cy="6" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+    </svg>
+  </div>
+  <div class="corner corner-bl">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 6 L6 30" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M6 6 L30 6" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M12 6 L12 24" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <path d="M6 12 L24 12" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <rect x="4" y="4" width="5" height="5" fill="#C4A96B"/>
+      <circle cx="6" cy="30" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+      <circle cx="30" cy="6" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+    </svg>
+  </div>
+  <div class="corner corner-br">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 6 L6 30" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M6 6 L30 6" stroke="#C4A96B" stroke-width="1.5" fill="none"/>
+      <path d="M12 6 L12 24" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <path d="M6 12 L24 12" stroke="rgba(196,169,107,0.4)" stroke-width="0.5" fill="none"/>
+      <rect x="4" y="4" width="5" height="5" fill="#C4A96B"/>
+      <circle cx="6" cy="30" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+      <circle cx="30" cy="6" r="2.5" fill="none" stroke="#C4A96B" stroke-width="0.75"/>
+    </svg>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-wrap">
+      <div class="logo-text">Career<em>Wizard</em></div>
+      <div class="logo-sub">The AI that builds your entire career</div>
+    </div>
+
+    <!-- Compass Star Logo matching image 2 -->
+    <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer circle -->
+      <circle cx="34" cy="34" r="31" stroke="#C4A96B" stroke-width="1.2"/>
+      <!-- Inner circle -->
+      <circle cx="34" cy="34" r="25.5" stroke="rgba(196,169,107,0.4)" stroke-width="0.6"/>
+      <!-- 8-point compass star — 4 long cardinal points, 4 shorter diagonal points -->
+      <!-- Cardinal N -->
+      <polygon points="34,6 36.5,28 34,34 31.5,28" fill="#C4A96B" opacity="0.9"/>
+      <!-- Cardinal S -->
+      <polygon points="34,62 36.5,40 34,34 31.5,40" fill="#C4A96B" opacity="0.9"/>
+      <!-- Cardinal E -->
+      <polygon points="62,34 40,36.5 34,34 40,31.5" fill="#C4A96B" opacity="0.9"/>
+      <!-- Cardinal W -->
+      <polygon points="6,34 28,36.5 34,34 28,31.5" fill="#C4A96B" opacity="0.9"/>
+      <!-- Diagonal NE -->
+      <polygon points="57.5,10.5 39,30 34,34 38,27" fill="rgba(196,169,107,0.55)"/>
+      <!-- Diagonal NW -->
+      <polygon points="10.5,10.5 29,30 34,34 30,27" fill="rgba(196,169,107,0.55)"/>
+      <!-- Diagonal SE -->
+      <polygon points="57.5,57.5 39,38 34,34 38,41" fill="rgba(196,169,107,0.55)"/>
+      <!-- Diagonal SW -->
+      <polygon points="10.5,57.5 29,38 34,34 30,41" fill="rgba(196,169,107,0.55)"/>
+      <!-- Center gem -->
+      <circle cx="34" cy="34" r="4.5" fill="#1C1C1C" stroke="#C4A96B" stroke-width="0.8"/>
+      <circle cx="34" cy="34" r="2" fill="#C4A96B"/>
+    </svg>
+  </div>
+  <div class="gold-bar"></div>
+
+  <!-- WATERMARK -->
+  <div class="watermark">CareerWizard</div>
+
+  <!-- BODY -->
+  <div class="body">
+    <div class="content">
+
+      <div class="eyebrow">Certificate of Completion</div>
+
+      <div class="cert-title-1">Professional Internship</div>
+      <div class="cert-title-2">Achievement Award</div>
+
+      <div class="divider">
+        <div class="dline"></div>
+        <div class="ddot"></div>
+        <div class="dgem"></div>
+        <div class="ddot"></div>
+        <div class="dline"></div>
+      </div>
+
+      <div class="presented">This is to proudly certify that</div>
+
+      <div class="recipient" id="cert-name">Aanya Sharma</div>
+      <div class="recipient-role" id="cert-role">Intern · Full-Stack Development Track</div>
+
+      <div class="cert-para">
+        has successfully completed the <strong>30-Day Professional Internship Program</strong>
+        at CareerWizard, demonstrating exceptional dedication, technical proficiency,
+        and a commitment to excellence across all assigned projects and deliverables.
+      </div>
+
+      <div class="duration" id="cert-duration">
+        <div class="dur-gem"></div>
+        May 1, 2025 — May 30, 2025 &nbsp;·&nbsp; 30 Days
+        <div class="dur-gem"></div>
+      </div>
+
+      <div class="section-lbl">Internship Deliverables & Key Contributions</div>
+      <div class="work-grid">
+        <div class="work-item">
+          <div class="work-title">UI/UX Development</div>
+          <div class="work-desc">Designed and built responsive React components with Tailwind CSS, boosting user engagement by 28%</div>
+        </div>
+        <div class="work-item">
+          <div class="work-title">API Integration</div>
+          <div class="work-desc">Integrated RESTful APIs and data pipelines using React Query with robust error handling</div>
+        </div>
+        <div class="work-item">
+          <div class="work-title">AI Resume Module</div>
+          <div class="work-desc">Contributed to the AI resume scoring engine — keyword extraction and skill gap analysis</div>
+        </div>
+        <div class="work-item">
+          <div class="work-title">Database Architecture</div>
+          <div class="work-desc">Designed MongoDB schemas for user profiles and application tracker with query optimizations</div>
+        </div>
+        <div class="work-item">
+          <div class="work-title">Testing & Quality</div>
+          <div class="work-desc">Achieved 87% code coverage across all modules using Jest & Vitest unit and integration tests</div>
+        </div>
+        <div class="work-item">
+          <div class="work-title">Technical Documentation</div>
+          <div class="work-desc">Authored comprehensive docs reducing new contributor ramp-up time by 40%</div>
+        </div>
+      </div>
+
+      <div class="score-row">
+        <div class="score-card">
+          <div class="score-lbl">Performance</div>
+          <div class="score-val" id="cert-score">9.2</div>
+          <div class="score-sub">out of 10</div>
+        </div>
+        <div class="score-card">
+          <div class="score-lbl">Attendance</div>
+          <div class="score-val">100%</div>
+          <div class="score-sub">all 30 days</div>
+        </div>
+        <div class="score-card">
+          <div class="score-lbl">Tasks Completed</div>
+          <div class="score-val" id="cert-tasks">24/25</div>
+          <div class="score-sub">deliverables</div>
+        </div>
+        <div class="score-card">
+          <div class="score-lbl">Final Grade</div>
+          <div class="score-val" id="cert-grade">A+</div>
+          <div class="score-sub">with distinction</div>
+        </div>
+      </div>
+
+      <div class="divider" style="margin: 2px 0 20px; max-width: 100%;">
+        <div class="dline"></div>
+        <div class="ddot"></div>
+        <div class="dgem" style="width:5px;height:5px;"></div>
+        <div class="ddot"></div>
+        <div class="dline"></div>
+      </div>
+
+      <!-- SIGNATURE ROW -->
+      <div class="sig-section">
+
+        <!-- Founder signature -->
+        <div class="sig-block">
+          <div class="sig-name">Het Pancal</div>
+          <div class="sig-line"></div>
+          <div class="sig-label">Het Pancal</div>
+          <div class="sig-sub-text">Founder & CEO, CareerWizard</div>
+        </div>
+
+        <!-- Compass Seal — center -->
+        <div class="seal-wrap">
+          <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer ring -->
+            <circle cx="48" cy="48" r="45" stroke="#1C1C1C" stroke-width="1.5"/>
+            <!-- Inner ring -->
+            <circle cx="48" cy="48" r="38" stroke="#C4A96B" stroke-width="0.6"/>
+            <!-- Compass star — same style as header logo -->
+            <polygon points="48,16 50.5,42 48,48 45.5,42" fill="#C4A96B" opacity="0.9"/>
+            <polygon points="48,80 50.5,54 48,48 45.5,54" fill="#C4A96B" opacity="0.9"/>
+            <polygon points="80,48 54,50.5 48,48 54,45.5" fill="#C4A96B" opacity="0.9"/>
+            <polygon points="16,48 42,50.5 48,48 42,45.5" fill="#C4A96B" opacity="0.9"/>
+            <polygon points="79,17 57,39 48,48 55,36" fill="rgba(196,169,107,0.5)"/>
+            <polygon points="17,17 39,39 48,48 41,36" fill="rgba(196,169,107,0.5)"/>
+            <polygon points="79,79 57,57 48,48 55,60" fill="rgba(196,169,107,0.5)"/>
+            <polygon points="17,79 39,57 48,48 41,60" fill="rgba(196,169,107,0.5)"/>
+            <!-- Center dot -->
+            <circle cx="48" cy="48" r="5" fill="#1C1C1C" stroke="#C4A96B" stroke-width="0.8"/>
+            <circle cx="48" cy="48" r="2.2" fill="#C4A96B"/>
+            <!-- Text around seal (arc simulation with positioned text) -->
+            <text x="48" y="18" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="6" font-weight="400" fill="rgba(196,169,107,0.7)" letter-spacing="3">CAREERWIZARD</text>
+            <text x="48" y="84" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="6" font-weight="400" fill="rgba(196,169,107,0.7)" letter-spacing="2">EST. 2024</text>
+          </svg>
+        </div>
+
+        <!-- Date -->
+        <div class="sig-block">
+          <div class="date-display" id="cert-issue-date">May 30, 2025</div>
+          <div class="sig-line"></div>
+          <div class="sig-label">Date of Issue</div>
+          <div class="sig-sub-text">Certificate Issued On</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar"></div>
+  <div class="footer">
+    <div class="footer-id" id="cert-id">CERT ID: CW-2025-INT-0047</div>
+    <div class="footer-brand">Career<em>Wizard</em></div>
+    <div class="footer-date">careerwizard.in &nbsp;·&nbsp; <span id="cert-footer-date">Issued May 30, 2025</span></div>
+  </div>
+
+</div>
+
+<script>
+  function toggleEdit() {
+    const p = document.getElementById('editPanel');
+    p.classList.toggle('open');
+  }
+
+  function applyChanges() {
+    const name    = document.getElementById('f-name').value.trim();
+    const role    = document.getElementById('f-role').value.trim();
+    const days    = document.getElementById('f-days').value.trim();
+    const start   = document.getElementById('f-start').value.trim();
+    const end     = document.getElementById('f-end').value.trim();
+    const certid  = document.getElementById('f-certid').value.trim();
+    const score   = document.getElementById('f-score').value.trim();
+    const tasks   = document.getElementById('f-tasks').value.trim();
+    const grade   = document.getElementById('f-grade').value.trim();
+
+    document.getElementById('cert-name').textContent       = name;
+    document.getElementById('cert-role').textContent       = 'Intern · ' + role;
+    document.getElementById('cert-score').textContent      = score;
+    document.getElementById('cert-tasks').textContent      = tasks;
+    document.getElementById('cert-grade').textContent      = grade;
+    document.getElementById('cert-issue-date').textContent = end;
+    document.getElementById('cert-id').textContent         = 'CERT ID: ' + certid;
+    document.getElementById('cert-footer-date').textContent = 'Issued ' + end;
+    document.getElementById('cert-duration').innerHTML     =
+      '<div class="dur-gem"></div>' +
+      start + ' — ' + end + ' &nbsp;·&nbsp; ' + days + ' Days' +
+      '<div class="dur-gem"></div>';
+
+    // Flash feedback
+    const btn = document.querySelector('.edit-apply');
+    btn.textContent = '✓ Applied!';
+    btn.style.background = '#2D4A3E';
+    btn.style.color = '#C4A96B';
+    setTimeout(() => {
+      btn.textContent = 'Apply to Certificate →';
+      btn.style.background = '#C4A96B';
+      btn.style.color = '#111';
+    }, 1800);
+  }
+</script>
+</body>
+</html>

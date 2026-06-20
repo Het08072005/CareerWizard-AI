@@ -212,7 +212,7 @@ const OverviewOutlet = () => {
                                             transition={{ duration: 1.2, delay: 0.5 + (id * 0.15), ease: "easeOut" }}
                                             className={`h-full rounded-full ${item.color} relative overflow-hidden`}
                                         >
-                                            <div className="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)', transform: 'skewX(-20deg)' }} />
+                                            <div className="absolute inset-0 bg-white/20 w-full h-full animate-shimmer" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)', transform: 'skewX(-20deg)' }} />
                                         </motion.div>
                                     </div>
                                 </div>
