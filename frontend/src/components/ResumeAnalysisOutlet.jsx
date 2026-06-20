@@ -4,61 +4,49 @@ import { CheckIcon, ExclamationCircleIcon } from "./ui/Icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeContext } from "../context/ThemeContext";
 
+const restoreFileFromStorage = (serialized) => {
+  const { name, type, data } = JSON.parse(serialized);
+  const binary = atob(data);
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return new File([bytes], name, { type });
+};
+
+const buildBreakdown = (result) => {
+  const overall = Number(result?.ats_score || 0);
+  const skillCount = Array.isArray(result?.skills) ? result.skills.length : 0;
+  const strengthsCount = Array.isArray(result?.strengths) ? result.strengths.length : 0;
+  const improvementsCount = Array.isArray(result?.improvements) ? result.improvements.length : 0;
+
+  return [
+    { label: "Keywords Match", score: Math.min(100, overall + Math.min(skillCount * 2, 12)) },
+    { label: "Formatting", score: Math.max(45, Math.min(100, overall + 8 - improvementsCount * 2)) },
+    { label: "Readability", score: Math.max(40, Math.min(100, overall - 4 + strengthsCount * 3)) },
+    { label: "Experience Relevance", score: Math.max(45, Math.min(100, overall + strengthsCount * 4 - 3)) },
+    { label: "Grammar & Spelling", score: Math.max(50, Math.min(100, overall + 10 - improvementsCount)) },
+    { label: "Recruiter Compatibility", score: Math.max(45, Math.min(100, overall + skillCount - improvementsCount * 2)) },
+  ];
+};
+
+const buildEnhancements = (result) => {
+  const improvements = Array.isArray(result?.improvements) ? result.improvements : [];
+  return improvements.slice(0, 3).map((item, index) => ({
+    title: `Priority Fix ${index + 1}`,
+    desc: item,
+    icon: index === 0 ? "🎯" : index === 1 ? "✏️" : "📊",
+  }));
+};
+
 const ResultView = ({ result }) => {
   const { isDark } = useContext(ThemeContext);
-  
-  // Dummy data based on the screenshot
-  const overallScore = 84;
-  const scoreBreakdown = [
-    { label: "Keywords Match", score: 82 },
-    { label: "Formatting", score: 91 },
-    { label: "Readability", score: 74 },
-    { label: "Experience Relevance", score: 88 },
-    { label: "Grammar & Spelling", score: 95 },
-    { label: "Recruiter Compatibility", score: 79 },
-  ];
-  
-  const foundKeywords = [
-    "React", "JavaScript", "Node.js", "MongoDB", "REST API", "Git", "CSS", "HTML", "Redux", "Express", "TypeScript", "Webpack", "Jest", "Docker", "Agile", "Problem Solving", "Team Work", "Communication", "Leadership", "SQL"
-  ];
-  
-  const missingKeywords = [
-    "Kubernetes", "CI/CD", "GraphQL", "Redis", "Microservices", "AWS", "System Design"
-  ];
-  
-  const strengths = [
-    "Strong technical stack with modern frameworks",
-    "Clear project descriptions with measurable outcomes",
-    "Well-structured sections with proper formatting",
-    "Excellent grammar and professional language",
-    "Quantified achievements (e.g., improved performance by 40%)"
-  ];
-  
-  const improvements = [
-    "Missing cloud technology keywords (AWS/GCP)",
-    "No mention of CI/CD experience",
-    "Summary section is too brief and generic",
-    "Missing certifications section",
-    "Work experience bullet points lack action verbs"
-  ];
-  
-  const enhancements = [
-    {
-      title: "Add Cloud Keywords",
-      desc: "Include AWS, GCP, or Azure in your skills section. 73% of senior roles require cloud experience. Even basic familiarity should be mentioned.",
-      icon: "🎯"
-    },
-    {
-      title: "Strengthen Summary",
-      desc: "Replace your generic summary with a targeted 3-line professional statement highlighting your 2+ years of React experience and specific achievements.",
-      icon: "✏️"
-    },
-    {
-      title: "Quantify More Achievements",
-      desc: "Add specific metrics to your recent role. Instead of 'improved performance', use 'decreased load time by 2.4s'.",
-      icon: "📊"
-    }
-  ];
+  const overallScore = Number(result?.ats_score || 0);
+  const scoreBreakdown = buildBreakdown(result);
+  const foundKeywords = Array.isArray(result?.skills) ? result.skills : [];
+  const missingKeywords = Array.isArray(result?.improvements)
+    ? result.improvements.slice(0, 6).map((item) => item.split(/[,:.-]/)[0].trim()).filter(Boolean)
+    : [];
+  const strengths = Array.isArray(result?.strengths) ? result.strengths : [];
+  const improvements = Array.isArray(result?.improvements) ? result.improvements : [];
+  const enhancements = buildEnhancements(result);
 
   return (
     <div className="space-y-6 mt-6 pb-12 font-sans">
@@ -104,27 +92,27 @@ const ResultView = ({ result }) => {
       </div>
 
       {/* MIDDLE ROW: Keyword Analysis */}
-      <div className={`p-6 md:p-8 rounded-[1.5rem] border relative overflow-hidden ${isDark ? 'bg-[#080808] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
-        <div className="flex justify-between items-center mb-6">
+        <div className={`p-6 md:p-8 rounded-[1.5rem] border relative overflow-hidden ${isDark ? 'bg-[#080808] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
+          <div className="flex justify-between items-center mb-6">
            <h4 style={{ fontSize: '19px', fontFamily: '"Cormorant Garamond", serif', fontWeight: 700 }} className="text-[var(--text-main)]">Keyword Analysis</h4>
-           <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[var(--gold)]/10 text-[var(--gold-dark)] border border-[var(--gold)]/20">23 found · 8 missing</span>
+           <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[var(--gold)]/10 text-[var(--gold-dark)] border border-[var(--gold)]/20">{foundKeywords.length} found · {missingKeywords.length} missing</span>
         </div>
         <p className="text-[11px] font-bold tracking-widest text-[var(--text-muted)] uppercase mb-3">✓ FOUND KEYWORDS</p>
         <div className="flex flex-wrap gap-2 mb-8">
-          {foundKeywords.map((kw, idx) => (
+          {foundKeywords.length ? foundKeywords.map((kw, idx) => (
             <span key={idx} className="px-3 py-1.5 rounded-full text-[12px] font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 flex items-center gap-1.5">
               ✓ {kw}
             </span>
-          ))}
+          )) : <span className="text-[13px] text-[var(--text-muted)]">No strong keywords detected yet.</span>}
         </div>
 
         <p className="text-[11px] font-bold tracking-widest text-rose-600/80 uppercase mb-3">✗ MISSING KEYWORDS</p>
         <div className="flex flex-wrap gap-2">
-          {missingKeywords.map((kw, idx) => (
+          {missingKeywords.length ? missingKeywords.map((kw, idx) => (
             <span key={idx} className="px-3 py-1.5 rounded-full text-[12px] font-bold bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-500/20 flex items-center gap-1.5">
               ✗ {kw}
             </span>
-          ))}
+          )) : <span className="text-[13px] text-[var(--text-muted)]">No critical gaps highlighted by the current analysis.</span>}
         </div>
       </div>
 
@@ -165,12 +153,12 @@ const ResultView = ({ result }) => {
         </div>
         
         <div className="space-y-3">
-          {enhancements.map((enh, idx) => (
+          {enhancements.length ? enhancements.map((enh, idx) => (
             <div key={idx} className={`p-4 md:p-5 rounded-2xl border ${isDark ? 'bg-white/5 border-white/5' : 'bg-white border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]'}`}>
               <h5 style={{ fontSize: '17px', fontFamily: '"Cormorant Garamond", serif', fontWeight: 700 }} className="text-[var(--text-main)] mb-1.5 flex items-center gap-2">{enh.icon} {enh.title}</h5>
               <p className="text-[13px] font-medium text-[var(--text-muted)] leading-relaxed">{enh.desc}</p>
             </div>
-          ))}
+          )) : <div className="text-[13px] text-[var(--text-muted)]">Analyze a resume to get improvement recommendations.</div>}
         </div>
       </div>
     </div>
@@ -293,33 +281,47 @@ const ResumeAnalysisOutlet = () => {
     if (savedText) setPastedText(savedText);
     if (savedFile) {
       try {
-        const { name, type, data } = JSON.parse(savedFile);
-        const file = new File([new Blob([atob(data)], { type })], name, { type });
-        setSelectedFile(file);
+        setSelectedFile(restoreFileFromStorage(savedFile));
       } catch (e) { localStorage.removeItem("resumeFile"); }
     }
   }, []);
 
+  useEffect(() => {
+    if (pastedText) {
+      localStorage.setItem("resumeText", pastedText);
+    } else {
+      localStorage.removeItem("resumeText");
+    }
+  }, [pastedText]);
+
   const handleUploadClick = () => fileInputRef.current.click();
 
   const handleFileChange = (e) => {
-    setResult(null); setShowResults(false);
     const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file); setPastedText("");
-      const reader = new FileReader();
-      reader.onload = () => {
-        localStorage.setItem("resumeFile", JSON.stringify({ name: file.name, type: file.type, data: reader.result.split(",")[1] }));
-      };
-      reader.readAsDataURL(file);
-    }
+    e.target.value = "";
+    if (!file) return;
+
+    setResult(null);
+    setShowResults(false);
+    localStorage.removeItem("resumeResult");
+    setSelectedFile(file);
+    setPastedText("");
+    const reader = new FileReader();
+    reader.onload = () => {
+      localStorage.setItem("resumeFile", JSON.stringify({ name: file.name, type: file.type, data: reader.result.split(",")[1] }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleDrop = (e) => {
     e.preventDefault(); setIsHovering(false);
     const file = e.dataTransfer.files[0];
     if (file && (file.type === "application/pdf" || file.name.endsWith('.doc') || file.name.endsWith('.docx'))) {
-      setSelectedFile(file); setPastedText("");
+      setResult(null);
+      setShowResults(false);
+      localStorage.removeItem("resumeResult");
+      setSelectedFile(file);
+      setPastedText("");
       const reader = new FileReader();
       reader.onload = () => {
         localStorage.setItem("resumeFile", JSON.stringify({ name: file.name, type: file.type, data: reader.result.split(",")[1] }));
@@ -340,12 +342,9 @@ const ResumeAnalysisOutlet = () => {
       setResult(response.data); setShowResults(true);
       localStorage.setItem("resumeResult", JSON.stringify(response.data));
       setLoading(false);
-    } catch (err) { 
-      setTimeout(() => {
-        setResult({ status: 'dummy' }); 
-        setShowResults(true);
-        setLoading(false);
-      }, 1500);
+    } catch (err) {
+      setError(err.response?.data?.detail || "Resume analysis failed. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -428,7 +427,17 @@ const ResumeAnalysisOutlet = () => {
                   : 'bg-[#fffcf7] border border-[var(--gold)]/30 text-slate-800 placeholder-slate-400 focus:border-[var(--gold)] focus:bg-[var(--gold)]/5 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
               }`}
               placeholder="Or paste your resume text here..."
-              value={pastedText} onChange={(e) => setPastedText(e.target.value)}
+              value={pastedText} onChange={(e) => {
+                const nextText = e.target.value;
+                setPastedText(nextText);
+                if (nextText) {
+                  setSelectedFile(null);
+                  localStorage.removeItem("resumeFile");
+                  setResult(null);
+                  setShowResults(false);
+                  localStorage.removeItem("resumeResult");
+                }
+              }}
             />
           </motion.div>
         </div>
@@ -470,6 +479,7 @@ const ResumeAnalysisOutlet = () => {
               )}
             </span>
           </motion.button>
+          {error ? <div className="text-[13px] font-medium text-rose-500">{error}</div> : null}
         </div>
 
         <AnimatePresence mode="wait">

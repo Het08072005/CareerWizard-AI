@@ -84,6 +84,7 @@ async def analyze_resume_with_ai(file_content: bytes = None, filename: str = Non
     if not content_to_send or len(content_to_send.strip()) == 0:
         return {
             "ats_score": 0,
+            "skills": [],
             "strengths": [],
             "improvements": ["Please provide a valid resume content"]
         }
@@ -133,6 +134,7 @@ RESUME:
     # Fallback if AI fails
     return {
         "ats_score": 65,
+        "skills": [],
         "strengths": [
             "Resume structure is clear",
             "Contains relevant work experience",

@@ -17,6 +17,7 @@ import SkillGapOutlet from "./components/SkillGapOutlet";
 import InterviewPrepOutlet from "./components/InterviewPrepOutlet";
 import CareerRoadmapOutlet from "./components/CareerRoadmapOutlet";
 import Admintaskpage from "./pages/internship/Admintaskpage";
+import CertificateView from "./pages/CertificateView";
 
 // Internship Portal System
 import InternshipLayout from "./pages/internship/InternshipLayout";
@@ -101,6 +102,7 @@ export default function App() {
             <Route path="projects" element={<InternshipProjects />} />
             <Route path="resources" element={<InternshipResources />} />
             <Route path="certificates" element={<InternshipCertificates />} />
+            <Route path="certificates/:certificateId" element={<CertificateView />} />
           </Route>
 
           {/* ADMIN PANEL */}

@@ -7,5 +7,6 @@ class ResumeAnalysisCreate(BaseModel):
 
 class ResumeAnalysisResponse(BaseModel):
     ats_score: int
+    skills: List[str] = []
     strengths: List[str]
     improvements: List[str]

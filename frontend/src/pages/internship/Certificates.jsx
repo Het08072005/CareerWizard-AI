@@ -57,6 +57,28 @@ const inProgress = [
 export default function InternshipCertificates() {
   const navigate = useNavigate();
 
+  const openCertificate = (cert) => {
+    const certificatePayload = {
+      name: 'Het Panchal',
+      role: `${cert.track} Track`,
+      days: cert.title.includes('30-Day') ? '30' : cert.title.includes('15-Day') ? '15' : '45',
+      start: 'Jan 1, 2025',
+      end: cert.issued,
+      certid: cert.id_code,
+      score: (cert.score / 10).toFixed(1),
+      tasks: cert.title.includes('30-Day') ? '30/30' : cert.title.includes('15-Day') ? '15/15' : '45/45',
+      grade: cert.score >= 90 ? 'A+' : cert.score >= 80 ? 'A' : 'B+',
+      programTitle: cert.title,
+      verified: cert.verified,
+      blockchain: cert.blockchain,
+    };
+
+    localStorage.setItem(`certificate:${cert.id_code}`, JSON.stringify(certificatePayload));
+    navigate(`/internship/certificates/${encodeURIComponent(cert.id_code)}`, {
+      state: { certificate: certificatePayload },
+    });
+  };
+
   return (
     <div className="space-y-6">
 
@@ -98,7 +120,13 @@ export default function InternshipCertificates() {
 
                 {/* ACTION BUTTONS */}
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition">
+                  <button
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openCertificate(cert);
+                    }}
+                  >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
                     Download PDF
                   </button>

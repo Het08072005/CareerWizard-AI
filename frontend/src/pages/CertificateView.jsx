@@ -1,38 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import './CertificateView.css';
 
 export default function CertificateView() {
-  const { name, id } = useParams();
+  const { certificateId } = useParams();
+  const location = useLocation();
 
-  // Format name from route like 'het-panchal' to 'Het Panchal'
-  const formattedName = name
-    ? name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
-    : 'Aanya Sharma';
+  const storedCertificate = (() => {
+    try {
+      return certificateId ? JSON.parse(localStorage.getItem(`certificate:${certificateId}`) || 'null') : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const initialCertificate = location.state?.certificate || storedCertificate;
 
   const [certData, setCertData] = useState({
-    name: formattedName,
+    name: initialCertificate?.name || 'Het Panchal',
     role: 'Full-Stack Development Track',
     days: '30',
     start: 'May 1, 2025',
     end: 'May 30, 2025',
-    certid: id || 'CW-2025-INT-0047',
+    certid: certificateId || 'CW-2025-INT-0047',
     score: '9.2',
     tasks: '24/25',
-    grade: 'A+'
+    grade: 'A+',
+    programTitle: 'Professional Internship Program',
+    verified: true,
+    blockchain: true,
   });
 
   useEffect(() => {
-    // If route parameters change, update state
-    if (name || id) {
-      const formatted = name ? name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ') : certData.name;
-      setCertData(prev => ({
+    if (initialCertificate) {
+      setCertData((prev) => ({
         ...prev,
-        name: formatted,
-        certid: id || prev.certid
+        ...initialCertificate,
+        certid: initialCertificate.certid || certificateId || prev.certid,
+      }));
+    } else if (certificateId) {
+      setCertData((prev) => ({
+        ...prev,
+        certid: certificateId,
       }));
     }
-  }, [name, id]);
+  }, [initialCertificate, certificateId]);
 
   const handlePrint = () => {
     window.print();
@@ -129,7 +141,7 @@ export default function CertificateView() {
           <div className="content">
             <div className="eyebrow">Certificate of Completion</div>
 
-            <div className="cert-title-1">Professional Internship</div>
+            <div className="cert-title-1">{certData.programTitle || 'Professional Internship'}</div>
             <div className="cert-title-2">Achievement Award</div>
 
             <div className="divider">
@@ -143,7 +155,7 @@ export default function CertificateView() {
             <div className="presented">This is to proudly certify that</div>
 
             <div className="recipient">{certData.name}</div>
-            <div className="recipient-role">Intern · {certData.role}</div>
+            <div className="recipient-role">{certData.verified ? 'Verified Intern' : 'Intern'} · {certData.role}</div>
 
             <div className="cert-para">
               has successfully completed the <strong>{certData.days}-Day Professional Internship Program</strong>
