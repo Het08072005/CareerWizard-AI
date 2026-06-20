@@ -233,13 +233,14 @@
 }
 
 .certificate-view-container .eyebrow {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 9px;
-  font-weight: 400;
-  color: #8B7355;
-  letter-spacing: 0.4em;
+  font-family: 'EB Garamond', serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1C1C1C;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  margin-bottom: 11px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
 .certificate-view-container .cert-title-1 {
@@ -619,7 +620,7 @@
     overflow: hidden;
     page-break-after: avoid;
     page-break-inside: avoid;
-    zoom: 0.89;
+    zoom: 0.885;
     max-width: none;
   }
 
@@ -629,5 +630,10 @@
   .certificate-view-container .sig-section {
     margin-top: auto !important;
     padding-top: 0 !important;
+  }
+  .certificate-view-container .eyebrow {
+    font-size: 11px !important;
+    letter-spacing: 0.18em !important;
+    margin-bottom: 10px !important;
   }
 }
