@@ -26,14 +26,11 @@ export default defineConfig({
   plugins: [react() , tailwindcss(),],
   server: {
     proxy: {
-      "/auth": "http://127.0.0.1:8000",
-      "/profile": "http://127.0.0.1:8000",
-      "/resume": "http://127.0.0.1:8000",
-      "/job": "http://127.0.0.1:8000",
-      "/roadmap": "http://127.0.0.1:8000",
-      "/interview": "http://127.0.0.1:8000",
-      "/dashboard": "http://127.0.0.1:8000",
-      "/admin": "http://127.0.0.1:8000",
+      "/api": {
+        target: "http://127.0.0.1:8000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
     },
   },
 })

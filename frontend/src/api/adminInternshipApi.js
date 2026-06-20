@@ -1,5 +1,10 @@
 import axiosClient from './axiosClient';
 
+export const getDayContentModules = async () => {
+  const response = await axiosClient.get('/admin/day_content/modules');
+  return response.data;
+};
+
 export const getDayContent = async (domain, taskName, type, day) => {
   try {
     const response = await axiosClient.get('/admin/day_content', {

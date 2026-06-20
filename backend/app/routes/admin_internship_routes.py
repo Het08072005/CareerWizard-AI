@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.db.database import get_db
 from app.models.day_content import DayContent
 from app.core.config import settings
@@ -8,6 +9,35 @@ import datetime
 import uuid
 
 router = APIRouter(prefix="/admin", tags=["Admin Internship Content"])
+
+
+@router.get("/day_content/modules")
+def list_day_content_modules(db: Session = Depends(get_db)):
+    rows = (
+        db.query(
+            DayContent.task_name,
+            DayContent.domain,
+            DayContent.type,
+            func.count(DayContent.id).label("saved_days"),
+            func.max(DayContent.day).label("total_days"),
+        )
+        .group_by(DayContent.task_name, DayContent.domain, DayContent.type)
+        .order_by(DayContent.task_name.asc(), DayContent.domain.asc(), DayContent.type.asc())
+        .all()
+    )
+
+    return {
+        "modules": [
+            {
+                "task_name": row.task_name,
+                "domain": row.domain,
+                "type": row.type,
+                "saved_days": int(row.saved_days or 0),
+                "total_days": int(row.total_days or 0),
+            }
+            for row in rows
+        ]
+    }
 
 @router.get("/day_content")
 def get_day_content(domain: str, task_name: str, type: str, day: int, db: Session = Depends(get_db)):

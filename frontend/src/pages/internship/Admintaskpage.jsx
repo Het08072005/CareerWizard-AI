@@ -3,7 +3,7 @@ import { NavLink, useSearchParams } from 'react-router-dom';
 import '../../css/internship.css';
 import { DEFAULT_DAY1, DEFAULT_DAY5, SNIPPETS } from './admin_constants';
 import '../../css/admintaskpage.css';
-import { getDayContent, saveDayContent, deleteDayContent, uploadResource } from '../../api/adminInternshipApi';
+import { getDayContent, getDayContentModules, saveDayContent, deleteDayContent, uploadResource } from '../../api/adminInternshipApi';
 
 const day1Md = DEFAULT_DAY1.replace(/\\n/g, '\n');
 const day5Md = DEFAULT_DAY5.replace(/\\n/g, '\n');
@@ -114,6 +114,67 @@ PASS: Minimum Pass Score|60|100
 :::submit
 :::`;
 };
+
+const LEVEL_CONFIG = [
+  { key: 'beginner', label: 'Beginner', icon: '🟢' },
+  { key: 'intermediate', label: 'Intermediate', icon: '🟡' },
+  { key: 'advanced', label: 'Advanced', icon: '🔴' },
+];
+
+const DOMAIN_OPTIONS = [
+  { id: 'aiml', label: 'AI / ML Engineering', icon: 'fa-robot' },
+  { id: 'webdev', label: 'Full Stack Web Dev', icon: 'fa-globe' },
+  { id: 'datascience', label: 'Data Science', icon: 'fa-chart-pie' },
+  { id: 'devops', label: 'Cloud & DevOps', icon: 'fa-cloud' },
+];
+
+const getSetupTypeLabel = (type) => (String(type).toLowerCase() === 'certificate' ? 'Certificate' : 'Internship');
+const getSetupTypeValue = (type) => (String(type).toLowerCase() === 'certificate' ? 'certificate' : 'internship');
+const getDomainLabel = (domain) => DOMAIN_OPTIONS.find((item) => item.id === domain)?.label || domain;
+const makeModuleKey = (module) => `${module.task_name}::${module.domain}::${module.type}`;
+
+const getLevelTemplate = (dayNum, levelKey, groupSize = 2) => {
+  const levelName = levelKey === 'beginner' ? 'Beginner' : levelKey === 'intermediate' ? 'Intermediate' : 'Advanced';
+  const defaultMd = `# Day ${dayNum} — __TYPE__\n\nAdd your content here using the toolbar above or paste markdown using the Import button.\n\n:::tip\n### Getting Started\nClick any toolbar button to insert a content block, or use Import Markdown to paste your prepared content.\n:::`;
+
+  let type = 'learn';
+  if (levelKey === 'advanced') type = 'task';
+  else if (levelKey === 'intermediate') type = dayNum % 3 === 0 ? 'task' : 'learn';
+  else type = dayNum % 5 === 0 ? 'task' : 'learn';
+
+  let markdown = '';
+  if (type === 'group') {
+    markdown = getGroupMd(groupSize);
+  } else if (type === 'task') {
+    if (levelKey === 'advanced') {
+      markdown = taskMdAdv;
+    } else {
+      markdown = day5Md;
+    }
+    markdown = markdown.replace(/^#\s+Task 1\s+—/m, `# Task ${dayNum} —`);
+    markdown = markdown.replace(/^##\s+(.+)$/m, `## $1 [${levelName} Track]`);
+  } else {
+    if (dayNum === 1) {
+      markdown = levelKey === 'intermediate' ? day1MdInt : day1Md;
+    } else {
+      markdown = defaultMd.replace('__TYPE__', 'Learning Day');
+    }
+    markdown = markdown.replace(/^#\s+(.+)$/m, `# $1 [${levelName} Track]`);
+  }
+
+  return { type, done: false, enabled: true, markdown };
+};
+
+const buildDays = (totalDays, groupSize = 2) =>
+  Array.from({ length: totalDays }, (_, index) => {
+    const dayNum = index + 1;
+    return {
+      num: dayNum,
+      beginner: getLevelTemplate(dayNum, 'beginner', groupSize),
+      intermediate: getLevelTemplate(dayNum, 'intermediate', groupSize),
+      advanced: getLevelTemplate(dayNum, 'advanced', groupSize),
+    };
+  });
 
 // ─── GARAMOND FONT INJECTOR ───────────────────────────────────────────────────
 const GARAMOND_STYLE = `
@@ -1077,8 +1138,12 @@ export default function Admintaskpage() {
   const [setupDuration, setSetupDuration] = useState(15);
   const [setupDomain, setSetupDomain] = useState('aiml');
   const [setupType, setSetupType] = useState('internship');
+  const [setupTaskName, setSetupTaskName] = useState(() => setup?.track || 'AI/ML Bootcamp');
+  const [existingModules, setExistingModules] = useState([]);
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const [isDomainDropdownOpen, setIsDomainDropdownOpen] = useState(false);
+  const [isTaskDropdownOpen, setIsTaskDropdownOpen] = useState(false);
+  const [selectedModuleKey, setSelectedModuleKey] = useState('');
 
   const [importDayNum, setImportDayNum] = useState(1);
   const [importType, setImportType] = useState('learn');
@@ -1106,16 +1171,76 @@ export default function Admintaskpage() {
     styleEl.textContent = GARAMOND_STYLE;
   });
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadModules = async () => {
+      try {
+        const response = await getDayContentModules();
+        if (isMounted) {
+          setExistingModules(response.modules || []);
+        }
+      } catch (error) {
+        console.error('Failed to load existing day-content modules:', error);
+      }
+    };
+
+    loadModules();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!setup) return;
+    setSetupTaskName(setup.track || 'AI/ML Bootcamp');
+    setSetupDuration(setup.totalDays || 15);
+    setSetupDomain(setup.domain || 'aiml');
+    setSetupType(getSetupTypeValue(setup.name));
+  }, [setup]);
+
+  const filteredModules = existingModules.filter((module) => {
+    const matchesSearch = !setupTaskName.trim() || module.task_name.toLowerCase().includes(setupTaskName.trim().toLowerCase());
+    return matchesSearch;
+  });
+
+  const handleExistingModuleSelect = (module) => {
+    setSelectedModuleKey(makeModuleKey(module));
+    setSetupTaskName(module.task_name);
+    setSetupDuration(module.total_days || 15);
+    setSetupDomain(module.domain);
+    setSetupType(getSetupTypeValue(module.type));
+    setIsTaskDropdownOpen(false);
+  };
+
   const loadFromDB = async () => {
     if (!setup) return;
     try {
-      const { data } = await getDayContent(setup.domain, setup.track, setup.name.toLowerCase(), currentDay);
+      const { data } = await getDayContent(setup.domain, setup.track, getSetupTypeValue(setup.name), currentDay);
 
       if (data) {
         const updatedDays = [...days];
-        if (data.beginner && data.beginner.length > 0) updatedDays[currentDay - 1].beginner.markdown = data.beginner[0].markdown;
-        if (data.intermediate && data.intermediate.length > 0) updatedDays[currentDay - 1].intermediate.markdown = data.intermediate[0].markdown;
-        if (data.advanced && data.advanced.length > 0) updatedDays[currentDay - 1].advanced.markdown = data.advanced[0].markdown;
+        const applyLevelData = (levelKey, payload) => {
+          if (!updatedDays[currentDay - 1]?.[levelKey]) return;
+          if (payload && payload.length > 0) {
+            updatedDays[currentDay - 1][levelKey] = {
+              ...updatedDays[currentDay - 1][levelKey],
+              markdown: payload[0].markdown || '',
+              type: payload[0].type || updatedDays[currentDay - 1][levelKey].type,
+              enabled: payload[0].enabled !== false,
+            };
+          } else {
+            updatedDays[currentDay - 1][levelKey] = {
+              ...updatedDays[currentDay - 1][levelKey],
+              enabled: false,
+            };
+          }
+        };
+
+        applyLevelData('beginner', data.beginner);
+        applyLevelData('intermediate', data.intermediate);
+        applyLevelData('advanced', data.advanced);
         setDays(updatedDays);
         setMdContent(updatedDays[currentDay - 1][activeLevel].markdown);
 
@@ -1172,14 +1297,24 @@ export default function Admintaskpage() {
       }
       setResourceFiles(updatedResourceFiles);
 
+      const buildLevelPayload = (levelKey) => {
+        const level = days[currentDay - 1][levelKey];
+        if (!level?.enabled) return [];
+        return [{
+          type: level.type,
+          markdown: level.markdown,
+          enabled: true,
+        }];
+      };
+
       await saveDayContent({
         domain: setup.domain,
         task_name: setup.track,
-        type: setup.name.toLowerCase(),
+        type: getSetupTypeValue(setup.name),
         day: currentDay,
-        beginner: [{ type: days[currentDay - 1].beginner.type, markdown: days[currentDay - 1].beginner.markdown }],
-        intermediate: [{ type: days[currentDay - 1].intermediate.type, markdown: days[currentDay - 1].intermediate.markdown }],
-        advanced: [{ type: days[currentDay - 1].advanced.type, markdown: days[currentDay - 1].advanced.markdown }],
+        beginner: buildLevelPayload('beginner'),
+        intermediate: buildLevelPayload('intermediate'),
+        advanced: buildLevelPayload('advanced'),
         source: uploadedSources
       });
 
@@ -1194,7 +1329,7 @@ export default function Admintaskpage() {
   const deleteFromDB = async () => {
     if (!setup) return;
     try {
-      await deleteDayContent(setup.domain, setup.track, setup.name.toLowerCase(), currentDay);
+      await deleteDayContent(setup.domain, setup.track, getSetupTypeValue(setup.name), currentDay);
       triggerToast("Day content deleted from DB!");
     } catch (e) {
       console.error(e);
@@ -1247,6 +1382,15 @@ export default function Admintaskpage() {
     setToastMsg(msg);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2800);
+  };
+
+  const toggleLevelEnabled = (levelKey) => {
+    if (!days[currentDay - 1]?.[levelKey]) return;
+    const updatedDays = [...days];
+    const currentLevel = updatedDays[currentDay - 1][levelKey];
+    currentLevel.enabled = currentLevel.enabled === false ? true : false;
+    setDays(updatedDays);
+    triggerToast(`${LEVEL_CONFIG.find((item) => item.key === levelKey)?.label || 'Content'} ${currentLevel.enabled ? 'enabled' : 'disabled'}`);
   };
 
   const handleTypeChange = (newType) => {
@@ -1953,9 +2097,9 @@ export default function Admintaskpage() {
     const n = days.length + 1;
     const newDay = {
       num: n,
-      beginner: { type: n % 5 === 0 ? 'task' : 'learn', markdown: '', done: false },
-      intermediate: { type: n % 3 === 0 ? 'task' : 'learn', markdown: '', done: false },
-      advanced: { type: 'task', markdown: '', done: false }
+      beginner: getLevelTemplate(n, 'beginner', groupSize),
+      intermediate: getLevelTemplate(n, 'intermediate', groupSize),
+      advanced: getLevelTemplate(n, 'advanced', groupSize),
     };
     setDays([...days, newDay]);
     setSetup({ ...setup, totalDays: n });
@@ -2036,7 +2180,62 @@ export default function Admintaskpage() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
             <div>
               <label className="setup-lbl" style={{ marginBottom: '4px' }}>Task Name</label>
-              <input className="setup-input" id="setup-taskname" placeholder="e.g. AI/ML Bootcamp" defaultValue="AI/ML Bootcamp" style={{ marginBottom: 0 }} />
+              <input
+                className="setup-input"
+                placeholder="e.g. AI/ML Bootcamp"
+                value={setupTaskName}
+                onChange={(e) => {
+                  setSetupTaskName(e.target.value);
+                  setSelectedModuleKey('');
+                }}
+                onFocus={() => setIsTaskDropdownOpen(true)}
+                style={{ marginBottom: 0 }}
+              />
+              <div style={{ position: 'relative', marginTop: '8px', zIndex: isTaskDropdownOpen ? 60 : 1 }}>
+                <button
+                  type="button"
+                  className="setup-input"
+                  style={{ marginBottom: 0, minHeight: '42px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12.5px', cursor: 'pointer' }}
+                  onClick={() => setIsTaskDropdownOpen((prev) => !prev)}
+                >
+                  <span style={{ color: selectedModuleKey ? 'var(--text)' : 'var(--text2)' }}>
+                    {selectedModuleKey
+                      ? 'Existing module selected'
+                      : filteredModules.length
+                        ? `Select from ${filteredModules.length} existing module${filteredModules.length > 1 ? 's' : ''}`
+                        : 'No matching saved modules'}
+                  </span>
+                  <i className={`fa-solid ${isTaskDropdownOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ color: 'var(--muted)', fontSize: '12px' }}></i>
+                </button>
+                {isTaskDropdownOpen && filteredModules.length > 0 && (
+                  <>
+                    <div style={{ position: 'fixed', inset: 0, zIndex: 10 }} onClick={() => setIsTaskDropdownOpen(false)}></div>
+                    <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px', maxHeight: '220px', overflowY: 'auto', background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', boxShadow: '0 8px 18px rgba(0,0,0,0.12)', zIndex: 20 }}>
+                      {filteredModules.map((module, index) => {
+                        const moduleKey = makeModuleKey(module);
+                        return (
+                          <div
+                            key={moduleKey}
+                            className="setup-dropdown-item"
+                            style={{
+                              padding: '10px 14px',
+                              cursor: 'pointer',
+                              background: selectedModuleKey === moduleKey ? 'var(--cream2)' : 'transparent',
+                              borderBottom: index !== filteredModules.length - 1 ? '1px solid var(--border)' : 'none'
+                            }}
+                            onClick={() => handleExistingModuleSelect(module)}
+                          >
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{module.task_name}</div>
+                            <div style={{ fontSize: '11.5px', color: 'var(--text2)', marginTop: '2px' }}>
+                              {getDomainLabel(module.domain)} · {getSetupTypeLabel(module.type)} · {module.total_days} days · {module.saved_days} saved
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
             <div>
               <label className="setup-lbl" style={{ marginBottom: '4px' }}>Type</label>
@@ -2089,24 +2288,14 @@ export default function Admintaskpage() {
                   style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', paddingLeft: '40px', marginBottom: 0, position: 'relative', zIndex: 5 }}
                   onClick={() => setIsDomainDropdownOpen(!isDomainDropdownOpen)}
                 >
-                  <span style={{ flex: 1 }}>
-                    {setupDomain === 'aiml' && 'AI / ML Engineering'}
-                    {setupDomain === 'webdev' && 'Full Stack Web Dev'}
-                    {setupDomain === 'datascience' && 'Data Science'}
-                    {setupDomain === 'devops' && 'Cloud & DevOps'}
-                  </span>
+                  <span style={{ flex: 1 }}>{getDomainLabel(setupDomain)}</span>
                   <i className="fa-solid fa-chevron-down" style={{ color: 'var(--muted)', fontSize: '12px' }}></i>
                 </div>
                 {isDomainDropdownOpen && (
                   <>
                     <div style={{ position: 'fixed', inset: 0, zIndex: 10 }} onClick={() => setIsDomainDropdownOpen(false)}></div>
                     <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px', background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 20 }}>
-                      {[
-                        { id: 'aiml', label: 'AI / ML Engineering', icon: 'fa-robot' },
-                        { id: 'webdev', label: 'Full Stack Web Dev', icon: 'fa-globe' },
-                        { id: 'datascience', label: 'Data Science', icon: 'fa-chart-pie' },
-                        { id: 'devops', label: 'Cloud & DevOps', icon: 'fa-cloud' }
-                      ].map(dom => (
+                      {DOMAIN_OPTIONS.map(dom => (
                         <div
                           key={dom.id}
                           className="setup-dropdown-item"
@@ -2124,43 +2313,9 @@ export default function Admintaskpage() {
           </div>
 
           <button className="btn btn-primary" style={{ width: '100%', padding: '10px', marginTop: '14px', fontSize: '14px', fontFamily: "'Fraunces', serif", letterSpacing: '0.3px', fontWeight: '700', borderRadius: 'var(--radius)' }} onClick={() => {
-            const taskName = document.getElementById("setup-taskname").value || "New Task";
-            const type = setupType;
-            const newDays = Array.from({ length: setupDuration }, (_, i) => {
-              const dayNum = i + 1;
-              const defMd = `# Day ${dayNum} — __TYPE__\n\nAdd your content here using the toolbar above or paste markdown using the Import button.\n\n:::tip\n### Getting Started\nClick any toolbar button to insert a content block, or use Import Markdown to paste your prepared content.\n:::`;
-
-              const getMd = (n, isTask, levelName) => {
-                let md = "";
-                if (!isTask) {
-                  if (n === 1) {
-                    if (levelName === 'Beginner') md = day1Md;
-                    else md = day1MdInt;
-                  } else {
-                    md = defMd.replace('__TYPE__', 'Learning Day');
-                  }
-                  md = md.replace(/^#\s+(.+)$/m, `# $1 [${levelName} Track]`);
-                } else {
-                  if (levelName === 'Advanced') {
-                    md = taskMdAdv;
-                    md = md.replace(/^#\s+Task 1\s+—/m, `# Task ${n} —`);
-                    md = md.replace(/^##\s+(.+)$/m, `## $1 [${levelName} Track]`);
-                  } else {
-                    md = day5Md;
-                    md = md.replace(/^#\s+Task 1\s+—/m, `# Task ${n} —`);
-                    md = md.replace(/^##\s+(.+)$/m, `## $1 [${levelName} Track]`);
-                  }
-                }
-                return md;
-              };
-
-              return {
-                num: dayNum,
-                beginner: { type: dayNum % 5 === 0 ? 'task' : 'learn', done: false, markdown: getMd(dayNum, dayNum % 5 === 0, 'Beginner') },
-                intermediate: { type: dayNum % 3 === 0 ? 'task' : 'learn', done: false, markdown: getMd(dayNum, dayNum % 3 === 0, 'Intermediate') },
-                advanced: { type: 'task', done: false, markdown: getMd(dayNum, true, 'Advanced') }
-              };
-            });
+            const taskName = setupTaskName.trim() || "New Task";
+            const type = getSetupTypeLabel(setupType);
+            const newDays = buildDays(setupDuration, groupSize);
             setDays(newDays);
             setSetup({ name: type, track: taskName, totalDays: setupDuration, domain: setupDomain });
             setSearchParams({ day: 1 });
@@ -2174,6 +2329,7 @@ export default function Admintaskpage() {
   }
 
   const curDayObj = days[currentDay - 1]?.[activeLevel];
+  const activeLevelEnabled = curDayObj?.enabled !== false;
   const completedCount = days.filter(d => d[activeLevel]?.done).length;
   const pct = Math.round((completedCount / days.length) * 100);
 
@@ -2186,13 +2342,33 @@ export default function Admintaskpage() {
               <button className="btn btn-ghost btn-sm" onClick={() => setSetup(null)} style={{ padding: '6px', color: 'var(--muted)' }} title="Back to Setup">
                 <i className="fa-solid fa-arrow-left"></i>
               </button>
-              <div className="bc">{setup?.name || 'Builder'} / <span>Day {currentDay} — {curDayObj?.type === 'task' ? 'Task Day 🔥' : 'Learning'}</span></div>
+              <div className="bc">{getSetupTypeLabel(setup?.name || 'internship')} / <span>Day {currentDay} — {curDayObj?.type === 'task' ? 'Task Day 🔥' : 'Learning'}</span></div>
             </div>
             <div className="tb-right">
               <div style={{ display: 'flex', gap: '6px', marginRight: '12px', background: 'var(--cream2)', padding: '4px', borderRadius: '8px' }}>
-                <button className={`btn btn-sm ${activeLevel === 'beginner' ? 'btn-primary' : 'btn-ghost'}`} style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setActiveLevel('beginner')}>🟢 Beginner</button>
-                <button className={`btn btn-sm ${activeLevel === 'intermediate' ? 'btn-primary' : 'btn-ghost'}`} style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setActiveLevel('intermediate')}>🟡 Intermediate</button>
-                <button className={`btn btn-sm ${activeLevel === 'advanced' ? 'btn-primary' : 'btn-ghost'}`} style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setActiveLevel('advanced')}>🔴 Advanced</button>
+                {LEVEL_CONFIG.map((level) => {
+                  const levelEnabled = days[currentDay - 1]?.[level.key]?.enabled !== false;
+                  return (
+                    <button
+                      key={level.key}
+                      className={`btn btn-sm ${activeLevel === level.key ? 'btn-primary' : 'btn-ghost'}`}
+                      style={{ padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px', opacity: levelEnabled ? 1 : 0.6 }}
+                      onClick={() => setActiveLevel(level.key)}
+                    >
+                      <span>{level.icon} {level.label}</span>
+                      <span
+                        title={levelEnabled ? `Hide ${level.label}` : `Show ${level.label}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleLevelEnabled(level.key);
+                        }}
+                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '999px', background: 'rgba(255,255,255,0.22)' }}
+                      >
+                        <i className={`fa-solid ${levelEnabled ? 'fa-eye' : 'fa-eye-slash'}`} style={{ fontSize: '10px' }}></i>
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="chip chip-green"><div className="pdot" style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor' }}></div><span>Editing Day {currentDay}</span></div>
@@ -2213,12 +2389,36 @@ export default function Admintaskpage() {
                       style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: curDayObj?.type === 'learn' ? '#fff' : 'transparent', color: curDayObj?.type === 'learn' ? 'var(--gm)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: curDayObj?.type === 'learn' ? '600' : '500', boxShadow: curDayObj?.type === 'learn' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                       <i className="fa-solid fa-book-open" style={{ fontSize: '13px' }}></i>
                       <span>Learning</span>
+                      {curDayObj?.type === 'learn' && (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleLevelEnabled(activeLevel);
+                          }}
+                          style={{ marginLeft: '2px', color: 'var(--text2)' }}
+                          title={activeLevelEnabled ? 'Hide current content' : 'Show current content'}
+                        >
+                          <i className={`fa-solid ${activeLevelEnabled ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                        </span>
+                      )}
                     </button>
                     <button
                       onClick={() => handleTypeChange('task')}
                       style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: curDayObj?.type === 'task' ? '#fff' : 'transparent', color: curDayObj?.type === 'task' ? 'var(--amber)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: curDayObj?.type === 'task' ? '600' : '500', boxShadow: curDayObj?.type === 'task' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                       <i className="fa-solid fa-bolt" style={{ fontSize: '13px' }}></i>
                       <span>Task</span>
+                      {curDayObj?.type === 'task' && (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleLevelEnabled(activeLevel);
+                          }}
+                          style={{ marginLeft: '2px', color: 'var(--text2)' }}
+                          title={activeLevelEnabled ? 'Hide current content' : 'Show current content'}
+                        >
+                          <i className={`fa-solid ${activeLevelEnabled ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                        </span>
+                      )}
                     </button>
                     <div
                       onClick={() => handleTypeChange('group')}
@@ -2226,14 +2426,26 @@ export default function Admintaskpage() {
                       <i className="fa-solid fa-users" style={{ fontSize: '13px' }}></i>
                       <span>Group</span>
                       {curDayObj?.type === 'group' && (
-                        <input
-                          type="number"
-                          min="2" max="4"
-                          value={groupSize}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => handleGroupSizeChange(parseInt(e.target.value) || 2)}
-                          style={{ width: '28px', height: '20px', border: 'none', background: 'transparent', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: 'var(--pm)', outline: 'none', padding: '0', marginLeft: '2px' }}
-                        />
+                        <>
+                          <input
+                            type="number"
+                            min="2" max="4"
+                            value={groupSize}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => handleGroupSizeChange(parseInt(e.target.value) || 2)}
+                            style={{ width: '28px', height: '20px', border: 'none', background: 'transparent', textAlign: 'center', fontSize: '13px', fontWeight: '600', color: 'var(--pm)', outline: 'none', padding: '0', marginLeft: '2px' }}
+                          />
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleLevelEnabled(activeLevel);
+                            }}
+                            style={{ marginLeft: '2px', color: 'var(--text2)' }}
+                            title={activeLevelEnabled ? 'Hide current content' : 'Show current content'}
+                          >
+                            <i className={`fa-solid ${activeLevelEnabled ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                          </span>
+                        </>
                       )}
                     </div>
                   </div>
@@ -2241,13 +2453,13 @@ export default function Admintaskpage() {
                   <div style={{ display: 'flex', background: 'var(--cream2)', borderRadius: '8px', padding: '3px' }}>
                     <button
                       onClick={() => setSetup({ ...setup, name: 'Internship' })}
-                      style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: setup?.name === 'Internship' ? '#fff' : 'transparent', color: setup?.name === 'Internship' ? 'var(--gm)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: setup?.name === 'Internship' ? '600' : '500', boxShadow: setup?.name === 'Internship' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
+                      style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: getSetupTypeValue(setup?.name) === 'internship' ? '#fff' : 'transparent', color: getSetupTypeValue(setup?.name) === 'internship' ? 'var(--gm)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: getSetupTypeValue(setup?.name) === 'internship' ? '600' : '500', boxShadow: getSetupTypeValue(setup?.name) === 'internship' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                       <i className="fa-solid fa-briefcase" style={{ fontSize: '13px' }}></i>
                       <span>Internship</span>
                     </button>
                     <button
                       onClick={() => setSetup({ ...setup, name: 'Certificate' })}
-                      style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: setup?.name === 'Certificate' ? '#fff' : 'transparent', color: setup?.name === 'Certificate' ? 'var(--pm)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: setup?.name === 'Certificate' ? '600' : '500', boxShadow: setup?.name === 'Certificate' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
+                      style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: getSetupTypeValue(setup?.name) === 'certificate' ? '#fff' : 'transparent', color: getSetupTypeValue(setup?.name) === 'certificate' ? 'var(--pm)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: getSetupTypeValue(setup?.name) === 'certificate' ? '600' : '500', boxShadow: getSetupTypeValue(setup?.name) === 'certificate' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                       <i className="fa-solid fa-certificate" style={{ fontSize: '13px' }}></i>
                       <span>Certificate</span>
                     </button>
@@ -2275,14 +2487,24 @@ export default function Admintaskpage() {
               </div>
 
               <div className="pane-body">
-                <textarea
-                  className="md-textarea"
-                  ref={editorRef}
-                  value={mdContent}
-                  onChange={(e) => handleMdChange(e.target.value)}
-                  onScroll={handleEditorScroll}
-                  placeholder="Type your day content here in CareerWizard Markdown...&#10;&#10;Click any toolbar button above to insert a snippet!"
-                />
+                {activeLevelEnabled ? (
+                  <textarea
+                    className="md-textarea"
+                    ref={editorRef}
+                    value={mdContent}
+                    onChange={(e) => handleMdChange(e.target.value)}
+                    onScroll={handleEditorScroll}
+                    placeholder="Type your day content here in CareerWizard Markdown...&#10;&#10;Click any toolbar button above to insert a snippet!"
+                  />
+                ) : (
+                  <div style={{ height: '100%', minHeight: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '32px', color: 'var(--text2)' }}>
+                    <div>
+                      <div style={{ fontSize: '28px', marginBottom: '10px' }}><i className="fa-solid fa-eye-slash"></i></div>
+                      <div style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '24px', color: 'var(--text)', marginBottom: '8px' }}>{LEVEL_CONFIG.find((item) => item.key === activeLevel)?.label} content hidden</div>
+                      <div style={{ fontSize: '13px', lineHeight: 1.7 }}>Eye icon se is track ko enable karo. Hidden content preview me nahi dikhega aur DB me bhi save nahi hoga.</div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -2314,6 +2536,12 @@ export default function Admintaskpage() {
                       <i className="fa-solid fa-eye-slash" style={{ fontSize: '36px', marginBottom: '14px', color: 'var(--muted2)' }}></i>
                       <div style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '22px', fontWeight: 500, color: 'var(--text2)', marginBottom: '6px', letterSpacing: '-0.01em' }}>Preview appears here</div>
                       <div style={{ fontSize: '13px', lineHeight: 1.6, maxWidth: '300px', color: 'var(--muted)' }}>Write content in the editor and click <strong>Render Preview</strong> — or use the toolbar to insert blocks</div>
+                    </div>
+                  ) : !activeLevelEnabled ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', textAlign: 'center', color: 'var(--muted)' }}>
+                      <i className="fa-solid fa-eye-slash" style={{ fontSize: '36px', marginBottom: '14px', color: 'var(--muted2)' }}></i>
+                      <div style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '22px', fontWeight: 500, color: 'var(--text2)', marginBottom: '6px', letterSpacing: '-0.01em' }}>Track hidden from preview</div>
+                      <div style={{ fontSize: '13px', lineHeight: 1.6, maxWidth: '320px', color: 'var(--muted)' }}>Is level ka eye toggle off hai, isliye yeh content preview aur database save dono se exclude rahega.</div>
                     </div>
                   ) : (
                     <div className="preview-inner" dangerouslySetInnerHTML={{ __html: previewHtml }}></div>
