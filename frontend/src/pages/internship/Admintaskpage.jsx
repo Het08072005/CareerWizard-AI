@@ -1223,17 +1223,19 @@ export default function Admintaskpage() {
         const updatedDays = [...days];
         const applyLevelData = (levelKey, payload) => {
           if (!updatedDays[currentDay - 1]?.[levelKey]) return;
+          const existingLevel = updatedDays[currentDay - 1][levelKey];
+
           if (payload && payload.length > 0) {
             updatedDays[currentDay - 1][levelKey] = {
-              ...updatedDays[currentDay - 1][levelKey],
-              markdown: payload[0].markdown || '',
-              type: payload[0].type || updatedDays[currentDay - 1][levelKey].type,
-              enabled: payload[0].enabled !== false,
+              ...existingLevel,
+              markdown: payload[0].markdown || existingLevel.markdown || '',
+              type: payload[0].type || existingLevel.type,
+              enabled: existingLevel.enabled === false ? false : payload[0].enabled !== false,
             };
           } else {
             updatedDays[currentDay - 1][levelKey] = {
-              ...updatedDays[currentDay - 1][levelKey],
-              enabled: false,
+              ...existingLevel,
+              enabled: existingLevel.enabled === false ? false : false,
             };
           }
         };
