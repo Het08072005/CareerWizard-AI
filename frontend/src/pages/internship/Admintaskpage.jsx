@@ -3,7 +3,7 @@ import { NavLink, useSearchParams } from 'react-router-dom';
 import '../../css/internship.css';
 import { DEFAULT_DAY1, DEFAULT_DAY5, SNIPPETS } from './admin_constants';
 import '../../css/admintaskpage.css';
-import { getDayContent, getDayContentModules, saveDayContent, deleteDayContent, uploadResource } from '../../api/adminInternshipApi';
+import { getDayContent, getDayContentModules, saveDayContent, deleteDayContent, uploadResource, getAllDayContent, bulkSaveDayContent } from '../../api/adminInternshipApi';
 
 const day1Md = DEFAULT_DAY1.replace(/\\n/g, '\n');
 const day5Md = DEFAULT_DAY5.replace(/\\n/g, '\n');
@@ -133,24 +133,17 @@ const getSetupTypeValue = (type) => (String(type).toLowerCase() === 'certificate
 const getDomainLabel = (domain) => DOMAIN_OPTIONS.find((item) => item.id === domain)?.label || domain;
 const makeModuleKey = (module) => `${module.task_name}::${module.domain}::${module.type}`;
 
-const getLevelTemplate = (dayNum, levelKey, groupSize = 2) => {
+const getLevelTemplate = (dayNum, levelKey, groupSize = 2, setupType = 'internship') => {
   const levelName = levelKey === 'beginner' ? 'Beginner' : levelKey === 'intermediate' ? 'Intermediate' : 'Advanced';
   const defaultMd = `# Day ${dayNum} — __TYPE__\n\nAdd your content here using the toolbar above or paste markdown using the Import button.\n\n:::tip\n### Getting Started\nClick any toolbar button to insert a content block, or use Import Markdown to paste your prepared content.\n:::`;
 
-  let type = 'learn';
-  if (levelKey === 'advanced') type = 'task';
-  else if (levelKey === 'intermediate') type = dayNum % 3 === 0 ? 'task' : 'learn';
-  else type = dayNum % 5 === 0 ? 'task' : 'learn';
+  let type = setupType === 'internship' ? 'task' : 'learn';
 
   let markdown = '';
   if (type === 'group') {
     markdown = getGroupMd(groupSize);
   } else if (type === 'task') {
-    if (levelKey === 'advanced') {
-      markdown = taskMdAdv;
-    } else {
-      markdown = day5Md;
-    }
+    markdown = taskMdAdv;
     markdown = markdown.replace(/^#\s+Task 1\s+—/m, `# Task ${dayNum} —`);
     markdown = markdown.replace(/^##\s+(.+)$/m, `## $1 [${levelName} Track]`);
   } else {
@@ -165,14 +158,14 @@ const getLevelTemplate = (dayNum, levelKey, groupSize = 2) => {
   return { type, done: false, enabled: true, markdown };
 };
 
-const buildDays = (totalDays, groupSize = 2) =>
+const buildDays = (totalDays, groupSize = 2, setupType = 'internship') =>
   Array.from({ length: totalDays }, (_, index) => {
     const dayNum = index + 1;
     return {
       num: dayNum,
-      beginner: getLevelTemplate(dayNum, 'beginner', groupSize),
-      intermediate: getLevelTemplate(dayNum, 'intermediate', groupSize),
-      advanced: getLevelTemplate(dayNum, 'advanced', groupSize),
+      beginner: getLevelTemplate(dayNum, 'beginner', groupSize, setupType),
+      intermediate: getLevelTemplate(dayNum, 'intermediate', groupSize, setupType),
+      advanced: getLevelTemplate(dayNum, 'advanced', groupSize, setupType),
     };
   });
 
@@ -1200,15 +1193,18 @@ export default function Admintaskpage() {
     setSetupType(getSetupTypeValue(setup.name));
   }, [setup]);
 
-  const filteredModules = existingModules.filter((module) => {
-    const matchesSearch = !setupTaskName.trim() || module.task_name.toLowerCase().includes(setupTaskName.trim().toLowerCase());
-    return matchesSearch;
-  });
+  const filteredModules = existingModules;
 
   const handleExistingModuleSelect = (module) => {
     setSelectedModuleKey(makeModuleKey(module));
     setSetupTaskName(module.task_name);
-    setSetupDuration(module.total_days || 15);
+    
+    let guessedDuration = 15;
+    if (module.total_days > 30) guessedDuration = 45;
+    else if (module.total_days > 15) guessedDuration = 30;
+    else if (module.total_days === 15 || module.total_days < 15) guessedDuration = 15;
+    
+    setSetupDuration(guessedDuration);
     setSetupDomain(module.domain);
     setSetupType(getSetupTypeValue(module.type));
     setIsTaskDropdownOpen(false);
@@ -1226,10 +1222,24 @@ export default function Admintaskpage() {
           const existingLevel = updatedDays[currentDay - 1][levelKey];
 
           if (payload && payload.length > 0) {
+            let loadedType = payload[0].type || existingLevel.type;
+            if (getSetupTypeValue(setup.name) === 'internship' && loadedType === 'learn') loadedType = 'task';
+            if (getSetupTypeValue(setup.name) === 'certificate' && loadedType === 'task') loadedType = 'learn';
+            
+            let loadedMd = payload[0].markdown || existingLevel.markdown || '';
+            if (loadedType === 'task' && !loadedMd.includes(':::task-hero')) {
+               const lName = levelKey === 'beginner' ? 'Beginner' : levelKey === 'intermediate' ? 'Intermediate' : 'Advanced';
+               loadedMd = taskMdAdv.replace(/^#\s+Task 1\s+—/m, `# Task ${currentDay} —`).replace(/^##\s+(.+)$/m, `## $1 [${lName} Track]`);
+            } else if (loadedType === 'learn' && loadedMd.includes(':::task-hero')) {
+               const lName = levelKey === 'beginner' ? 'Beginner' : levelKey === 'intermediate' ? 'Intermediate' : 'Advanced';
+               loadedMd = `# Day ${currentDay} — Learning Day\n\nAdd your content here.\n\n:::tip\n### Getting Started\nClick any toolbar button to insert a content block, or use Import Markdown to paste your prepared content.\n:::`;
+               loadedMd = loadedMd.replace(/^#\s+(.+)$/m, `# $1 [${lName} Track]`);
+            }
+            
             updatedDays[currentDay - 1][levelKey] = {
               ...existingLevel,
-              markdown: payload[0].markdown || existingLevel.markdown || '',
-              type: payload[0].type || existingLevel.type,
+              markdown: loadedMd,
+              type: loadedType,
               enabled: existingLevel.enabled === false ? false : payload[0].enabled !== false,
             };
           } else {
@@ -1418,11 +1428,7 @@ export default function Admintaskpage() {
         }
         newMd = newMd.replace(/^#\s+(.+)$/m, `# $1 [${lName} Track]`);
       } else if (newType === 'task') {
-        if (activeLevel === 'advanced') {
-          newMd = taskMdAdv;
-        } else {
-          newMd = day5Md;
-        }
+        newMd = taskMdAdv;
         newMd = newMd.replace(/^#\s+Task 1\s+—/m, `# Task ${currentDay} —`);
         newMd = newMd.replace(/^##\s+(.+)$/m, `## $1 [${lName} Track]`);
       } else if (newType === 'group') {
@@ -1432,6 +1438,38 @@ export default function Admintaskpage() {
       targetObj.markdown = newMd;
       setDays(updatedDays);
       setMdContent(newMd);
+    }
+  };
+
+  const handleSetupTypeSwitch = (newSetupName) => {
+    setSetup({ ...setup, name: newSetupName });
+    const targetType = getSetupTypeValue(newSetupName) === 'internship' ? 'task' : 'learn';
+    
+    if (days && days.length > 0) {
+      const updatedDays = [...days];
+      updatedDays.forEach((dayObj) => {
+        ['beginner', 'intermediate', 'advanced'].forEach(lvl => {
+          if (dayObj[lvl] && dayObj[lvl].type !== 'group') {
+            const oldType = dayObj[lvl].type;
+            if (oldType !== targetType) {
+               dayObj[lvl].type = targetType;
+               
+               let newMd = dayObj[lvl].markdown || '';
+               if (targetType === 'task' && !newMd.includes(':::task-hero')) {
+                 const lName = lvl === 'beginner' ? 'Beginner' : lvl === 'intermediate' ? 'Intermediate' : 'Advanced';
+                 newMd = taskMdAdv.replace(/^#\s+Task 1\s+—/m, `# Task ${dayObj.num} —`).replace(/^##\s+(.+)$/m, `## $1 [${lName} Track]`);
+               } else if (targetType === 'learn' && newMd.includes(':::task-hero')) {
+                 const lName = lvl === 'beginner' ? 'Beginner' : lvl === 'intermediate' ? 'Intermediate' : 'Advanced';
+                 newMd = `# Day ${dayObj.num} — Learning Day\n\nAdd your content here.\n\n:::tip\n### Getting Started\nClick any toolbar button to insert a content block, or use Import Markdown to paste your prepared content.\n:::`;
+                 newMd = newMd.replace(/^#\s+(.+)$/m, `# $1 [${lName} Track]`);
+               }
+               dayObj[lvl].markdown = newMd;
+            }
+          }
+        });
+      });
+      setDays(updatedDays);
+      setMdContent(updatedDays[currentDay - 1][activeLevel].markdown);
     }
   };
 
@@ -2097,11 +2135,12 @@ export default function Admintaskpage() {
 
   const addDay = () => {
     const n = days.length + 1;
+    const setupTypeValue = getSetupTypeValue(setup.name);
     const newDay = {
       num: n,
-      beginner: getLevelTemplate(n, 'beginner', groupSize),
-      intermediate: getLevelTemplate(n, 'intermediate', groupSize),
-      advanced: getLevelTemplate(n, 'advanced', groupSize),
+      beginner: getLevelTemplate(n, 'beginner', groupSize, setupTypeValue),
+      intermediate: getLevelTemplate(n, 'intermediate', groupSize, setupTypeValue),
+      advanced: getLevelTemplate(n, 'advanced', groupSize, setupTypeValue),
     };
     setDays([...days, newDay]);
     setSetup({ ...setup, totalDays: n });
@@ -2202,7 +2241,7 @@ export default function Admintaskpage() {
                 >
                   <span style={{ color: selectedModuleKey ? 'var(--text)' : 'var(--text2)' }}>
                     {selectedModuleKey
-                      ? 'Existing module selected'
+                      ? selectedModuleKey.split('::')[0]
                       : filteredModules.length
                         ? `Select from ${filteredModules.length} existing module${filteredModules.length > 1 ? 's' : ''}`
                         : 'No matching saved modules'}
@@ -2314,10 +2353,85 @@ export default function Admintaskpage() {
             </div>
           </div>
 
-          <button className="btn btn-primary" style={{ width: '100%', padding: '10px', marginTop: '14px', fontSize: '14px', fontFamily: "'Fraunces', serif", letterSpacing: '0.3px', fontWeight: '700', borderRadius: 'var(--radius)' }} onClick={() => {
+          <button className="btn btn-primary" style={{ width: '100%', padding: '10px', marginTop: '14px', fontSize: '14px', fontFamily: "'Fraunces', serif", letterSpacing: '0.3px', fontWeight: '700', borderRadius: 'var(--radius)' }} onClick={async () => {
             const taskName = setupTaskName.trim() || "New Task";
             const type = getSetupTypeLabel(setupType);
-            const newDays = buildDays(setupDuration, groupSize);
+            let newDays = buildDays(setupDuration, groupSize, setupType);
+            
+            if (selectedModuleKey) {
+              try {
+                const res = await getAllDayContent(setupDomain, taskName, getSetupTypeValue(type));
+                if (res.data && res.data.length > 0) {
+                  res.data.forEach(dbDay => {
+                    const dIdx = dbDay.day - 1;
+                    if (newDays[dIdx]) {
+                      const applyLvl = (lvl, dbLvl) => {
+                        if (dbLvl && dbLvl.length > 0) {
+                          let loadedType = dbLvl[0].type || newDays[dIdx][lvl].type;
+                          if (getSetupTypeValue(type) === 'internship' && loadedType === 'learn') loadedType = 'task';
+                          if (getSetupTypeValue(type) === 'certificate' && loadedType === 'task') loadedType = 'learn';
+                          
+                          let loadedMd = dbLvl[0].markdown || newDays[dIdx][lvl].markdown || '';
+                          if (loadedType === 'task' && !loadedMd.includes(':::task-hero')) {
+                             const lName = lvl === 'beginner' ? 'Beginner' : lvl === 'intermediate' ? 'Intermediate' : 'Advanced';
+                             loadedMd = taskMdAdv.replace(/^#\s+Task 1\s+—/m, `# Task ${dbDay.day} —`).replace(/^##\s+(.+)$/m, `## $1 [${lName} Track]`);
+                          } else if (loadedType === 'learn' && loadedMd.includes(':::task-hero')) {
+                             const lName = lvl === 'beginner' ? 'Beginner' : lvl === 'intermediate' ? 'Intermediate' : 'Advanced';
+                             loadedMd = `# Day ${dbDay.day} — Learning Day\n\nAdd your content here.\n\n:::tip\n### Getting Started\nClick any toolbar button to insert a content block, or use Import Markdown to paste your prepared content.\n:::`;
+                             loadedMd = loadedMd.replace(/^#\s+(.+)$/m, `# $1 [${lName} Track]`);
+                          }
+
+                          newDays[dIdx][lvl].markdown = loadedMd;
+                          newDays[dIdx][lvl].type = loadedType;
+                          newDays[dIdx][lvl].enabled = dbLvl[0].enabled !== false;
+                          newDays[dIdx][lvl].done = true; // Mark as done since it's saved
+                        }
+                      };
+                      applyLvl('beginner', dbDay.beginner);
+                      applyLvl('intermediate', dbDay.intermediate);
+                      applyLvl('advanced', dbDay.advanced);
+                    }
+                  });
+                }
+              } catch (err) {
+                console.error("Failed to load all days", err);
+              }
+            } else {
+              try {
+                const payloadArray = newDays.map(dayObj => {
+                  const buildLevelPayload = (levelKey) => {
+                    const level = dayObj[levelKey];
+                    if (!level?.enabled) return [];
+                    return [{
+                      type: level.type,
+                      markdown: level.markdown,
+                      enabled: true,
+                    }];
+                  };
+                  return {
+                    domain: setupDomain,
+                    task_name: taskName,
+                    type: getSetupTypeValue(type),
+                    day: dayObj.num,
+                    beginner: buildLevelPayload('beginner'),
+                    intermediate: buildLevelPayload('intermediate'),
+                    advanced: buildLevelPayload('advanced'),
+                    source: []
+                  };
+                });
+                await bulkSaveDayContent(payloadArray);
+                
+                // Refresh existing modules list so it appears in dropdown next time
+                try {
+                  const modRes = await getDayContentModules();
+                  setExistingModules(modRes.modules || []);
+                } catch (e) {}
+                triggerToast("New module created in database! ✓");
+              } catch (e) {
+                console.error("Failed to pre-save new module:", e);
+              }
+            }
+
             setDays(newDays);
             setSetup({ name: type, track: taskName, totalDays: setupDuration, domain: setupDomain });
             setSearchParams({ day: 1 });
@@ -2454,13 +2568,13 @@ export default function Admintaskpage() {
 
                   <div style={{ display: 'flex', background: 'var(--cream2)', borderRadius: '8px', padding: '3px' }}>
                     <button
-                      onClick={() => setSetup({ ...setup, name: 'Internship' })}
+                      onClick={() => handleSetupTypeSwitch('Internship')}
                       style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: getSetupTypeValue(setup?.name) === 'internship' ? '#fff' : 'transparent', color: getSetupTypeValue(setup?.name) === 'internship' ? 'var(--gm)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: getSetupTypeValue(setup?.name) === 'internship' ? '600' : '500', boxShadow: getSetupTypeValue(setup?.name) === 'internship' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                       <i className="fa-solid fa-briefcase" style={{ fontSize: '13px' }}></i>
                       <span>Internship</span>
                     </button>
                     <button
-                      onClick={() => setSetup({ ...setup, name: 'Certificate' })}
+                      onClick={() => handleSetupTypeSwitch('Certificate')}
                       style={{ padding: '6px 14px', fontSize: '12px', border: 'none', background: getSetupTypeValue(setup?.name) === 'certificate' ? '#fff' : 'transparent', color: getSetupTypeValue(setup?.name) === 'certificate' ? 'var(--pm)' : 'var(--text2)', borderRadius: '6px', cursor: 'pointer', fontWeight: getSetupTypeValue(setup?.name) === 'certificate' ? '600' : '500', boxShadow: getSetupTypeValue(setup?.name) === 'certificate' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                       <i className="fa-solid fa-certificate" style={{ fontSize: '13px' }}></i>
                       <span>Certificate</span>

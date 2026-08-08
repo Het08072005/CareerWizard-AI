@@ -39,6 +39,16 @@ def list_day_content_modules(db: Session = Depends(get_db)):
         ]
     }
 
+@router.get("/day_content/all")
+def get_all_day_content(domain: str, task_name: str, type: str, db: Session = Depends(get_db)):
+    contents = db.query(DayContent).filter_by(
+        domain=domain,
+        task_name=task_name,
+        type=type
+    ).all()
+    
+    return {"data": contents}
+
 @router.get("/day_content")
 def get_day_content(domain: str, task_name: str, type: str, day: int, db: Session = Depends(get_db)):
     content = db.query(DayContent).filter_by(
@@ -88,6 +98,44 @@ def upsert_day_content(payload: dict, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(content)
     return {"success": True, "data": {"id": str(content.id)}}
+
+from typing import List, Dict, Any
+
+@router.post("/day_content/bulk")
+def bulk_upsert_day_content(payload: List[Dict[str, Any]], db: Session = Depends(get_db)):
+    for item in payload:
+        domain = item.get("domain")
+        task_name = item.get("task_name")
+        type = item.get("type")
+        day = item.get("day")
+        
+        content = db.query(DayContent).filter_by(
+            domain=domain,
+            task_name=task_name,
+            type=type,
+            day=day
+        ).first()
+        
+        if content:
+            content.beginner = item.get("beginner", [])
+            content.intermediate = item.get("intermediate", [])
+            content.advanced = item.get("advanced", [])
+            content.source = item.get("source", [])
+        else:
+            content = DayContent(
+                domain=domain,
+                task_name=task_name,
+                type=type,
+                day=day,
+                beginner=item.get("beginner", []),
+                intermediate=item.get("intermediate", []),
+                advanced=item.get("advanced", []),
+                source=item.get("source", [])
+            )
+            db.add(content)
+            
+    db.commit()
+    return {"success": True}
 
 @router.delete("/day_content")
 def delete_day_content(domain: str, task_name: str, type: str, day: int, db: Session = Depends(get_db)):
