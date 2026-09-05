@@ -1,7 +1,7 @@
 import React from 'react';
 import { BriefcaseIcon, CheckIcon } from './ui/Icons';
-import { motion } from 'framer-motion';
-import { ThemeContext } from '../context/ThemeContext';
+import { motion as Motion } from 'framer-motion';
+import { ThemeContext } from '../context/themeContextValue';
 
 const SkillTag = ({ skill }) => {
   const { isDark } = React.useContext(ThemeContext);
@@ -21,9 +21,14 @@ const JobCard = ({ job }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const description = job.description || "";
   const isLongDescription = description.length > 150;
+  const postedDate = job.posted_at || job.fetched_at || job.created_at;
+  const parsedPostedDate = postedDate ? new Date(postedDate) : null;
+  const postedLabel = parsedPostedDate && !Number.isNaN(parsedPostedDate.getTime())
+    ? parsedPostedDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
 
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
@@ -80,6 +85,8 @@ const JobCard = ({ job }) => {
             <span className="flex items-center gap-2 transition-colors hover:text-[var(--text-main)]">
               <div className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-cyan-500/40' : 'bg-emerald-500/40'}`} /> {job.type}
             </span>
+            {job.experience_level && <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-500/50" /> {job.experience_level}</span>}
+            {postedLabel && <span className="flex items-center gap-2 text-emerald-600"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Posted {postedLabel}</span>}
           </div>
 
           <div className="relative group/desc">
@@ -116,7 +123,7 @@ const JobCard = ({ job }) => {
           Apply Now
         </a>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 };
 

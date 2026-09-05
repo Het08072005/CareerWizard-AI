@@ -2,6 +2,33 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
 
+const createParticle = (canvas, context) => {
+  const particle = {
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = (Math.random() - 0.5) * 0.4;
+      this.speedY = (Math.random() - 0.5) * 0.4;
+      this.opacity = Math.random() * 0.4 + 0.1;
+      this.color = Math.random() > 0.5 ? '201,169,110' : '140,127,110';
+    },
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+    },
+    draw() {
+      context.beginPath();
+      context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      context.fillStyle = `rgba(${this.color},${this.opacity})`;
+      context.fill();
+    },
+  };
+  particle.reset();
+  return particle;
+};
+
 const Home = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
@@ -40,12 +67,10 @@ const Home = () => {
     let trailFrameId;
     let trailPath = [];
     const maxAge = 35; // Frames before point vanishes (faster fade)
-    let lastMousePos = { x: mx, y: my };
 
     const handleMouseMove = (e) => {
       mx = e.clientX;
       my = e.clientY;
-      lastMousePos = { x: mx, y: my };
       if (dot) {
         dot.style.left = mx + 'px';
         dot.style.top = my + 'px';
@@ -153,31 +178,7 @@ const Home = () => {
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
 
-      class Particle {
-        constructor() { this.reset(); }
-        reset() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 2 + 0.5;
-          this.speedX = (Math.random() - 0.5) * 0.4;
-          this.speedY = (Math.random() - 0.5) * 0.4;
-          this.opacity = Math.random() * 0.4 + 0.1;
-          this.color = Math.random() > 0.5 ? '201,169,110' : '140,127,110';
-        }
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-        }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
-          ctx.fill();
-        }
-      }
-
-      for (let i = 0; i < 90; i++) particles.push(new Particle());
+      for (let i = 0; i < 90; i++) particles.push(createParticle(canvas, ctx));
 
       const animateParticles = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);

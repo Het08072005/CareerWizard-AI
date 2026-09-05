@@ -27,21 +27,22 @@ from app.models.task_submission import TaskSubmission
 from app.models.certificate import Certificate
 from app.models.interview import InterviewQuestion, InterviewProgress
 from app.models.day_content import DayContent
+from app.models.internship_evidence import InternshipContentVersion, SkillEvidence, DailyStandup
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+from app.core.config import settings
+from app.routes.internship_routes import router as internship_router
+from app.db.migrations import run_migrations
+from app.services.internship_service import seed_internship_catalog
+from app.services.job_service import backfill_job_metadata
 
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174"
-]
+settings.validate_production()
+app = FastAPI(title="CareerWizard API", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,6 +53,9 @@ app.add_middleware(
 def startup():
     try:
         Base.metadata.create_all(bind=engine)
+        run_migrations()
+        seed_internship_catalog()
+        backfill_job_metadata()
         logger.info("Database schema check completed")
     except SQLAlchemyError as error:
         logger.exception("Database schema initialization failed: %s", error)
@@ -70,3 +74,4 @@ app.include_router(roadmap_router)
 app.include_router(interview_router)
 app.include_router(dashboard_router)
 app.include_router(admin_internship_router)
+app.include_router(internship_router)

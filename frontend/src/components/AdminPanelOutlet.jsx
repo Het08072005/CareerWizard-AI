@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import {
   UsersIcon,
   ClipboardDocumentCheckIcon,
@@ -48,7 +48,6 @@ export default function AdminPanelOutlet() {
   const [deliverable, setDeliverable] = useState("");
   const [timeEst, setTimeEst] = useState("");
   const [evalCriteria, setEvalCriteria] = useState("");
-  const [hints, setHints] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
 
@@ -129,7 +128,7 @@ export default function AdminPanelOutlet() {
   );
 
   const renderStep1 = () => (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 w-full">
+    <Motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 w-full">
       <div className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
         <div className="flex items-center gap-2 mb-2 text-slate-800 dark:text-white font-bold">
           <div className="w-8 h-8 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center">1</div>
@@ -192,11 +191,11 @@ export default function AdminPanelOutlet() {
           </button>
         </div>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 
   const renderStep2 = () => (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full">
+    <Motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full">
       <div className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
         <div className="flex items-center gap-2 mb-2 text-slate-800 dark:text-white font-bold">
           <div className="w-8 h-8 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center">2</div>
@@ -244,7 +243,7 @@ export default function AdminPanelOutlet() {
           </button>
         </div>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 
   const renderStep3Learning = () => (
@@ -397,7 +396,7 @@ export default function AdminPanelOutlet() {
   );
 
   const renderStep4 = () => (
-    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
+    <Motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
       <div className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl p-8 mb-6 relative overflow-hidden">
         <div className={`absolute top-0 right-0 w-48 h-48 rounded-bl-full opacity-5 ${taskType === 'learning' ? 'bg-blue-500' : 'bg-orange-500'}`}></div>
 
@@ -458,7 +457,7 @@ export default function AdminPanelOutlet() {
           <CheckCircleIcon className="w-5 h-5" /> Publish Task Live
         </button>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 
   return (
@@ -518,7 +517,7 @@ export default function AdminPanelOutlet() {
       <div className="w-full">
         <AnimatePresence mode="wait">
           {activeTab === 'create' && (
-            <motion.div key="create" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full pb-10">
+            <Motion.div key="create" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full pb-10">
               {renderStepIndicator()}
               <div className="mt-8 w-full">
                 {step === 1 && renderStep1()}
@@ -527,11 +526,11 @@ export default function AdminPanelOutlet() {
                 {step === 3 && taskType === 'task' && renderStep3Task()}
                 {step === 4 && renderStep4()}
               </div>
-            </motion.div>
+            </Motion.div>
           )}
 
           {activeTab === 'tasks' && (
-            <motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden w-full">
+            <Motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden w-full">
               <div className="p-5 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] flex items-center justify-between">
                 <h3 className="font-bold text-slate-800 dark:text-white text-[15px]">All Tasks</h3>
                 <select className="bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-[13px] outline-none font-medium">
@@ -569,7 +568,7 @@ export default function AdminPanelOutlet() {
                   <div className="p-10 text-center text-slate-500 text-[14px] font-medium">No tasks created yet.</div>
                 )}
               </div>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
       </div>

@@ -106,6 +106,8 @@ const InterviewPrepOutlet = () => {
         };
 
         loadQuestions();
+    // Persistent role maps are intentionally read as a snapshot when the role changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedRole]);
 
 

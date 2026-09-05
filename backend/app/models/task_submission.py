@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, SmallInteger, Boolean, Text, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID, ARRAY
+from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSONB
 from sqlalchemy.sql import func
 from app.db.database import Base
 import uuid
@@ -29,3 +29,7 @@ class TaskSubmission(Base):
     plagiarism_flag = Column(Boolean, default=False, server_default="false", nullable=False)
     reviewed_at = Column(DateTime(timezone=True), nullable=True)
     submitted_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now(), onupdate=func.now(), nullable=False)
+    evaluation_status = Column(String(20), default="queued", server_default="queued", nullable=False)
+    evaluation_error = Column(Text, nullable=True)
+    reviewer_metadata = Column(JSONB, nullable=True)

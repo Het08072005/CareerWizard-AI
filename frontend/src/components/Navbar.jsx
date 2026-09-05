@@ -1,11 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { ThemeContext } from "../context/ThemeContext";
+import { AuthContext } from "../context/authContextValue";
+import { ThemeContext } from "../context/themeContextValue";
+
+const ProfileIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+  </svg>
+);
 
 export default function Navbar() {
   const { isLoggedIn, logout, user } = useContext(AuthContext);
-  const { theme, toggleTheme, isDark } = useContext(ThemeContext);
+  const { toggleTheme, isDark } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -35,12 +41,6 @@ export default function Navbar() {
     logout();
     navigate("/login");
   };
-
-  const ProfileIcon = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-    </svg>
-  );
 
   return (
     <nav className={`fixed w-full top-0 z-50 transition-all duration-500 ${

@@ -4,11 +4,24 @@ from sqlalchemy import func
 from app.db.database import get_db
 from app.models.day_content import DayContent
 from app.core.config import settings
+from app.core.auth import get_current_admin
 import requests
 import datetime
 import uuid
+import hashlib
+import json
+import logging
+from datetime import timezone, timedelta
+from app.schemas.internship_schema import DayContentUpsert
+from app.models.internship_evidence import InternshipContentVersion
 
-router = APIRouter(prefix="/admin", tags=["Admin Internship Content"])
+logger = logging.getLogger(__name__)
+
+router = APIRouter(
+    prefix="/admin",
+    tags=["Admin Internship Content"],
+    dependencies=[Depends(get_current_admin)],
+)
 
 
 @router.get("/day_content/modules")
@@ -63,38 +76,59 @@ def get_day_content(domain: str, task_name: str, type: str, day: int, db: Sessio
     else:
         raise HTTPException(status_code=404, detail="Content not found")
 
+def _snapshot_content(db: Session, content: DayContent, change_note: str | None, created_by) -> None:
+    snapshot = {
+        "domain": content.domain, "task_name": content.task_name, "type": content.type, "day": content.day,
+        "beginner": content.beginner or [], "intermediate": content.intermediate or [],
+        "advanced": content.advanced or [], "source": content.source or [],
+    }
+    digest = hashlib.sha256(json.dumps(snapshot, sort_keys=True, default=str).encode()).hexdigest()
+    latest = db.query(func.max(InternshipContentVersion.revision)).filter_by(day_content_id=content.id).scalar() or 0
+    db.add(InternshipContentVersion(day_content_id=content.id, revision=latest + 1,
+                                    content_hash=digest, snapshot=snapshot,
+                                    change_note=change_note, created_by=created_by))
+
+
 @router.post("/day_content")
-def upsert_day_content(payload: dict, db: Session = Depends(get_db)):
-    domain = payload.get("domain")
-    task_name = payload.get("task_name")
-    type = payload.get("type")
-    day = payload.get("day")
+def upsert_day_content(payload: DayContentUpsert, db: Session = Depends(get_db), admin=Depends(get_current_admin)):
+    values = payload.model_dump()
+    domain = payload.domain
+    task_name = payload.task_name
+    content_type = payload.type
+    day = payload.day
     
     content = db.query(DayContent).filter_by(
         domain=domain,
         task_name=task_name,
-        type=type,
+        type=content_type,
         day=day
     ).first()
     
     if content:
-        content.beginner = payload.get("beginner", [])
-        content.intermediate = payload.get("intermediate", [])
-        content.advanced = payload.get("advanced", [])
-        content.source = payload.get("source", [])
+        _snapshot_content(db, content, payload.change_note or "Content updated", admin.id)
+        content.beginner = payload.beginner
+        content.intermediate = payload.intermediate
+        content.advanced = payload.advanced
+        content.source = payload.source
     else:
         content = DayContent(
             domain=domain,
             task_name=task_name,
-            type=type,
+            type=content_type,
             day=day,
-            beginner=payload.get("beginner", []),
-            intermediate=payload.get("intermediate", []),
-            advanced=payload.get("advanced", []),
-            source=payload.get("source", [])
+            beginner=payload.beginner,
+            intermediate=payload.intermediate,
+            advanced=payload.advanced,
+            source=payload.source,
         )
         db.add(content)
-        
+    now = datetime.datetime.now(timezone.utc)
+    content.refresh_interval_days = payload.refresh_interval_days
+    content.content_status = "published"
+    content.updated_at = now
+    content.next_review_at = now + timedelta(days=payload.refresh_interval_days)
+    canonical = {key: values[key] for key in ("domain", "task_name", "type", "day", "beginner", "intermediate", "advanced", "source")}
+    content.content_hash = hashlib.sha256(json.dumps(canonical, sort_keys=True, default=str).encode()).hexdigest()
     db.commit()
     db.refresh(content)
     return {"success": True, "data": {"id": str(content.id)}}
@@ -102,43 +136,72 @@ def upsert_day_content(payload: dict, db: Session = Depends(get_db)):
 from typing import List, Dict, Any
 
 @router.post("/day_content/bulk")
-def bulk_upsert_day_content(payload: List[Dict[str, Any]], db: Session = Depends(get_db)):
+def bulk_upsert_day_content(payload: List[DayContentUpsert], db: Session = Depends(get_db), admin=Depends(get_current_admin)):
     for item in payload:
-        domain = item.get("domain")
-        task_name = item.get("task_name")
-        type = item.get("type")
-        day = item.get("day")
+        domain = item.domain
+        task_name = item.task_name
+        content_type = item.type
+        day = item.day
         
         content = db.query(DayContent).filter_by(
             domain=domain,
             task_name=task_name,
-            type=type,
+            type=content_type,
             day=day
         ).first()
         
         if content:
-            content.beginner = item.get("beginner", [])
-            content.intermediate = item.get("intermediate", [])
-            content.advanced = item.get("advanced", [])
-            content.source = item.get("source", [])
+            _snapshot_content(db, content, item.change_note or "Bulk content update", admin.id)
+            content.beginner = item.beginner
+            content.intermediate = item.intermediate
+            content.advanced = item.advanced
+            content.source = item.source
         else:
             content = DayContent(
                 domain=domain,
                 task_name=task_name,
-                type=type,
+                type=content_type,
                 day=day,
-                beginner=item.get("beginner", []),
-                intermediate=item.get("intermediate", []),
-                advanced=item.get("advanced", []),
-                source=item.get("source", [])
+                beginner=item.beginner,
+                intermediate=item.intermediate,
+                advanced=item.advanced,
+                source=item.source,
             )
             db.add(content)
+        now = datetime.datetime.now(timezone.utc)
+        content.refresh_interval_days = item.refresh_interval_days
+        content.content_status = "published"
+        content.updated_at = now
+        content.next_review_at = now + timedelta(days=item.refresh_interval_days)
+        content.content_hash = hashlib.sha256(json.dumps(item.model_dump(exclude={"change_note"}), sort_keys=True, default=str).encode()).hexdigest()
             
     db.commit()
     return {"success": True}
 
+
+@router.get("/day_content/refresh-due")
+def refresh_due_content(db: Session = Depends(get_db)):
+    now = datetime.datetime.now(timezone.utc)
+    rows = db.query(DayContent).filter(DayContent.next_review_at <= now).order_by(DayContent.next_review_at).all()
+    return {"data": [{"id": str(row.id), "domain": row.domain, "task_name": row.task_name,
+                       "type": row.type, "day": row.day, "next_review_at": row.next_review_at}
+                      for row in rows]}
+
+
+@router.post("/day_content/{content_id}/mark-reviewed")
+def mark_content_reviewed(content_id: uuid.UUID, db: Session = Depends(get_db)):
+    content = db.query(DayContent).filter_by(id=content_id).first()
+    if not content:
+        raise HTTPException(status_code=404, detail="Content not found")
+    now = datetime.datetime.now(timezone.utc)
+    content.updated_at = now
+    content.next_review_at = now + timedelta(days=content.refresh_interval_days or 30)
+    db.commit()
+    return {"success": True, "next_review_at": content.next_review_at}
+
 @router.delete("/day_content")
-def delete_day_content(domain: str, task_name: str, type: str, day: int, db: Session = Depends(get_db)):
+def delete_day_content(domain: str, task_name: str, type: str, day: int,
+                       db: Session = Depends(get_db), admin=Depends(get_current_admin)):
     content = db.query(DayContent).filter_by(
         domain=domain,
         task_name=task_name,
@@ -147,9 +210,11 @@ def delete_day_content(domain: str, task_name: str, type: str, day: int, db: Ses
     ).first()
     
     if content:
-        db.delete(content)
+        _snapshot_content(db, content, "Content archived", admin.id)
+        content.content_status = "archived"
+        content.updated_at = datetime.datetime.now(timezone.utc)
         db.commit()
-        return {"success": True}
+        return {"success": True, "archived": True}
     else:
         raise HTTPException(status_code=404, detail="Content not found")
 
@@ -161,6 +226,14 @@ async def upload_resource(
 ):
     try:
         file_bytes = await file.read()
+        allowed_types = {
+            "application/pdf", "text/plain", "text/markdown", "application/zip",
+            "image/png", "image/jpeg", "image/webp", "image/gif",
+        }
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=415, detail="Unsupported resource file type")
+        if len(file_bytes) > 20 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="Resource files must be 20 MB or smaller")
         
         # Sanitize original_name by replacing spaces and unsafe characters
         import re
@@ -180,7 +253,7 @@ async def upload_resource(
         supabase: Client = create_client(supabase_url, supabase_key)
         
         # Add bucket name as a configurable setting if needed, default to careerwizard
-        bucket_name = getattr(settings, 'SUPABASE_BUCKET_NAME', 'careerwizard')
+        bucket_name = settings.SUPABASE_BUCKET_NAME
             
         try:
             res = supabase.storage.from_(bucket_name).upload(
@@ -188,36 +261,15 @@ async def upload_resource(
                 file=file_bytes,
                 file_options={"content-type": file.content_type or "application/octet-stream"}
             )
-        except Exception as e:
-            # Check if it failed because of RLS (e.g. 403 Forbidden or unauthorized)
-            # Try to fix the RLS policies directly using the SQLAlchemy DB connection
-            from sqlalchemy import text
-            from app.db.database import engine
-            try:
-                with engine.begin() as conn:
-                    conn.execute(text("INSERT INTO storage.buckets (id, name, public) VALUES ('careerwizard', 'careerwizard', true) ON CONFLICT DO NOTHING;"))
-                    conn.execute(text("DROP POLICY IF EXISTS \"Public Uploads\" ON storage.objects;"))
-                    conn.execute(text("DROP POLICY IF EXISTS \"Public Select\" ON storage.objects;"))
-                    conn.execute(text("CREATE POLICY \"Public Uploads\" ON storage.objects FOR INSERT TO public WITH CHECK ( bucket_id = 'careerwizard' );"))
-                    conn.execute(text("CREATE POLICY \"Public Select\" ON storage.objects FOR SELECT TO public USING ( bucket_id = 'careerwizard' );"))
-                
-                # Retry upload after fixing policies
-                res = supabase.storage.from_(bucket_name).upload(
-                    path=file_path,
-                    file=file_bytes,
-                    file_options={"content-type": file.content_type or "application/octet-stream"}
-                )
-            except Exception as policy_err:
-                import traceback
-                traceback.print_exc()
-                raise HTTPException(status_code=500, detail=f"Failed to configure Supabase Storage RLS and upload: {str(e)} | DB Error: {str(policy_err)}")
+        except Exception as exc:
+            # Storage policies are infrastructure and must never be rewritten by a request.
+            raise HTTPException(status_code=502, detail="Resource storage upload failed") from exc
         
         public_url = supabase.storage.from_(bucket_name).get_public_url(file_path)
         
         return {"success": True, "url": public_url}
     except HTTPException:
         raise
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Unexpected Error: {str(e)}")
+    except Exception as exc:
+        logger.exception("Unexpected resource upload failure")
+        raise HTTPException(status_code=500, detail="Resource upload failed unexpectedly") from exc

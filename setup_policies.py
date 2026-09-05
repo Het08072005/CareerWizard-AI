@@ -15,8 +15,8 @@ sql_commands = [
     DO $$
     BEGIN
         -- Insert bucket if not exists
-        IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'careerwizard') THEN
-            INSERT INTO storage.buckets (id, name, public) VALUES ('careerwizard', 'careerwizard', true);
+        IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'day-resources') THEN
+            INSERT INTO storage.buckets (id, name, public) VALUES ('day-resources', 'day-resources', true);
         END IF;
     END $$;
     """,
@@ -26,18 +26,11 @@ sql_commands = [
     DROP POLICY IF EXISTS "Public Select" ON storage.objects;
     """,
     """
-    -- Create policy to allow all uploads to careerwizard bucket
-    CREATE POLICY "Public Uploads"
-    ON storage.objects FOR INSERT
-    TO public
-    WITH CHECK ( bucket_id = 'careerwizard' );
-    """,
-    """
-    -- Create policy to allow all reads from careerwizard bucket
+    -- Published resources are readable; uploads use the backend service role.
     CREATE POLICY "Public Select"
     ON storage.objects FOR SELECT
     TO public
-    USING ( bucket_id = 'careerwizard' );
+    USING ( bucket_id = 'day-resources' );
     """
 ]
 

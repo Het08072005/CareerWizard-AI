@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/authContextValue";
 import { enhanceText } from "../api/profile";
 import api from "../api/axiosClient";
 import { UserCheckIcon, BriefcaseIcon, CheckIcon, DocumentIcon, XIcon, ZapIcon } from "../components/ui/Icons";

@@ -1,14 +1,26 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import api from "../api/axiosClient";
 import { CheckIcon, ExclamationCircleIcon } from "./ui/Icons";
-import { motion, AnimatePresence } from "framer-motion";
-import { ThemeContext } from "../context/ThemeContext";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import { ThemeContext } from "../context/themeContextValue";
 
 const restoreFileFromStorage = (serialized) => {
   const { name, type, data } = JSON.parse(serialized);
   const binary = atob(data);
   const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
   return new File([bytes], name, { type });
+};
+
+const readStoredResult = () => {
+  try { return JSON.parse(localStorage.getItem('resumeResult') || 'null'); }
+  catch { localStorage.removeItem('resumeResult'); return null; }
+};
+
+const readStoredFile = () => {
+  const saved = localStorage.getItem('resumeFile');
+  if (!saved) return null;
+  try { return restoreFileFromStorage(saved); }
+  catch { localStorage.removeItem('resumeFile'); return null; }
 };
 
 const buildBreakdown = (result) => {
@@ -71,7 +83,7 @@ const ResultView = ({ result }) => {
         <div className={`p-6 md:p-8 rounded-[1.5rem] border relative overflow-hidden flex flex-col items-center justify-center ${isDark ? 'bg-[#080808] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'}`}>
            <h4 style={{ fontSize: '19px', fontFamily: '"Cormorant Garamond", serif', fontWeight: 700 }} className="text-[var(--text-main)] mb-1">Overall ATS Score</h4>
            <p className="text-[12px] text-[var(--text-muted)] mb-8">Based on 200+ resume factors</p>
-           
+
            <div className="relative w-36 h-36 flex items-center justify-center mb-6">
              <svg className="absolute inset-0 w-full h-full -rotate-90">
                 <circle cx="50%" cy="50%" r="45%" className="text-slate-100 dark:text-slate-800 stroke-current" strokeWidth="12" fill="none" />
@@ -82,7 +94,7 @@ const ResultView = ({ result }) => {
                <span className="text-[10px] text-[var(--text-muted)] font-bold tracking-wider mt-1">out of 100</span>
              </div>
            </div>
-           
+
            <div className="flex items-center gap-3">
              <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[var(--gold)]/10 text-[var(--gold-dark)] border border-[var(--gold)]/20">Good Score</span>
              <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">ATS Friendly</span>
@@ -166,7 +178,7 @@ const ResultView = ({ result }) => {
             <p className="text-[12px] font-medium text-[var(--text-muted)] mt-0.5">3 high-impact improvements identified</p>
           </div>
         </div>
-        
+
         <div className="space-y-3">
           {enhancements.length ? enhancements.map((enh, idx) => (
             <div key={idx} className={`p-4 md:p-5 rounded-2xl border ${isDark ? 'bg-white/5 border-white/5' : 'bg-white border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]'}`}>
@@ -184,7 +196,7 @@ const ResumeSkeleton = () => {
   const { isDark } = useContext(ThemeContext);
   const bgClass = isDark ? 'bg-[#080808] border-white/5' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]';
   const pulseColor = isDark ? 'bg-white/5' : 'bg-[var(--gold)]/10';
-  
+
   return (
     <div className="space-y-6 mt-6 pb-12 w-full animate-pulse">
       {/* TOP ROW */}
@@ -211,7 +223,7 @@ const ResumeSkeleton = () => {
           </div>
         </div>
       </div>
-      
+
       {/* MIDDLE ROW */}
       <div className={`p-6 md:p-8 rounded-[1.5rem] border ${bgClass}`}>
         <div className="flex justify-between items-center mb-6">
@@ -277,29 +289,15 @@ const ResumeSkeleton = () => {
 
 const ResumeAnalysisOutlet = () => {
   const { isDark } = useContext(ThemeContext);
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState(() => Boolean(localStorage.getItem('resumeResult')));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(readStoredResult);
 
   const fileInputRef = useRef(null);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [pastedText, setPastedText] = useState("");
+  const [selectedFile, setSelectedFile] = useState(readStoredFile);
+  const [pastedText, setPastedText] = useState(() => localStorage.getItem('resumeText') || '');
   const [isHovering, setIsHovering] = useState(false);
-
-  useEffect(() => {
-    const savedResult = localStorage.getItem("resumeResult");
-    const savedText = localStorage.getItem("resumeText");
-    const savedFile = localStorage.getItem("resumeFile");
-
-    if (savedResult) { setResult(JSON.parse(savedResult)); setShowResults(true); }
-    if (savedText) setPastedText(savedText);
-    if (savedFile) {
-      try {
-        setSelectedFile(restoreFileFromStorage(savedFile));
-      } catch (e) { localStorage.removeItem("resumeFile"); }
-    }
-  }, []);
 
   useEffect(() => {
     if (pastedText) {
@@ -345,8 +343,6 @@ const ResumeAnalysisOutlet = () => {
     } else { setError("INVALID_FILE_PROTOCOL"); }
   };
 
-  const isAnalyzeEnabled = selectedFile || pastedText.length > 0;
-
   const analyzeResume = async () => {
     setLoading(true); setError(""); setShowResults(false);
     try {
@@ -376,7 +372,7 @@ const ResumeAnalysisOutlet = () => {
       <div className={`absolute top-0 right-0 w-[500px] h-[500px] ${isDark ? 'bg-cyan-500/5' : 'hidden'} rounded-full blur-[120px] pointer-events-none`} />
 
       <div className="max-w-[1400px] mx-auto relative z-10">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[var(--border-color)] pb-6 relative">
+        <Motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[var(--border-color)] pb-6 relative">
           <div className="flex flex-col gap-2 group">
             <h3 className="cw-brand-logo text-4xl font-bold text-[var(--text-main)] tracking-tight leading-none cursor-default">
               Resume Analysis
@@ -384,10 +380,10 @@ const ResumeAnalysisOutlet = () => {
           </div>
 
 
-        </motion.div>
+        </Motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <motion.div
+          <Motion.div
             whileHover={{ y: -2 }}
             className={`min-h-[160px] border-2 border-dashed rounded-2xl p-6 flex flex-col justify-center items-center text-center cursor-pointer transition-all duration-700 relative overflow-hidden group/box ${
               isDark
@@ -432,9 +428,9 @@ const ResumeAnalysisOutlet = () => {
               </div>
             )}
             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".pdf,.doc,.docx" />
-          </motion.div>
+          </Motion.div>
 
-          <motion.div whileHover={{ y: -2 }} className="relative w-full rounded-2xl group h-full">
+          <Motion.div whileHover={{ y: -2 }} className="relative w-full rounded-2xl group h-full">
             <textarea
               className={`w-full p-6 rounded-2xl resize-none font-medium text-[14px] transition-all duration-700 outline-none min-h-[160px] h-full ${
                 isDark
@@ -454,17 +450,17 @@ const ResumeAnalysisOutlet = () => {
                 }
               }}
             />
-          </motion.div>
+          </Motion.div>
         </div>
 
         <div className="flex items-center gap-6 mb-8">
-          <motion.button
+          <Motion.button
             whileHover={{ scale: 1.02, y: -1 }}
             whileTap={{ scale: 0.98 }}
             className={`h-12 rounded-[1rem] transition-all duration-700 font-medium text-[15px] px-8 flex items-center justify-center gap-2 relative overflow-hidden group ${
-              isDark 
-                ? "bg-cyan-500 text-white hover:bg-cyan-400 shadow-sm" 
-                : "bg-[var(--gold)] text-white hover:bg-[var(--gold-dark)] shadow-[0_4px_15px_rgba(160,120,64,0.15)] hover:shadow-[0_8px_25px_rgba(160,120,64,0.25)]" 
+              isDark
+                ? "bg-cyan-500 text-white hover:bg-cyan-400 shadow-sm"
+                : "bg-[var(--gold)] text-white hover:bg-[var(--gold-dark)] shadow-[0_4px_15px_rgba(160,120,64,0.15)] hover:shadow-[0_8px_25px_rgba(160,120,64,0.25)]"
             }`}
             onClick={analyzeResume} disabled={loading}
           >
@@ -493,19 +489,19 @@ const ResumeAnalysisOutlet = () => {
                 <><i className="fa-solid fa-wand-magic-sparkles text-[16px]"></i> Analyze Resume</>
               )}
             </span>
-          </motion.button>
+          </Motion.button>
           {error ? <div className="text-[13px] font-medium text-rose-500">{error}</div> : null}
         </div>
 
         <AnimatePresence mode="wait">
           {loading ? (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <Motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <ResumeSkeleton />
-            </motion.div>
+            </Motion.div>
           ) : showResults && result ? (
-            <motion.div key="results" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <Motion.div key="results" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
               <ResultView result={result} />
-            </motion.div>
+            </Motion.div>
           ) : null}
         </AnimatePresence>
       </div>

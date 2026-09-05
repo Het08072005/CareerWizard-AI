@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ThemeContext } from '../../context/ThemeContext';
+import React, { useState, useContext } from 'react';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { ThemeContext } from '../../context/themeContextValue';
 import { StickyNoteIcon, SparklesIcon, CodeIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '../ui/Icons';
 
 const AnimatedCheck = ({ checked, isDark }) => {
@@ -30,10 +30,6 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
     const [showAnswer, setShowAnswer] = useState(false);
     const [showNote, setShowNote] = useState(!!currentNote);
     const [noteDraft, setNoteDraft] = useState(currentNote || '');
-
-    useEffect(() => {
-        setNoteDraft(currentNote || '');
-    }, [currentNote]);
 
     const getColors = (tag, type = 'all') => {
         const t = (tag || '').toLowerCase();
@@ -76,7 +72,7 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
     const formattedCode = (question.answer.code || '').replace(/\\n/g, '\n');
 
     return (
-        <motion.div
+        <Motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`group relative border transition-all duration-300 rounded-xl overflow-hidden ${
@@ -169,7 +165,7 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
 
                 <AnimatePresence>
                     {(showNote || showAnswer) && (
-                        <motion.div
+                        <Motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
@@ -258,11 +254,11 @@ const QuestionCard = ({ question, toggleComplete, currentNote, onSaveNote, onExp
                                     </div>
                                 )}
                             </div>
-                        </motion.div>
+                        </Motion.div>
                     )}
                 </AnimatePresence>
             </div>
-        </motion.div>
+        </Motion.div>
     );
 };
 

@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import api from "../api/axiosClient";
 import ProgressBar from "./ProgressBar";
 import Milestone from "./Milestone";
-import { AuthContext } from "../context/AuthContext";
-import { ThemeContext } from "../context/ThemeContext";
-import { motion } from "framer-motion";
+import { AuthContext } from "../context/authContextValue";
+import { ThemeContext } from "../context/themeContextValue";
+import { motion as Motion } from "framer-motion";
 import { ArrowRightIcon, BriefcaseIcon, TrendingUpIcon, ChartBarIcon } from "./ui/Icons";
 
 const STORAGE_PREFIX = "skillgap_progress_";
@@ -121,7 +121,7 @@ const Roadmap = ({ roleData, onBack }) => {
   return (
     <div className="w-full text-[var(--text-main)] relative">
       {/* HEADER SECTION */}
-      <motion.div
+      <Motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
@@ -177,10 +177,10 @@ const Roadmap = ({ roleData, onBack }) => {
         <div className="mt-6">
           <ProgressBar progress={percent} />
         </div>
-      </motion.div>
+      </Motion.div>
 
       {/* CORE SKILLS SECTION */}
-      <motion.div
+      <Motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -195,7 +195,7 @@ const Roadmap = ({ roleData, onBack }) => {
           Technical Requirements
         </h3>
         <div className="flex flex-wrap gap-2 relative z-10">
-          {(roleData.requiredSkills || []).map((s, i) => (
+          {(roleData.requiredSkills || []).map((s) => (
             <span
               key={s}
               className={`px-3 py-1.5 border rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all duration-500 ${
@@ -208,10 +208,10 @@ const Roadmap = ({ roleData, onBack }) => {
             </span>
           ))}
         </div>
-      </motion.div>
+      </Motion.div>
 
       {/* PHASES SECTION */}
-      <motion.div
+      <Motion.div
         className="space-y-6 mt-12"
         variants={containerVariants}
         initial="hidden"
@@ -231,7 +231,7 @@ const Roadmap = ({ roleData, onBack }) => {
           const phaseColor = colors[idx % colors.length];
 
           return (
-            <motion.div
+            <Motion.div
               key={ph.title + idx}
               initial="hidden"
               whileInView="visible"
@@ -244,10 +244,10 @@ const Roadmap = ({ roleData, onBack }) => {
                 onToggleTopic={toggleTopic}
                 onTogglePhaseComplete={togglePhaseComplete}
               />
-            </motion.div>
+            </Motion.div>
           );
         })}
-      </motion.div>
+      </Motion.div>
     </div>
   );
 };

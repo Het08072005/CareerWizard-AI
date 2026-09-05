@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import Step from "./Step";
-import { motion, AnimatePresence } from "framer-motion";
-import { ThemeContext } from "../context/ThemeContext";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import { ThemeContext } from "../context/themeContextValue";
 
 const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete }) => {
   const [open, setOpen] = useState(true);
@@ -103,7 +103,7 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
       {/* Content */}
       <AnimatePresence initial={false}>
         {open && (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -132,7 +132,7 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
             </div>
 
             {/* Pro Tips */}
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -144,7 +144,7 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
 
               <div className="space-y-1.5">
                 {data.proTips?.map((tip, i) => (
-                  <motion.div
+                  <Motion.div
                     key={i}
                     className={`p-2 px-4 rounded-lg text-[13px] flex items-center leading-relaxed font-medium tracking-wide border ${
                       isDark 
@@ -154,13 +154,13 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
                   >
                     <div className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 mr-3 flex-shrink-0"></div>
                     {tip}
-                  </motion.div>
+                  </Motion.div>
                 ))}
               </div>
-            </motion.div>
+            </Motion.div>
 
             {/* Additional Resources */}
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -201,8 +201,8 @@ const Milestone = ({ data, color = "cyan", onToggleTopic, onTogglePhaseComplete 
                   ))}
                 </ul>
               </div>
-            </motion.div>
-          </motion.div>
+            </Motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
     </div>

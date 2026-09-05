@@ -1,6 +1,7 @@
 # --- React ---
 frontend/node_modules/
 frontend/build/
+frontend/dist/
 frontend/.env
 frontend/.eslintcache
 
@@ -27,14 +28,5 @@ logs/
 .DS_Store
 Thumbs.db
 
-# .gitignore file me ye add karein:
 __pycache__/
 *.py[cod]
-
-
-
-
-uvicorn app.main:app --reload
-
-
-python3 -m uvicorn app.main:app --reload

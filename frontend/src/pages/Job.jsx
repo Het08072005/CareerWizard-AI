@@ -2,6 +2,12 @@ import React from 'react';
 // Assuming you would pass job data as props in a real application
 // export default function Job({ jobData }) { ... }
 
+const FeaturePill = ({ text, colorClass }) => (
+    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colorClass} mr-2 mb-2`}>
+        {text}
+    </span>
+);
+
 const Job = () => {
     // Mock Data to demonstrate the layout
     const mockJob = {
@@ -26,12 +32,6 @@ const Job = () => {
             "Annual company retreat to exotic locations."
         ]
     };
-
-    const FeaturePill = ({ text, colorClass }) => (
-        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colorClass} mr-2 mb-2`}>
-            {text}
-        </span>
-    );
 
     return (
         <div className="min-h-screen bg-gray-50 py-10">

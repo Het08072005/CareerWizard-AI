@@ -1,56 +1,11 @@
-import React from 'react';
-
-const genericResources = [
-  { name: 'Git & GitHub Collaboration Flow Cheat Sheet', type: 'PDF Guide', icon: 'fa-file-pdf', bg: '#fee2e2', color: '#dc2626' },
-  { name: 'API Design Best Practices Checklist', type: 'Markdown Guide', icon: 'fa-list-check', bg: '#dbeafe', color: '#2563eb' },
-  { name: 'Production Deployment Docker-Compose template', type: 'ZIP Template', icon: 'fa-file-zipper', bg: '#ede9fe', color: '#7c3aed' },
-  { name: 'Enterprise PostgreSQL Database Schemas Samples', type: 'SQL file', icon: 'fa-database', bg: '#fef3c7', color: '#d97706' }
-];
+import { EnrollmentRequired, WorkspaceError, WorkspaceLoading } from '../../components/InternshipState';
+import { useInternship } from '../../context/internshipContextValue';
 
 export default function InternshipResources() {
-  return (
-    <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
-      <div className="cw-card-header">
-        <div className="cw-card-title">
-          <i className="fa-solid fa-cloud-arrow-down" />
-          <span>General Downloadable Resources</span>
-        </div>
-        <span className="cw-badge cw-badge-green">ALL SYSTEMS ACTIVE</span>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--cw-muted)', marginBottom: 20 }}>
-        Access curated codebases, starter templates, SQL queries, and industry checklists to expedite your task completions.
-      </p>
-
-      <div className="space-y-3">
-        {genericResources.map((res, idx) => (
-          <div
-            key={idx}
-            onClick={() => alert(`Starting download for ${res.name}...`)}
-            className="p-4 rounded-xl border border-black/5 hover:border-[var(--gold)]/30 bg-transparent hover:bg-black/[0.02] transition flex items-center justify-between cursor-pointer"
-          >
-            <div className="flex items-center gap-4">
-              <div style={{
-                width: 38,
-                height: 38,
-                borderRadius: 8,
-                background: res.bg,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: res.color,
-                fontSize: 16
-              }}>
-                <i className={`fa-solid ${res.icon}`} />
-              </div>
-              <div>
-                <div style={{ fontSize: 17, fontWeight: 800, fontFamily: '"Cormorant Garamond", serif' }}>{res.name}</div>
-                <div style={{ fontSize: 11, color: 'var(--cw-muted)', marginTop: 2 }}>{res.type} · Ready to download</div>
-              </div>
-            </div>
-            <i className="fa-solid fa-download" style={{ color: 'var(--cw-muted)', fontSize: 14 }} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  const { data, loading, error, reload } = useInternship();
+  if (loading) return <WorkspaceLoading />;
+  if (error) return <WorkspaceError message={error} onRetry={reload} />;
+  if (!data?.enrollment) return <EnrollmentRequired />;
+  const resources = data.tasks.flatMap(task => task.resources.map((resource, index) => ({ ...resource, day: task.day, key: `${task.day}-${resource.url || resource.name}-${index}` })));
+  return <div className="space-y-5"><div><h1 className="text-2xl font-bold">Sprint resources</h1><p className="text-sm text-[var(--text-muted)] mt-1">Files and links attached to your published daily briefs.</p></div><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">{resources.map(resource => <a key={resource.key} href={resource.url} target="_blank" rel="noreferrer" className="p-5 rounded-2xl bg-[var(--bg-sidebar)] border border-[var(--border-color)] hover:border-emerald-500 transition"><div className="text-[10px] text-emerald-600 font-bold">DAY {resource.day} · {(resource.file_type || 'resource').toUpperCase()}</div><div className="font-bold text-sm mt-2 break-words">{resource.name || 'Open resource'}</div>{resource.size_kb && <div className="text-[10px] text-[var(--text-muted)] mt-2">{resource.size_kb} KB</div>}</a>)}{!resources.length && <div className="md:col-span-2 lg:col-span-3 p-10 rounded-2xl border border-dashed border-[var(--border-color)] text-center text-sm text-[var(--text-muted)]">No downloadable resources are attached yet. Inline links remain available inside Daily Learning.</div>}</div></div>;
 }

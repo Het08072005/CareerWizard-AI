@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { getRoadmap } from '../api/profile';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { CheckIcon, SparklesIcon } from './ui/Icons';
-import { ThemeContext } from '../context/ThemeContext';
+import { ThemeContext } from '../context/themeContextValue';
 
 const customScrollbarStyle = `
   .dark-roadmap-scroll::-webkit-scrollbar { width: 4px; }
@@ -272,7 +271,7 @@ const WeekComponent = ({ week }) => {
   )
 }
 
-const TimelineStep = ({ monthData, isLastMonth, isFirstMonth }) => {
+const TimelineStep = ({ monthData }) => {
   const { isDark } = useContext(ThemeContext);
   const match = monthData.month.match(/Month (\d+)/i);
   const monthNumber = match ? match[1] : '?';
@@ -505,7 +504,7 @@ const CareerRoadmapOutlet = () => {
   }, []);
 
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -629,11 +628,11 @@ const CareerRoadmapOutlet = () => {
         <div className="relative min-h-[600px]">
           <AnimatePresence mode="wait">
             {loading ? (
-              <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <Motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <RoadmapSkeleton isDark={isDark} />
-              </motion.div>
+              </Motion.div>
             ) : roadmapData ? (
-              <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-10">
+              <Motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-10">
                 {/* POST-GENERATION TABS */}
                 <div className={`flex items-center gap-2 mb-8 p-1.5 rounded-xl border inline-flex ${isDark ? 'bg-white/[0.02] border-white/10' : 'bg-[#FAF9F5] border-[#E5E2D9]'}`}>
                   <button 
@@ -668,16 +667,16 @@ const CareerRoadmapOutlet = () => {
                     />
                   ))}
                 </div>
-              </motion.div>
+              </Motion.div>
             ) : (
-              <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-start py-32 opacity-10">
+              <Motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-start py-32 opacity-10">
                 <h3 className="text-xs font-black uppercase tracking-[2.5em] pl-[2.5em] italic">Awaiting_Neural_Sequence</h3>
-              </motion.div>
+              </Motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 };
 
@@ -717,8 +716,8 @@ export default CareerRoadmapOutlet;
 
 
 // import React, { useState, useEffect, useContext, useRef } from 'react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import { ThemeContext } from '../context/ThemeContext';
+// import { motion as Motion, AnimatePresence } from 'framer-motion';
+// import { ThemeContext } from '../context/themeContextValue';
 
 // // ─── SCROLL STYLE ────────────────────────────────────────────────────────────
 // const scrollbarCSS = `
@@ -924,7 +923,7 @@ export default CareerRoadmapOutlet;
 
 //       <AnimatePresence>
 //         {open && (
-//           <motion.div
+//           <Motion.div
 //             initial={{ height: 0, opacity: 0 }}
 //             animate={{ height: 'auto', opacity: 1 }}
 //             exit={{ height: 0, opacity: 0 }}
@@ -985,7 +984,7 @@ export default CareerRoadmapOutlet;
 //                 </div>
 //               )}
 //             </div>
-//           </motion.div>
+//           </Motion.div>
 //         )}
 //       </AnimatePresence>
 //     </div>
@@ -1061,7 +1060,7 @@ export default CareerRoadmapOutlet;
 //       {/* Expanded content */}
 //       <AnimatePresence>
 //         {expanded && (
-//           <motion.div
+//           <Motion.div
 //             initial={{ height: 0, opacity: 0 }}
 //             animate={{ height: 'auto', opacity: 1 }}
 //             exit={{ height: 0, opacity: 0 }}
@@ -1136,7 +1135,7 @@ export default CareerRoadmapOutlet;
 //                 </div>
 //               </div>
 //             </div>
-//           </motion.div>
+//           </Motion.div>
 //         )}
 //       </AnimatePresence>
 //     </div>
@@ -1736,7 +1735,7 @@ export default CareerRoadmapOutlet;
 //   }, []);
 
 //   return (
-//     <motion.div
+//     <Motion.div
 //       initial={{ opacity: 0, y: 20 }}
 //       animate={{ opacity: 1, y: 0 }}
 //       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -1922,11 +1921,11 @@ export default CareerRoadmapOutlet;
 //         {/* ── ROADMAP OUTPUT ── */}
 //         <AnimatePresence mode="wait">
 //           {loading ? (
-//             <motion.div key="skeleton" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+//             <Motion.div key="skeleton" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 //               <RoadmapSkeleton isDark={isDark} />
-//             </motion.div>
+//             </Motion.div>
 //           ) : roadmap ? (
-//             <motion.div key="roadmap" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+//             <Motion.div key="roadmap" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
 
 //               {/* Stats bar */}
 //               <RoadmapStats data={roadmap} isDark={isDark} />
@@ -1943,9 +1942,9 @@ export default CareerRoadmapOutlet;
 //                   />
 //                 ))}
 //               </div>
-//             </motion.div>
+//             </Motion.div>
 //           ) : (
-//             <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+//             <Motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
 //               className={`flex flex-col items-center justify-center py-24 rounded-2xl border border-dashed ${
 //                 isDark ? 'border-white/[0.06]' : 'border-slate-200'
 //               }`}
@@ -1957,12 +1956,12 @@ export default CareerRoadmapOutlet;
 //               </div>
 //               <p className={`text-[13px] font-bold mb-1 ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>No roadmap generated yet</p>
 //               <p className={`text-[11px] ${isDark ? 'text-slate-700' : 'text-slate-300'}`}>Fill in your details above and click Generate</p>
-//             </motion.div>
+//             </Motion.div>
 //           )}
 //         </AnimatePresence>
 
 //       </div>
-//     </motion.div>
+//     </Motion.div>
 //   );
 // };
 

@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { AuthContext } from "../context/AuthContext";
-import { ThemeContext } from "../context/ThemeContext";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import { AuthContext } from "../context/authContextValue";
+import { ThemeContext } from "../context/themeContextValue";
 import {
     ChartBarIcon,
     DocumentMagnifyingGlassIcon,
@@ -85,9 +85,9 @@ const Overview = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { logout, user } = useContext(AuthContext);
-    const { theme, toggleTheme, isDark } = useContext(ThemeContext);
+    const { toggleTheme, isDark } = useContext(ThemeContext);
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const isAdminView = location.pathname === '/admin';
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -109,15 +109,6 @@ const Overview = () => {
         }
     ];
 
-    useEffect(() => {
-        if (location.pathname.startsWith('/internship')) {
-            setIsInternshipExpanded(true);
-        }
-        if (location.pathname.startsWith('/admin')) {
-            setIsAdminExpanded(true);
-        }
-    }, [location.pathname]);
-
     // PERSISTENCE: Auto-scroll to top on route transition
     useEffect(() => {
         if (scrollRef.current) {
@@ -130,7 +121,7 @@ const Overview = () => {
         }
 
         // ADMIN ROUTE PROTECTION
-        const isAllowedAdmin = ['het', 'Het Panchal'].includes(user?.name) || user?.email === 'het80630@gmail.com';
+        const isAllowedAdmin = ['admin', 'developer', 'reviewer', 'mentor'].includes((user?.role || '').toLowerCase());
         if (location.pathname === '/admin' && !isAllowedAdmin) {
             navigate('/overview', { replace: true });
         }
@@ -209,7 +200,7 @@ const Overview = () => {
             <div className="flex-1 flex overflow-hidden">
 
                 {/* MATCHING SIDEBAR: INDUSTRIAL COCKPIT DESIGN */}
-                <motion.aside
+                <Motion.aside
                     initial={false}
                     animate={{ width: isCollapsed ? 64 : 220 }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -217,8 +208,8 @@ const Overview = () => {
                 >
                     <nav className="flex-1 py-8 px-3 space-y-1 scrollbar-hide overflow-y-auto overflow-x-hidden">
                         {tabs.map((tab) => {
-                            const isAllowedAdmin = ['het', 'Het Panchal'].includes(user?.name) || user?.email === 'het80630@gmail.com';
-                            if (tab.adminOnly && !isAdminView) return null;
+                            const isAllowedAdmin = ['admin', 'developer', 'reviewer', 'mentor'].includes((user?.role || '').toLowerCase());
+                            if (tab.adminOnly && !isAllowedAdmin) return null;
 
                             const active = location.pathname === tab.path ||
                                 (tab.path === '/overview' && location.pathname === '/overview/') ||
@@ -231,7 +222,7 @@ const Overview = () => {
                                 <div key={tab.path} className="flex flex-col space-y-1">
                                     <Link
                                         to={tab.path}
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             if (tab.hasSubmenu) {
                                                 if (tab.path === '/admin') setIsAdminExpanded(!isAdminExpanded);
                                                 else setIsInternshipExpanded(!isInternshipExpanded);
@@ -247,7 +238,7 @@ const Overview = () => {
                                     >
                                         {/* SURGICAL ACTIVE INDICATOR */}
                                         {active && (
-                                            <motion.div
+                                            <Motion.div
                                                 layoutId="nav_dot"
                                                 className={`absolute left-[-2px] w-[3px] h-4 rounded-full ${isDark
                                                     ? 'bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]'
@@ -269,13 +260,13 @@ const Overview = () => {
                                         </div>
 
                                         {!isCollapsed && (
-                                            <motion.span
+                                            <Motion.span
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 className="text-[13px] font-medium tracking-tight whitespace-nowrap"
                                             >
                                                 {tab.name}
-                                            </motion.span>
+                                            </Motion.span>
                                         )}
 
                                         {!isCollapsed && tab.hasSubmenu && (
@@ -306,7 +297,7 @@ const Overview = () => {
                                     {/* COLLAPSIBLE SUBMENU */}
                                     <AnimatePresence initial={false}>
                                         {hasSub && isThisExpanded && (
-                                            <motion.div
+                                            <Motion.div
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: 'auto', opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
@@ -340,7 +331,7 @@ const Overview = () => {
                                                         </Link>
                                                     );
                                                 })}
-                                            </motion.div>
+                                            </Motion.div>
                                         )}
                                     </AnimatePresence>
                                 </div>
@@ -362,7 +353,7 @@ const Overview = () => {
                                 <>
                                     {/* SURGICAL ACTIVE INDICATOR */}
                                     {active && (
-                                        <motion.div
+                                        <Motion.div
                                             layoutId="nav_dot_account"
                                             className={`absolute left-[-2px] w-[3px] h-4 rounded-full ${isDark
                                                 ? 'bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]'
@@ -384,13 +375,13 @@ const Overview = () => {
                                     </div>
 
                                     {!isCollapsed && (
-                                        <motion.span
+                                        <Motion.span
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             className="text-[15px] font-semibold tracking-tight whitespace-nowrap text-left"
                                         >
                                             {tab.name}
-                                        </motion.span>
+                                        </Motion.span>
                                     )}
 
                                     {/* COLLAPSED TOOLTIP */}
@@ -456,7 +447,7 @@ const Overview = () => {
                             {/* POPUP BOX / CONTROLS PANEL */}
                             <AnimatePresence>
                                 {isProfileMenuOpen && (
-                                    <motion.div
+                                    <Motion.div
                                         initial={{ opacity: 0, y: 15, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 15, scale: 0.95 }}
@@ -523,7 +514,7 @@ const Overview = () => {
                                                 <span>Logout</span>
                                             </button>
                                         </div>
-                                    </motion.div>
+                                    </Motion.div>
                                 )}
                             </AnimatePresence>
 
@@ -586,7 +577,7 @@ const Overview = () => {
                             {/* POPUP BOX (NEXT TO THE SIDEBAR) */}
                             <AnimatePresence>
                                 {isProfileMenuOpen && (
-                                    <motion.div
+                                    <Motion.div
                                         initial={{ opacity: 0, x: -15, scale: 0.95 }}
                                         animate={{ opacity: 1, x: 0, scale: 1 }}
                                         exit={{ opacity: 0, x: -15, scale: 0.95 }}
@@ -667,7 +658,7 @@ const Overview = () => {
                                             <Cog6ToothIcon className="w-3.5 h-3.5 text-[var(--gold-dark)] shrink-0" strokeWidth={2} />
                                             <span>Settings</span>
                                         </button>
-                                    </motion.div>
+                                    </Motion.div>
                                 )}
                             </AnimatePresence>
 
@@ -683,7 +674,7 @@ const Overview = () => {
                             </div>
                         </div>
                     )}
-                </motion.aside>
+                </Motion.aside>
 
                 {/* CONTENT AREA: FLUSH MOUNTED */}
                 <main ref={scrollRef} className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-hide p-0">
@@ -697,8 +688,4 @@ const Overview = () => {
 };
 
 export default Overview;
-
-
-
-
 

@@ -12,9 +12,9 @@ CREATE TABLE IF NOT EXISTS day_content (
   UNIQUE(domain, task_name, type, day)
 );
 
--- Enable RLS and add public access for easy testing (Modify for production)
+-- Browser clients read/write through the authenticated FastAPI layer.
 ALTER TABLE day_content ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Enable all operations for all users" ON day_content FOR ALL USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Enable all operations for all users" ON day_content;
 
 -- Create storage bucket for resources
 INSERT INTO storage.buckets (id, name, public) 
@@ -22,7 +22,10 @@ VALUES ('day-resources', 'day-resources', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Storage policies
-CREATE POLICY "Give public access to bucket" ON storage.objects FOR SELECT USING ( bucket_id = 'day-resources' );
-CREATE POLICY "Give public upload access to bucket" ON storage.objects FOR INSERT WITH CHECK ( bucket_id = 'day-resources' );
-CREATE POLICY "Give public update access to bucket" ON storage.objects FOR UPDATE USING ( bucket_id = 'day-resources' );
-CREATE POLICY "Give public delete access to bucket" ON storage.objects FOR DELETE USING ( bucket_id = 'day-resources' );
+DROP POLICY IF EXISTS "Give public access to bucket" ON storage.objects;
+DROP POLICY IF EXISTS "Give public upload access to bucket" ON storage.objects;
+DROP POLICY IF EXISTS "Give public update access to bucket" ON storage.objects;
+DROP POLICY IF EXISTS "Give public delete access to bucket" ON storage.objects;
+DROP POLICY IF EXISTS "Give public access to published resources" ON storage.objects;
+CREATE POLICY "Give public access to published resources" ON storage.objects
+FOR SELECT TO public USING (bucket_id = 'day-resources');

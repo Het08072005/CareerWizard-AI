@@ -3,15 +3,10 @@ from sqlalchemy import or_
 from typing import List, Optional
 from app.models.interview import InterviewQuestion, InterviewProgress
 from app.schemas.interview_schema import InterviewCreate
-import os
-import google.generativeai as genai
-from app.core.config import settings
+import logging
+from app.services.ai_gateway import get_ai_gateway
 
-# Ensure Gemini API is configured
-try:
-    genai.configure(api_key=settings.GEMINI_API_KEY)
-except Exception:
-    pass
+logger = logging.getLogger(__name__)
 
 def create_interview_question(db: Session, question_in: InterviewCreate):
     db_question = InterviewQuestion(
@@ -86,11 +81,8 @@ Question: {question_title}
 Model Answer: {model_answer}
 """
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
-        response = model.generate_content(prompt)
-        if hasattr(response, 'text') and response.text:
-            return response.text.strip()
-    except Exception as e:
-        print(f"Gemini explain error: {e}")
+        return get_ai_gateway().generate_text(prompt, model="gemini-2.5-flash")
+    except Exception as exc:
+        logger.warning("AI interview explanation failed: %s", exc.__class__.__name__)
 
     return "Summary: " + (model_answer or "No answer provided")

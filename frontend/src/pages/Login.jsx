@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { login as loginService } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/authContextValue";
 import "../css/Home.css";
 
 export default function Login() {
@@ -18,7 +18,7 @@ export default function Login() {
     setMsg("");
     try {
       const res = await loginService(email, password);
-      login(res.data.token, { id: res.data.user_id, name: res.data.name });
+      login(res.data.token, { id: res.data.user_id, name: res.data.name, email: res.data.email, role: res.data.role });
       navigate("/");
     } catch (err) {
       setMsg(

@@ -1,11 +1,15 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 url = "https://jsearch.p.rapidapi.com/search"
 
 querystring = {"query":"Python Developer in India","num_pages":"1"}
 
 headers = {
-	"X-RapidAPI-Key": "1101e1ed37msh81073c685023a8bp15f3cbjsn8add310c338d",
+	"X-RapidAPI-Key": os.environ["RAPIDAPI_KEY"],
 	"X-RapidAPI-Host": "jsearch.p.rapidapi.com"
 }
 

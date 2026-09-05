@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
-import { motion } from "framer-motion";
-import { ThemeContext } from "../context/ThemeContext";
+import { motion as Motion } from "framer-motion";
+import { ThemeContext } from "../context/themeContextValue";
 
-const Step = ({ step, onClick, color = "cyan" }) => {
+const Step = ({ step, onClick }) => {
   const { isDark } = useContext(ThemeContext);
 
 
 
   return (
-    <motion.div
+    <Motion.div
       whileTap={{ scale: 0.98 }}
       className={`flex items-center gap-2.5 p-1.5 px-3 rounded-lg cursor-pointer border transition-all duration-500 group ${
         step.completed
@@ -43,7 +43,7 @@ const Step = ({ step, onClick, color = "cyan" }) => {
       }`}>
         {step.title}
       </div>
-    </motion.div>
+    </Motion.div>
   );
 };
 

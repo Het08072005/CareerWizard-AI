@@ -3,7 +3,7 @@ import { fetchQuestions, generateAIExplanation } from '../api/interviewApi';
 import { usePersistentState } from '../hooks/usePersistentState';
 import RoleSelection from './InterviewPrep/RoleSelection';
 import AdvancedPrep from './InterviewPrep/AdvancedPrep';
-import { ThemeContext } from '../context/ThemeContext';
+import { ThemeContext } from '../context/themeContextValue';
 import {
     BriefcaseIcon, BrainIcon, CpuIcon,
     PaletteIcon, SmartphoneIcon, CloudIcon, UserCheckIcon,
@@ -104,6 +104,8 @@ const InterviewPrepOutlet = () => {
         };
 
         loadQuestions();
+    // Persistent role maps are intentionally read as a snapshot when the role changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedRole]);
 
 

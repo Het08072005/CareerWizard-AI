@@ -1,11 +1,20 @@
-import { createContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../api/axiosClient";
+import { AuthContext } from './authContextValue';
 
-export const AuthContext = createContext();
+const readStoredUser = () => {
+  try {
+    const token = localStorage.getItem('token');
+    const saved = localStorage.getItem('user');
+    return token && saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+};
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(readStoredUser);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(readStoredUser()));
   const [profile, setProfile] = useState(null);
 
   // LOGIN
@@ -25,19 +34,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setProfile(null);
   };
-
- 
-  // LOAD USER ON REFRESH
-  
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
-
-    if (token && savedUser) {
-      setIsLoggedIn(true);
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
 
  
   // FETCH PROFILE FROM BACKEND

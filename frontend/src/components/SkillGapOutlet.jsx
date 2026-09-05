@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
 import Roadmap from "./Roadmap";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { MASTER_ROADMAP, CAREER_ORDER } from "../data/masterRoadmap";
-import { ThemeContext } from "../context/ThemeContext";
+import { ThemeContext } from "../context/themeContextValue";
 import {
   ArrowRightIcon,
   CheckIcon,
@@ -82,7 +82,7 @@ const SkillGapOutlet = () => {
       <div className={`absolute top-0 right-0 w-[500px] h-[500px] ${isDark ? 'bg-cyan-500/5' : 'hidden'} rounded-full blur-[120px] pointer-events-none`} />
       <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] ${isDark ? 'bg-indigo-500/5' : 'hidden'} rounded-full blur-[100px] pointer-events-none`} />
 
-      <motion.div
+      <Motion.div
         key={view}
         variants={containerVariants}
         initial="hidden"
@@ -90,7 +90,7 @@ const SkillGapOutlet = () => {
         className="max-w-[1400px] mx-auto relative z-10"
       >
         {view === "hub" && (
-          <motion.header variants={itemVariants} className="mb-14 flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-[var(--border-color)] pb-10 relative">
+          <Motion.header variants={itemVariants} className="mb-14 flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-[var(--border-color)] pb-10 relative">
             <div className="flex flex-col gap-2 group">
               <h1 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-4xl font-bold text-[var(--text-main)] tracking-tight leading-none transition-all duration-700 group-hover:tracking-normal cursor-default">
                 Career Roadmaps
@@ -99,7 +99,7 @@ const SkillGapOutlet = () => {
                 Choose your path and get a complete step-by-step master plan for top tech jobs.
               </p>
             </div>
-          </motion.header>
+          </Motion.header>
         )}
 
         {view === "hub" ? (
@@ -112,7 +112,7 @@ const SkillGapOutlet = () => {
                 const IconComponent = ROLE_ICON_MAP[k] || ServerIcon;
 
                 return (
-                  <motion.div
+                  <Motion.div
                     key={r.key}
                     variants={itemVariants}
                     whileHover={{ y: -4, scale: 1.01 }}
@@ -168,13 +168,13 @@ const SkillGapOutlet = () => {
                     >
                       Start Now
                     </button>
-                  </motion.div>
+                  </Motion.div>
                 );
               })}
 
               {/* Special Interview Prep Card */}
               {MASTER_ROADMAP['interview'] && (
-                <motion.div
+                <Motion.div
                   key="interview"
                   variants={itemVariants}
                   whileHover={{ y: -4, scale: 1.01 }}
@@ -222,13 +222,13 @@ const SkillGapOutlet = () => {
                   >
                     Start Preparation
                   </button>
-                </motion.div>
+                </Motion.div>
               )}
             </div>
 
             {/* Premium Info Tip boxes */}
             <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 pt-10 border-t ${isDark ? 'border-white/5' : 'border-slate-200'}`}>
-              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
+              <Motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
                 }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-indigo-500/30 group-hover:bg-indigo-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
@@ -241,9 +241,9 @@ const SkillGapOutlet = () => {
                     <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal">Proven roadmap archives.</p>
                   </div>
                 </div>
-              </motion.div>
+              </Motion.div>
 
-              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
+              <Motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
                 }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-cyan-500/30 group-hover:bg-cyan-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
@@ -256,9 +256,9 @@ const SkillGapOutlet = () => {
                     <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal">Goal and phase analytics.</p>
                   </div>
                 </div>
-              </motion.div>
+              </Motion.div>
 
-              <motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
+              <Motion.div variants={itemVariants} className={`relative group rounded-2xl p-8 overflow-hidden transition-all duration-700 border shadow-[0_4px_20px_rgba(160,120,64,0.05)] ${isDark ? 'bg-[#080808] border-white/5 hover:border-white/20' : 'bg-[#fffcf7] border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
                 }`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-emerald-500/30 group-hover:bg-emerald-500 transition-all duration-700" />
                 <div className="flex gap-6 items-center">
@@ -271,11 +271,11 @@ const SkillGapOutlet = () => {
                     <p className="text-[11px] text-[var(--text-muted)] opacity-80 font-medium tracking-normal">Best practices to follow.</p>
                   </div>
                 </div>
-              </motion.div>
+              </Motion.div>
             </div>
           </div>
         ) : (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             className="w-full"
@@ -300,9 +300,9 @@ const SkillGapOutlet = () => {
                 </button>
               </div>
             )}
-          </motion.div>
+          </Motion.div>
         )}
-      </motion.div>
+      </Motion.div>
     </div>
   );
 };

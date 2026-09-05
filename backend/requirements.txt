@@ -4,7 +4,7 @@ sqlalchemy
 psycopg2-binary
 python-dotenv
 passlib[bcrypt]
-google-generativeai
+google-genai
 python-jose
 PyPDF2
 python-docx

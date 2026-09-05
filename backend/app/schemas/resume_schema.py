@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class ResumeAnalysisCreate(BaseModel):
     filename: Optional[str]
@@ -7,9 +7,9 @@ class ResumeAnalysisCreate(BaseModel):
 
 class ResumeAnalysisResponse(BaseModel):
     ats_score: int
-    skills: List[str] = []
-    missing_skills: List[str] = []
-    score_breakdown: dict = {}
+    skills: List[str] = Field(default_factory=list)
+    missing_skills: List[str] = Field(default_factory=list)
+    score_breakdown: dict = Field(default_factory=dict)
     strengths: List[str]
     improvements: List[str]
-    enhancements: List[dict] = []
+    enhancements: List[dict] = Field(default_factory=list)

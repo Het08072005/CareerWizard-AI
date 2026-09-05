@@ -31,10 +31,18 @@ def get_current_user(credentials=Depends(security), db: Session = Depends(get_db
         raise HTTPException(status_code=401, detail="Invalid token format (expected UUID)")
 
     user = db.query(User).filter(User.id == str(uuid_obj)).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    if not user or not user.is_active:
+        raise HTTPException(status_code=401, detail="User is unavailable")
 
     return user
+
+
+def get_current_admin(current_user=Depends(get_current_user)):
+    """Require an explicit admin record or a recognized privileged legacy role."""
+    privileged_roles = {"admin", "developer", "reviewer", "mentor"}
+    if current_user.admin is None and (current_user.role or "").lower() not in privileged_roles:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return current_user
 
 def get_current_user_optional(credentials=Depends(security_optional), db: Session = Depends(get_db)):
     if not credentials:

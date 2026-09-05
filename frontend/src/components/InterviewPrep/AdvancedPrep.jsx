@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import QuestionCard from './QuestionCard';
-import { ThemeContext } from '../../context/ThemeContext';
+import { ThemeContext } from '../../context/themeContextValue';
 import { ArrowLeftIcon, CodeIcon, ServerIcon, MessageSquareIcon, SparklesIcon, DocumentIcon } from '../ui/Icons';
 
 const AdvancedPrep = ({
@@ -24,7 +24,7 @@ const AdvancedPrep = ({
     return (
         <div className="w-full text-[var(--text-main)] min-h-screen bg-transparent p-4 md:px-8 py-4 selection:bg-indigo-500/30">
             {/* Header Section: Minimalist Intelligence Status */}
-            <motion.div
+            <Motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -56,7 +56,7 @@ const AdvancedPrep = ({
                                  <div className={`w-48 lg:w-64 h-1.5 rounded-full overflow-hidden border ${
                                      isDark ? 'bg-white/[0.03] border-white/[0.05]' : 'bg-slate-100 border-slate-200'
                                  }`}>
-                                     <motion.div
+                                     <Motion.div
                                          initial={{ width: 0 }}
                                          animate={{ width: `${progressPercent}%` }}
                                          transition={{ type: "spring", stiffness: 100, damping: 20 }}
@@ -81,7 +81,7 @@ const AdvancedPrep = ({
                         <span className="text-[12.5px] font-bold tracking-wide text-slate-600 dark:text-slate-300 group-hover:text-[#1a1d20] transition-colors">Back</span>
                     </button>
                 </div>
-            </motion.div>
+            </Motion.div>
 
             <div className={`mb-6 border-b flex overflow-x-auto scrollbar-none ${
                 isDark ? 'border-white/[0.05]' : 'border-slate-200/80'
@@ -130,7 +130,7 @@ const AdvancedPrep = ({
                 <div className="space-y-6 mt-4">
                     <AnimatePresence mode="popLayout" initial={false}>
                         {loading ? (
-                            <motion.div
+                            <Motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
@@ -140,7 +140,7 @@ const AdvancedPrep = ({
                                     <div key={`skeleton-${idx}`} className={`relative h-24 w-full border rounded-2xl overflow-hidden ${
                                         isDark ? 'bg-[#080808] border-white/[0.04]' : 'bg-[#fffcf7] border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)]'
                                     }`}>
-                                        <motion.div
+                                        <Motion.div
                                             animate={{
                                                 x: ['-100%', '100%']
                                             }}
@@ -163,16 +163,16 @@ const AdvancedPrep = ({
                                     </div>
                                 ))}
                                 <div className="flex flex-col items-center justify-center py-10 opacity-25">
-                                    <motion.div
+                                    <Motion.div
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                                         className="w-8 h-8 border-2 border-t-indigo-500 border-indigo-500/10 rounded-full"
                                     />
                                     <span className="mt-4 text-[10px] font-bold tracking-widest uppercase">Synthesizing Assets</span>
                                 </div>
-                            </motion.div>
+                            </Motion.div>
                         ) : (
-                            <motion.div
+                            <Motion.div
                                 key="questions-list"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -189,18 +189,18 @@ const AdvancedPrep = ({
                                         onExplainWithAI={onExplainWithAI}
                                     />
                                 ))}
-                            </motion.div>
+                            </Motion.div>
                         )}
                     </AnimatePresence>
 
                     {!loading && questions.length === 0 && (
-                        <motion.div
+                        <Motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 0.2 }}
                             className="flex flex-col items-center justify-center py-40 text-center"
                         >
                             <h3 className="text-sm font-bold tracking-widest pl-[1.5em] italic">No Assets Detected</h3>
-                        </motion.div>
+                        </Motion.div>
                     )}
                 </div>
             </div>

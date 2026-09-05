@@ -11,8 +11,10 @@ from app.services.auth_service import login_service
 
 
 def main():
-    email = sys.argv[1] if len(sys.argv) > 1 else "het80630@gmail.com"
-    password = sys.argv[2] if len(sys.argv) > 2 else "1111"
+    if len(sys.argv) != 3:
+        raise SystemExit("Usage: python test_login.py <email> <password>")
+    email = sys.argv[1]
+    password = sys.argv[2]
 
     db = SessionLocal()
     try:

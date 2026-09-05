@@ -1,54 +1,11 @@
-import React from 'react';
-
-const events = [
-  { day: 5, title: 'Database Design Normalisation', status: 'verified', score: 94 },
-  { day: 4, title: 'Introduction to Node & Express servers', status: 'verified', score: 78 },
-  { day: 3, title: 'Connecting to RESTful APIs', status: 'verified', score: 91 },
-  { day: 2, title: 'Vanilla JS State Systems', status: 'verified', score: 88 },
-  { day: 1, title: 'Semantic HTML5 & Responsive Grids', status: 'verified', score: 95 }
-];
+import { EnrollmentRequired, WorkspaceError, WorkspaceLoading } from '../../components/InternshipState';
+import { useInternship } from '../../context/internshipContextValue';
 
 export default function InternshipSummary() {
-  return (
-    <div className="space-y-6">
-      <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
-        <div className="cw-card-header">
-          <div className="cw-card-title">
-            <i className="fa-solid fa-clock-rotate-left" />
-            <span>Progress Timeline & History</span>
-          </div>
-          <span className="cw-badge cw-badge-green">6 MILESTONES COMPLETED</span>
-        </div>
-
-        <div className="space-y-6" style={{ position: 'relative', paddingLeft: 16 }}>
-          {/* Vertical Timeline Bar */}
-          <div style={{ position: 'absolute', top: 8, bottom: 8, left: 6, width: 2, background: 'var(--cw-border)' }} />
-
-          {events.map(ev => (
-            <div key={ev.day} style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-              <div style={{
-                position: 'absolute',
-                left: -14,
-                top: 4,
-                width: 10,
-                height: 10,
-                borderRadius: '50%',
-                background: '#16a34a',
-                border: '2px solid var(--cw-white)'
-              }} />
-              <div className="flex-1 pb-6 pt-1">
-                <div className="flex justify-between items-start">
-                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--cw-text)' }}>Day {ev.day} — {ev.title}</div>
-                  <span className="cw-badge cw-badge-green">Score: {ev.score}/100</span>
-                </div>
-                <p style={{ fontSize: 13, color: 'var(--cw-text2)', marginTop: 4, lineHeight: 1.5 }}>
-                  Verified successfully via automated secure blockchain credential checks. Excellent work conforming to API specs!
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  const { data, loading, error, reload } = useInternship();
+  if (loading) return <WorkspaceLoading />;
+  if (error) return <WorkspaceError message={error} onRetry={reload} />;
+  if (!data?.enrollment) return <EnrollmentRequired />;
+  const { readiness, enrollment } = data;
+  return <div className="space-y-5"><div><h1 className="text-2xl font-bold">Skill evidence timeline</h1><p className="text-sm text-[var(--text-muted)] mt-1">Explainable readiness based on reviews, evidence and communication—not course completion alone.</p></div><div className="grid md:grid-cols-4 gap-4">{[['Career readiness',readiness.career_readiness_score],['Technical',readiness.technical_score],['Communication',readiness.communication_score],['Average review',enrollment.avg_score]].map(([label,value]) => <div key={label} className="p-5 bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl"><div className="text-3xl font-bold text-emerald-600">{Number(value).toFixed(0)}</div><div className="text-xs font-bold text-[var(--text-muted)] mt-1">{label}</div></div>)}</div><section className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6"><h2 className="font-bold">Dynamic skill graph</h2><p className="text-xs text-[var(--text-muted)] mt-1">{readiness.explanation}</p><div className="mt-5 space-y-4">{readiness.skills.map(item => <div key={item.skill}><div className="flex justify-between text-xs"><span className="font-bold">{item.skill} {item.verified ? <span className="text-emerald-600">✓ verified</span> : <span className="text-amber-600">· provisional</span>}</span><span>{item.proficiency}% · {item.evidence_count} evidence</span></div><div className="h-2 mt-2 bg-slate-500/10 rounded-full overflow-hidden"><div className="h-full bg-emerald-600" style={{ width: `${item.proficiency}%` }} /></div></div>)}{!readiness.skills.length && <p className="text-sm text-[var(--text-muted)]">Complete a project review to create your first skill evidence.</p>}</div></section><section className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6"><h2 className="font-bold mb-4">Work history</h2><div className="space-y-3">{data.tasks.filter(item => item.submission).map(item => <div key={item.day} className="flex justify-between gap-4 p-3 border border-[var(--border-color)] rounded-xl"><div><div className="font-bold text-sm">Day {item.day} · {item.title}</div><div className="text-xs text-[var(--text-muted)] mt-1">Attempt {item.submission.attempt} · {item.submission.status.replace('_',' ')}</div></div><strong className="text-emerald-600">{item.submission.total_score ?? '—'}</strong></div>)}</div></section></div>;
 }

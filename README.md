@@ -1,5 +1,7 @@
 ### CareerWizard AI
 
+CareerWizard is a database-backed career simulation and proof-of-work platform. Its internship workspace now connects published Supabase content to enrollment, adaptive briefs, GitHub repository review, evidence timelines, readiness scoring, standups, portfolio projects, resources, and credentials.
+
 CareerWizard AI is an AI-powered career development platform designed to help users **enhance their career journey** through smart automation and personalized guidance. The platform offers:
 
 - **AI-Powered Job Matching:** Receive job recommendations where the AI predicts **60%+ compatibility** based on your resume and profile. Only jobs that match your skillset and experience are highlighted.
@@ -81,10 +83,10 @@ This AI-driven approach ensures users get **actionable insights** at every step,
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React / Next.js  
-- **Backend:** FastAPI / Python  
-- **AI Layer:** LLM-based AI generation  
-- **Database:**  PostgreSQL  
+- **Frontend:** React 19 + Vite
+- **Backend:** FastAPI / Python
+- **AI Layer:** Google Gen AI SDK through a centralized gateway
+- **Database:** Supabase PostgreSQL + Storage
 <!-- - **Hosting:** Vercel / AWS / Render   -->
 
 ---
@@ -108,79 +110,51 @@ For support or questions: **het80630@gmail.com**
 
 ## Installation
 
-Follow these steps to set up **CareerWizard AI** locally.
-
-### 1. Clone the Repository
-
 ```bash
 git clone https://github.com/your-username/CareerWizard-AI.git
 cd CareerWizard-AI
-2. Backend Setup (FastAPI)
-Navigate to the backend folder:
 
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
+pip install -r backend/requirements.txt
+cp backend/.env.example backend/.env
 
-cd backend
-Create and activate a virtual environment (recommended):
-
-
-python -m venv venv
-# On Windows
-venv\Scripts\activate
-# On macOS/Linux
-source venv/bin/activate
-Install dependencies:
-
-
-pip install -r requirements.txt
-Run the FastAPI server:
-
-
-uvicorn main:app --reload
-The backend server will start at: http://127.0.0.1:8000
-
-3. Frontend Setup (React / Next.js)
-Navigate to the frontend folder:
-
-cd ../frontend
-Install dependencies:
-
-
+cd frontend
 npm install
-Start the development server:
+cd ..
+```
 
+Configure `backend/.env`, then start both services in separate terminals:
 
+```bash
+cd backend
+python3 -m uvicorn app.main:app --reload
+```
+
+```bash
+cd frontend
 npm run dev
-The frontend will be available at: http://localhost:3000/5173
+```
 
-4. Environment Variables
-Make sure to set the required environment variables for API keys, database connections, or AI services. You can create a .env file in both backend and frontend if needed.
+The frontend runs at `http://localhost:5173`; FastAPI and its OpenAPI docs run at `http://127.0.0.1:8000` and `/docs`.
 
-Example .env for backend:
+### Database setup
 
+Point `DATABASE_URL` at Supabase PostgreSQL. On backend startup, idempotent checked-in migrations run and missing catalog rows are inserted without overwriting existing content. Existing `day_content` rows receive an initial version snapshot and a 15/30-day review schedule.
 
-DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/jobrecdb
-GEMINI_API_KEY="your api key"
+For a scheduled multi-source job refresh:
 
+```bash
+cd backend
+python3 scrapper/job_scrap.py
+python3 scrapper/sync_jobs.py --input scrapper/jobs_output.json
+```
 
-5. Optional: Database Setup
-If using MongoDB or PostgreSQL, make sure the database is running.
+Run this workflow from your deployment scheduler (for example every 6 hours). The importer deduplicates and upserts into Supabase; fresher suitability and source-posted freshness drive ranking.
 
-Update DATABASE_URL in .env accordingly.
+### Quality gates
 
-Run any migrations or seed scripts if available.
-
-6. Test the Installation
-Open your browser at http://localhost:3000 to see the frontend.
-
-Test API endpoints at http://127.0.0.1:8000/docs.
-
-Now your CareerWizard AI should be running locally! 🚀
-
----
-
-If you want, I can also **update your existing README.md** with this installation section in a way that looks **integrated and professional** with your current features and project description.  
-
-Do you want me to do that?
-
-
----
+```bash
+cd backend && python3 -m unittest discover -s tests
+cd ../frontend && npm run lint && npm run build
+```

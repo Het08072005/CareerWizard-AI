@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import './CertificateView.css';
 
@@ -16,35 +16,21 @@ export default function CertificateView() {
 
   const initialCertificate = location.state?.certificate || storedCertificate;
 
-  const [certData, setCertData] = useState({
+  const [certData] = useState({
     name: initialCertificate?.name || 'Het Panchal',
     role: 'Full-Stack Development Track',
     days: '30',
     start: 'May 1, 2025',
     end: 'May 30, 2025',
-    certid: certificateId || 'CW-2025-INT-0047',
     score: '9.2',
     tasks: '24/25',
     grade: 'A+',
     programTitle: 'Professional Internship Program',
     verified: true,
     blockchain: true,
+    ...(initialCertificate || {}),
+    certid: initialCertificate?.certid || certificateId || 'CW-2025-INT-0047',
   });
-
-  useEffect(() => {
-    if (initialCertificate) {
-      setCertData((prev) => ({
-        ...prev,
-        ...initialCertificate,
-        certid: initialCertificate.certid || certificateId || prev.certid,
-      }));
-    } else if (certificateId) {
-      setCertData((prev) => ({
-        ...prev,
-        certid: certificateId,
-      }));
-    }
-  }, [initialCertificate, certificateId]);
 
   const handlePrint = () => {
     window.print();

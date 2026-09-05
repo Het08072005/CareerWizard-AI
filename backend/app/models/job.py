@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, Table, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Text, Table, ForeignKey, Boolean, DateTime, Numeric
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.database import Base
@@ -25,6 +26,18 @@ class Job(Base):
     apply_link = Column(String(500))
     is_api = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    external_id = Column(String(255), nullable=True)
+    source = Column(String(80), nullable=True)
+    posted_at = Column(DateTime(timezone=True), nullable=True)
+    fetched_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    experience_level = Column(String(30), nullable=True)
+    is_remote = Column(Boolean, default=False)
+    freshness_score = Column(Numeric(5, 2), default=0)
+    relevance_score = Column(Numeric(5, 2), default=0)
+    fingerprint = Column(String(64), nullable=True, unique=True)
+    raw_payload = Column(JSONB, nullable=True)
 
 
     required_skills = relationship("Skill", secondary=job_skill_table, back_populates="jobs")

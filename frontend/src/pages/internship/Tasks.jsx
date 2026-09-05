@@ -1,174 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { submitInternshipTask } from '../../api/internshipApi';
+import MarkdownContent from '../../components/MarkdownContent';
+import { EnrollmentRequired, WorkspaceError, WorkspaceLoading } from '../../components/InternshipState';
+import { useInternship } from '../../context/internshipContextValue';
 
-const CustomCheckCircle = ({ size = 18, strokeWidth = 2.5 }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-  </svg>
-);
-
-const initialTasks = [
-  { day: 1, title: 'HTML5 & Responsive Layouts', domain: 'frontend', level: 'Beginner', tags: ['HTML5', 'CSS Grid', 'Flexbox'], status: 'done', score: 95 },
-  { day: 2, title: 'Vanilla JS State Management', domain: 'frontend', level: 'Intermediate', tags: ['ES6+', 'State', 'DOM'], status: 'done', score: 88 },
-  { day: 3, title: 'Connecting to RESTful APIs', domain: 'frontend', level: 'Intermediate', tags: ['Fetch API', 'JSON', 'Async'], status: 'done', score: 91 },
-  { day: 4, title: 'Introduction to Node & Express', domain: 'backend', level: 'Beginner', tags: ['Node.js', 'Express', 'HTTP'], status: 'done', score: 78 },
-  { day: 5, title: 'Database Design & SQL Schemas', domain: 'backend', level: 'Intermediate', tags: ['PostgreSQL', 'SQL', 'Schema'], status: 'done', score: 94 },
-  { day: 6, title: 'Build a REST API with JWT Auth', domain: 'backend', level: 'Advanced', tags: ['JWT', 'Bcrypt', 'Docker'], status: 'active', score: null },
-  { day: 7, title: 'Middleware & Custom Rate Limiters', domain: 'backend', level: 'Advanced', tags: ['Express', 'Security', 'Redis'], status: 'available', score: null },
-  { day: 8, title: 'Cloud File Upload & Management', domain: 'backend', level: 'Intermediate', tags: ['AWS S3', 'Multer', 'APIs'], status: 'available', score: null },
-  { day: 9, title: 'Real-time WebSockets with Socket.io', domain: 'fullstack', level: 'Advanced', tags: ['WebSockets', 'Realtime'], status: 'locked', score: null }
-];
+const colors = { done: 'text-emerald-600 bg-emerald-500/10', approved: 'text-emerald-600 bg-emerald-500/10', active: 'text-blue-600 bg-blue-500/10', review: 'text-purple-600 bg-purple-500/10', changes_requested: 'text-amber-600 bg-amber-500/10', available: 'text-slate-600 bg-slate-500/10', locked: 'text-slate-400 bg-slate-500/5' };
 
 export default function InternshipTasks() {
-  const [filter, setFilter] = useState('all');
-  const [tasks, setTasks] = useState(initialTasks);
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [modalGit, setModalGit] = useState('');
-
-  const filteredTasks = tasks.filter(t => {
-    if (filter === 'all') return true;
-    if (filter === 'completed') return t.status === 'done';
-    if (filter === 'active') return t.status === 'active';
-    return t.domain === filter;
-  });
-
-  return (
-    <div className="space-y-6">
-      <div className="bg-[#fbf8f1] rounded-3xl border border-[var(--gold)]/20 p-6 shadow-[0_4px_20px_rgba(160,120,64,0.04)]">
-        <div className="cw-card-header">
-          <div className="cw-card-title">
-            <i className="fa-solid fa-list-check" />
-            <span>Assigned Internship Tasks</span>
-          </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {['all', 'completed', 'active', 'frontend', 'backend'].map(f => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className="cw-btn cw-btn-sm"
-                style={{
-                  background: filter === f ? 'var(--cw-green-mid)' : 'var(--cw-bg2)',
-                  color: filter === f ? '#fff' : 'var(--cw-text)',
-                  borderColor: filter === f ? 'var(--cw-green-mid)' : 'var(--cw-border)',
-                  textTransform: 'uppercase',
-                  fontSize: 10
-                }}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {filteredTasks.map(task => (
-            <div
-              key={task.day}
-              onClick={() => setSelectedTask(task)}
-              className="p-4 rounded-xl border border-black/5 hover:border-[var(--gold)]/30 bg-transparent hover:bg-black/[0.02] transition flex items-center justify-between cursor-pointer"
-            >
-              <div className="flex items-center gap-4">
-                <div style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 8,
-                  background: task.status === 'done' ? 'rgba(22, 163, 74, 0.12)' : task.status === 'active' ? 'rgba(37, 99, 235, 0.12)' : 'rgba(0,0,0,0.03)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: task.status === 'done' ? '#16a34a' : task.status === 'active' ? '#2563eb' : 'var(--cw-muted)',
-                  fontSize: 18
-                }}>
-                  {task.status === 'done' ? <CustomCheckCircle size={20} strokeWidth={2.5} /> : <i className={`fa-solid ${task.status === 'active' ? 'fa-bolt' : 'fa-lock'}`} />}
-                </div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700 }}>
-                    Day {task.day} — {task.title}
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--cw-muted)', marginTop: 2 }}>
-                    {task.domain.toUpperCase()} · {task.level} · {task.tags.join(', ')}
-                  </div>
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                {task.score && (
-                  <span className="cw-badge cw-badge-green" style={{ fontSize: 11 }}>
-                    Score: {task.score}/100
-                  </span>
-                )}
-                <span className={`cw-badge ${task.status === 'done' ? 'cw-badge-green' : task.status === 'active' ? 'cw-badge-amber' : 'cw-badge-secondary'}`}>
-                  {task.status === 'done' ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <CustomCheckCircle size={14} strokeWidth={2.8} /> DONE
-                    </span>
-                  ) : task.status === 'active' ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <i className="fa-solid fa-bolt" style={{ fontSize: 10 }} /> ACTIVE
-                    </span>
-                  ) : (
-                    task.status.toUpperCase()
-                  )}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* DETAIL MODAL */}
-      {selectedTask && (
-        <div className="cw-modal-overlay" onClick={() => setSelectedTask(null)}>
-          <div className="cw-modal-content" onClick={e => e.stopPropagation()}>
-            <div className="cw-modal-header">
-              <div className="cw-modal-title">
-                Day {selectedTask.day} — {selectedTask.title}
-              </div>
-              <button onClick={() => setSelectedTask(null)} style={{ background: 'transparent', border: 'none', color: 'var(--cw-text)', fontSize: 18 }}>
-                ✕
-              </button>
-            </div>
-            <div className="cw-modal-body space-y-4">
-              <div className="flex gap-2">
-                {selectedTask.tags.map(t => (
-                  <span key={t} className="cw-tag">{t}</span>
-                ))}
-              </div>
-              <p style={{ fontSize: 13, color: 'var(--cw-text2)', lineHeight: 1.6 }}>
-                This is the complete assignment outline for Day {selectedTask.day}. It tests your domain expertise on {selectedTask.tags.join(', ')} using our automated logic evaluation protocols.
-              </p>
-
-              {selectedTask.score ? (
-                <div style={{ padding: 14, background: 'rgba(22, 163, 74, 0.08)', borderRadius: 10, border: '1px solid #16a34a' }}>
-                  <div style={{ fontWeight: 700, color: '#16a34a', fontSize: 13 }}>Passing Assessment Checked</div>
-                  <p style={{ fontSize: 12, color: 'var(--cw-text2)', marginTop: 4 }}>
-                    Score: {selectedTask.score}/100. Feedback: The REST endpoints match strict HTTP conventions and database persistence functions cleanly.
-                  </p>
-                </div>
-              ) : selectedTask.status !== 'locked' ? (
-                <div className="cw-submit-box">
-                  <div className="cw-submit-label">PASTE GITHUB URL</div>
-                  <div className="flex gap-2">
-                    <input
-                      type="url"
-                      className="text-input"
-                      placeholder="https://github.com/username/repo"
-                      value={modalGit}
-                      onChange={e => setModalGit(e.target.value)}
-                    />
-                    <button className="cw-btn cw-btn-primary cw-btn-sm" onClick={() => { if (!modalGit) return; alert('Submitted successfully!'); setSelectedTask(null); }}>
-                      Submit
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ color: 'var(--cw-muted)', fontStyle: 'italic', fontSize: 13 }}>
-                  This task is currently locked. Complete preceding day milestones to unlock.
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  const { data, loading, error, reload } = useInternship();
+  const [selected, setSelected] = useState(null);
+  const [github, setGithub] = useState('');
+  const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
+  if (loading) return <WorkspaceLoading />;
+  if (error) return <WorkspaceError message={error} onRetry={reload} />;
+  if (!data?.enrollment) return <EnrollmentRequired />;
+  const submit = async (event) => { event.preventDefault(); setSaving(true); setMessage(''); try { const result = await submitInternshipTask(selected.day, github); setMessage(`Review ${result.submission.status}: ${result.submission.total_score}/100`); setGithub(''); await reload(); setSelected(data.tasks.find(task => task.day === selected.day)); } catch (requestError) { const detail = requestError.response?.data?.detail; setMessage(typeof detail === 'string' ? detail : JSON.stringify(detail)); } finally { setSaving(false); } };
+  return <div className="space-y-5"><div><h1 className="text-2xl font-bold">Sprint backlog</h1><p className="text-sm text-[var(--text-muted)] mt-1">Published briefs, review states and submission history come directly from Supabase.</p></div>{message && <div className="p-3 rounded-xl bg-blue-500/10 text-blue-700 text-sm">{message}</div>}<div className="grid grid-cols-1 lg:grid-cols-5 gap-5"><div className="lg:col-span-2 space-y-3 max-h-[75vh] overflow-y-auto pr-1">{data.tasks.map(task => <button disabled={task.status === 'locked' || !task.enabled} onClick={() => setSelected(task)} key={task.day} className={`w-full text-left p-4 rounded-xl border transition ${selected?.day === task.day ? 'border-emerald-500' : 'border-[var(--border-color)]'} bg-[var(--bg-sidebar)] disabled:opacity-50`}><div className="flex justify-between gap-3"><div><span className="text-[10px] uppercase tracking-widest text-[var(--text-muted)]">Day {task.day} · Phase {task.phase}</span><div className="font-bold text-sm mt-1">{task.title}</div></div><span className={`h-fit px-2 py-1 rounded-full text-[9px] font-bold ${colors[task.status] || colors.available}`}>{task.status.replace('_',' ')}</span></div><div className="flex gap-1 flex-wrap mt-3">{task.tags.slice(0,4).map(tag => <span key={tag} className="text-[9px] px-2 py-0.5 rounded bg-slate-500/10">{tag}</span>)}</div></button>)}</div><div className="lg:col-span-3 bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6">{selected ? <><div className="flex justify-between"><div><span className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold">Day {selected.day} · {selected.content_type}</span><h2 className="text-xl font-bold mt-1">{selected.title}</h2></div>{selected.submission?.total_score != null && <span className="text-2xl font-bold text-emerald-600">{selected.submission.total_score}</span>}</div><div className="mt-5 max-h-[45vh] overflow-y-auto"><MarkdownContent markdown={selected.markdown} /></div>{selected.submission && <div className="mt-5 p-4 rounded-xl bg-slate-500/5 border border-[var(--border-color)]"><div className="font-bold text-sm capitalize">{selected.submission.status.replace('_',' ')}</div><p className="text-xs text-[var(--text-muted)] mt-1">{selected.submission.feedback}</p>{selected.submission.improvements.map(item => <div key={item} className="text-xs mt-2 text-amber-600">• {item}</div>)}</div>}{['task','group'].includes(selected.content_type) && selected.status !== 'done' && <form onSubmit={submit} className="mt-5 pt-5 border-t border-[var(--border-color)]"><input required type="url" value={github} onChange={event => setGithub(event.target.value)} placeholder="https://github.com/owner/repository" className="w-full px-4 py-2.5 rounded-xl bg-transparent border border-[var(--border-color)] text-sm" /><button disabled={saving} className="mt-2 w-full py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold disabled:opacity-50">{saving ? 'Inspecting repository…' : selected.submission ? 'Submit improved attempt' : 'Submit for review'}</button></form>}</> : <div className="h-full min-h-80 flex items-center justify-center text-sm text-[var(--text-muted)]">Select an unlocked day to open its brief.</div>}</div></div></div>;
 }

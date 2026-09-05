@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { XIcon, SearchIcon, CheckIcon, BuildingOfficeIcon, MapPinIcon, CurrencyDollarIcon, BriefcaseIcon, SparklesIcon, ChevronRightIcon, AdjustmentsHorizontalIcon } from './ui/Icons';
-import { ThemeContext } from '../context/ThemeContext';
+import { ThemeContext } from '../context/themeContextValue';
 
 const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) => {
   const { isDark } = useContext(ThemeContext);
@@ -80,7 +80,7 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <Motion.div
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
@@ -131,7 +131,7 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
                     <tab.icon size={15} className={activeTab === tab.id ? tabColor : 'group-hover:text-slate-400'} />
                     <span className="text-[7.5px] font-black uppercase tracking-tight text-center">{tab.label}</span>
                     {activeTab === tab.id && (
-                      <motion.div layoutId="activeTabSidebar" className={`absolute bottom-0 left-0 right-0 h-[2px] ${tabBorderBg}`} />
+                      <Motion.div layoutId="activeTabSidebar" className={`absolute bottom-0 left-0 right-0 h-[2px] ${tabBorderBg}`} />
                     )}
                   </button>
                 ))}
@@ -263,7 +263,7 @@ const JobFilterModal = ({ isOpen, onClose, filters, onFilterChange, options }) =
               </button>
             </div>
           </div>
-        </motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   );

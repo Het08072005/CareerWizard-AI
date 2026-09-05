@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import '../../css/internship.css';
-import { DEFAULT_DAY1, DEFAULT_DAY5, SNIPPETS } from './admin_constants';
+import { DEFAULT_DAY1, SNIPPETS } from './admin_constants';
 import '../../css/admintaskpage.css';
 import { getDayContent, getDayContentModules, saveDayContent, deleteDayContent, uploadResource, getAllDayContent, bulkSaveDayContent } from '../../api/adminInternshipApi';
 
 const day1Md = DEFAULT_DAY1.replace(/\\n/g, '\n');
-const day5Md = DEFAULT_DAY5.replace(/\\n/g, '\n');
 
 const day1MdInt = `# Day 1 — Data Preprocessing Deep Dive\nWelcome to the Intermediate track. We assume you know the basics of Python and ML. Today, we focus heavily on Data Preprocessing and EDA.\n\n:::wyl\n- Handling Missing Data strategies\n- Advanced Pandas operations (groupby, pivot)\n- Seaborn visualization techniques\n:::\n\n:::concept\n### Handling Missing Data\nIn real-world datasets, data is rarely clean. We use strategies like Mean/Median imputation for numericals, and Mode/Forward-Fill for categoricals.\n:::\n\n:::code python\n### Imputation Example\nimport pandas as pd\nfrom sklearn.impute import SimpleImputer\n\ndf = pd.read_csv('data.csv')\nimputer = SimpleImputer(strategy='median')\ndf['Age'] = imputer.fit_transform(df[['Age']])\n:::\n\n:::quiz\nQ: What is the best strategy for missing categorical data?\nA: Mean imputation\nB: Mode imputation\nC: Dropping the column\nD: Median imputation\nCORRECT: B\nEXPLAIN: Categorical data doesn't have a numerical mean or median, so we use the most frequent value (Mode).\n:::`;
 
@@ -1147,7 +1146,6 @@ export default function Admintaskpage() {
   const [activeBtn, setActiveBtn] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const [quizAnswers, setQuizAnswers] = useState({});
   const [resourceFiles, setResourceFiles] = useState([]);
   const [resourceDragOver, setResourceDragOver] = useState(false);
   const resourceInputRef = useRef(null);
@@ -1749,7 +1747,7 @@ export default function Admintaskpage() {
     }
 
     if (type === 'quiz') {
-      let question = '', opts = { A: '', B: '', C: '', D: '' }, correct = 'A', explain = '';
+      let question = '', opts = { A: '', B: '', C: '', D: '' };
       lines.forEach(l => {
         const lm = l.trim();
         if (lm.startsWith('Q:')) question = lm.replace('Q:', '').trim();
@@ -1757,8 +1755,6 @@ export default function Admintaskpage() {
         else if (lm.startsWith('B:')) opts.B = lm.replace('B:', '').trim();
         else if (lm.startsWith('C:')) opts.C = lm.replace('C:', '').trim();
         else if (lm.startsWith('D:')) opts.D = lm.replace('D:', '').trim();
-        else if (lm.startsWith('CORRECT:')) correct = lm.replace('CORRECT:', '').trim();
-        else if (lm.startsWith('EXPLAIN:')) explain = lm.replace('EXPLAIN:', '').trim();
       });
       const optsHtml = ['A', 'B', 'C', 'D'].filter(l => opts[l]).map(l => {
         return `<div class="p-quiz-opt" onclick="const p=this.parentElement; Array.from(p.children).forEach(c=>c.classList.remove('selected')); this.classList.add('selected');">
@@ -1959,7 +1955,7 @@ export default function Admintaskpage() {
     let i = 0;
 
     const nextLine = () => { i++; };
-    const collectBlock = (openTag) => {
+    const collectBlock = () => {
       let content = [];
       nextLine();
       while (i < lines.length) {
@@ -2099,6 +2095,8 @@ export default function Admintaskpage() {
       setPreviewHtml(parseMarkdown(mdContent));
     }, 500);
     return () => clearTimeout(timer);
+  // Parser is editor-local; rerendering is intentionally debounced only by markdown changes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mdContent]);
 
   useEffect(() => {
@@ -2110,6 +2108,8 @@ export default function Admintaskpage() {
       setMdContent(days[currentDay - 1][activeLevel].markdown || '');
     }
     loadFromDB();
+  // Day/level/setup define the load boundary; local day edits must not trigger DB reloads.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDay, activeLevel, setup]);
 
   const handleMdChange = (newVal) => {
@@ -2131,21 +2131,6 @@ export default function Admintaskpage() {
     } else {
       setMdContent('');
     }
-  };
-
-  const addDay = () => {
-    const n = days.length + 1;
-    const setupTypeValue = getSetupTypeValue(setup.name);
-    const newDay = {
-      num: n,
-      beginner: getLevelTemplate(n, 'beginner', groupSize, setupTypeValue),
-      intermediate: getLevelTemplate(n, 'intermediate', groupSize, setupTypeValue),
-      advanced: getLevelTemplate(n, 'advanced', groupSize, setupTypeValue),
-    };
-    setDays([...days, newDay]);
-    setSetup({ ...setup, totalDays: n });
-    selectDay(n);
-    triggerToast(`Day ${n} added!`);
   };
 
   const completeCurrentDay = () => {
@@ -2425,7 +2410,9 @@ export default function Admintaskpage() {
                 try {
                   const modRes = await getDayContentModules();
                   setExistingModules(modRes.modules || []);
-                } catch (e) {}
+                } catch (moduleError) {
+                  console.warn('Module list refresh failed:', moduleError);
+                }
                 triggerToast("New module created in database! ✓");
               } catch (e) {
                 console.error("Failed to pre-save new module:", e);
@@ -2446,9 +2433,6 @@ export default function Admintaskpage() {
 
   const curDayObj = days[currentDay - 1]?.[activeLevel];
   const activeLevelEnabled = curDayObj?.enabled !== false;
-  const completedCount = days.filter(d => d[activeLevel]?.done).length;
-  const pct = Math.round((completedCount / days.length) * 100);
-
   return (
     <div className="cw-admin-wrap" style={{ height: '100%', width: '100%', display: 'flex', overflow: 'hidden' }}>
       <div className="shell" style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>

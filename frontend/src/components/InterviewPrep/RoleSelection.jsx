@@ -1,20 +1,9 @@
 import React, { useContext } from 'react';
-import { motion } from 'framer-motion';
-import { ThemeContext } from '../../context/ThemeContext';
+import { motion as Motion } from 'framer-motion';
+import { ThemeContext } from '../../context/themeContextValue';
 
 const RoleSelection = ({ roles, onSelect }) => {
     const { isDark } = useContext(ThemeContext);
-
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.12,
-                delayChildren: 0.1
-            }
-        }
-    };
 
     const cardVariants = {
         hidden: {
@@ -40,7 +29,7 @@ const RoleSelection = ({ roles, onSelect }) => {
         <div className="w-full text-[var(--text-main)] min-h-screen bg-transparent p-4 md:px-8 py-5 selection:bg-indigo-500/30">
             <div className="w-full max-w-[1500px] mx-auto relative z-10">
                 {/* Editorial Header */}
-                <motion.header
+                <Motion.header
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -54,14 +43,14 @@ const RoleSelection = ({ roles, onSelect }) => {
                             Configure your specialized interview environment for precise AI-driven preparation.
                         </p>
                     </div>
-                </motion.header>
+                </Motion.header>
 
                 {/* Role Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full pb-16">
                     {roles.map((r, idx) => {
                         const RoleIcon = r.icon;
                         return (
-                            <motion.button
+                            <Motion.button
                                 key={r.name}
                                 custom={idx}
                                 variants={cardVariants}
@@ -107,7 +96,7 @@ const RoleSelection = ({ roles, onSelect }) => {
                                         Start Prep
                                     </div>
                                 </div>
-                            </motion.button>
+                            </Motion.button>
                         );
                     })}
                 </div>

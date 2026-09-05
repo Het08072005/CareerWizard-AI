@@ -3,9 +3,9 @@ import api from "../api/axiosClient";
 import JobCard from "./JobCard";
 import JobFilter from "./JobFilter";
 import JobFilterModal from "./JobFilterModal";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { DocumentIcon, BriefcaseIcon, XIcon, ExclamationCircleIcon, CheckIcon, RefreshCwIcon } from "./ui/Icons";
-import { ThemeContext } from "../context/ThemeContext";
+import { ThemeContext } from "../context/themeContextValue";
 
 const JobMatchOutlet = () => {
   const { isDark } = useContext(ThemeContext);
@@ -82,8 +82,6 @@ const JobMatchOutlet = () => {
     loadAllJobs();
   }, []);
 
-  const handleUploadClick = () => fileInputRef.current.click();
-
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -118,16 +116,17 @@ const JobMatchOutlet = () => {
       const result = response.data.map((item) => ({
         ...item.job,
         match: item.match,
+        matchBreakdown: item.breakdown,
         requiredSkills: item.job.required_skills || []
       }));
 
       const filteredResult = result.filter((job) => job.match >= 60);
-      const sortedResult = filteredResult.sort((a, b) => b.match - a.match);
+      const sortedResult = filteredResult.sort((a, b) => b.match - a.match || (b.freshness_score || 0) - (a.freshness_score || 0));
 
       setOriginalJobs(sortedResult);
       setJobs(sortedResult);
 
-    } catch (err) {
+    } catch {
       setError("Failed to analyze resume and match jobs. Please check network and try again.");
     } finally {
       setLoading(false);
@@ -171,7 +170,7 @@ const JobMatchOutlet = () => {
     setIsFetchingApi(true);
     setActiveTab("latest");
     setError("");
-    const searchQuery = filters.search.trim() || "Developer";
+    const searchQuery = filters.search.trim() || "fresher software developer";
     try {
       const res = await api.get("/jobs/fetch-latest", {
         params: { query: searchQuery, location: "India" }
@@ -197,7 +196,7 @@ const JobMatchOutlet = () => {
         return updated;
       });
 
-    } catch (err) {
+    } catch {
       setError("Failed to fetch latest jobs from API. Please try again later.");
     } finally {
       setIsFetchingApi(false);
@@ -325,11 +324,13 @@ const JobMatchOutlet = () => {
 
     // 5. Final Sorting based on sortBy state
     temp.sort((a, b) => {
-      const dateA = new Date(a.created_at || "2024-01-01");
-      const dateB = new Date(b.created_at || "2024-01-01");
+      const dateA = new Date(a.posted_at || a.fetched_at || a.created_at || "2024-01-01");
+      const dateB = new Date(b.posted_at || b.fetched_at || b.created_at || "2024-01-01");
 
       if (sortBy === "latest") {
-        return dateB - dateA;
+        const priorityA = (a.match || 0) * 0.7 + (a.freshness_score || 0) * 0.2 + (a.relevance_score || 0) * 0.1;
+        const priorityB = (b.match || 0) * 0.7 + (b.freshness_score || 0) * 0.2 + (b.relevance_score || 0) * 0.1;
+        return priorityB - priorityA || dateB - dateA;
       } else {
         return dateA - dateB;
       }
@@ -370,13 +371,13 @@ const JobMatchOutlet = () => {
       <div className={`absolute top-0 right-0 w-[500px] h-[500px] ${isDark ? 'bg-cyan-500/5' : 'hidden'} rounded-full blur-[120px] pointer-events-none`} />
       <div className={`absolute bottom-0 left-0 w-[400px] h-[400px] ${isDark ? 'bg-indigo-500/5' : 'bg-indigo-500/3'} rounded-full blur-[100px] pointer-events-none`} />
 
-      <motion.div
+      <Motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="max-w-[1300px] mx-auto relative z-10"
       >
-        <motion.div variants={itemVariants} className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4 relative">
+        <Motion.div variants={itemVariants} className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4 relative">
           <div className="flex flex-col gap-1 group">
             <h3 style={{ fontFamily: '"Cormorant Garamond", serif' }} className="text-[32px] font-bold text-[var(--text-main)] tracking-tight leading-none cursor-default">
               AI Job Matching
@@ -385,9 +386,9 @@ const JobMatchOutlet = () => {
           <p className="text-[13px] text-[var(--text-muted)] font-medium max-w-sm md:text-right leading-relaxed opacity-75">
             Advanced requirement matching with intelligent resume analysis.
           </p>
-        </motion.div>
+        </Motion.div>
 
-        <motion.div variants={itemVariants} className="flex flex-col">
+        <Motion.div variants={itemVariants} className="flex flex-col">
           {/* Filters Area */}
           <div className="mb-6 relative z-20">
             <JobFilter
@@ -441,13 +442,13 @@ const JobMatchOutlet = () => {
               }
             />
           </div>
-        </motion.div>
+        </Motion.div>
 
         {error && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mb-10 p-5 bg-rose-500/[0.03] border border-rose-500/20 text-rose-500 rounded-xl flex items-center font-black text-[10px] uppercase tracking-[0.2em] max-w-3xl mx-auto backdrop-blur-md">
+          <Motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mb-10 p-5 bg-rose-500/[0.03] border border-rose-500/20 text-rose-500 rounded-xl flex items-center font-black text-[10px] uppercase tracking-[0.2em] max-w-3xl mx-auto backdrop-blur-md">
             <ExclamationCircleIcon className="mr-4 opacity-50" size={16} />
             {error}
-          </motion.div>
+          </Motion.div>
         )}
 
         {initialLoad ? (
@@ -646,7 +647,7 @@ const JobMatchOutlet = () => {
             )}
           </div>
         )}
-      </motion.div>
+      </Motion.div>
 
       <JobFilterModal
         isOpen={isFilterModalOpen}

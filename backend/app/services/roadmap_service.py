@@ -1,15 +1,13 @@
-import os
 import json
 from dotenv import load_dotenv
-import google.generativeai as genai
 from app.schemas.roadmap_schema import Month, Week, RoadmapResponse
+from app.services.ai_gateway import get_ai_gateway
+import logging
 
 load_dotenv()
 
-# Configure Gemini API
-api_key = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key=api_key)
 MODEL_NAME = "models/gemini-2.5-flash"
+logger = logging.getLogger(__name__)
 
 
 
@@ -124,15 +122,7 @@ CONTENT GENERATION RULES:
 """
 
     try:
-        print("Calling Gemini PROPER API...")
-        model = genai.GenerativeModel(MODEL_NAME)
-        response = model.generate_content(contents=prompt)
-
-        if not response or not response.text:
-            print("❌ Empty response from Gemini — using fallback")
-            return _get_fallback_roadmap(domain, months)
-
-        result_json = response.text.strip()
+        result_json = get_ai_gateway().generate_text(prompt, model=MODEL_NAME, json_mode=True)
 
         # Extract JSON portion
         start = result_json.find("{")
@@ -164,6 +154,6 @@ CONTENT GENERATION RULES:
 
         return RoadmapResponse(domain=domain, months=months_list)
 
-    except Exception as e:
-        print("❌ Error:", e)
+    except Exception as exc:
+        logger.warning("AI roadmap generation failed: %s", exc.__class__.__name__)
         return _get_fallback_roadmap(domain, months)

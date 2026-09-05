@@ -1,454 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { saveStandup, submitInternshipTask } from '../../api/internshipApi';
+import { useInternship } from '../../context/internshipContextValue';
+import MarkdownContent from '../../components/MarkdownContent';
+import { EnrollmentRequired, WorkspaceError, WorkspaceLoading } from '../../components/InternshipState';
+
+const Stat = ({ icon, value, label, hint }) => <div className="bg-[var(--bg-sidebar)] p-5 rounded-2xl border border-[var(--border-color)] flex items-center gap-4"><div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center"><i className={`fa-solid ${icon}`} /></div><div><div className="text-2xl font-bold text-[var(--text-main)]">{value}</div><div className="text-xs font-bold text-[var(--text-muted)]">{label}</div><div className="text-[10px] text-emerald-600 mt-1">{hint}</div></div></div>;
 
 export default function InternshipDashboard() {
+  const { data, loading, error, reload } = useInternship();
   const navigate = useNavigate();
-  const [activeLevel, setActiveLevel] = useState('intermediate');
-  const [gitLink, setGitLink] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(6);
-  const [scoreCount, setScoreCount] = useState(0);
+  const [githubUrl, setGithubUrl] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const [standup, setStandup] = useState({ yesterday: '', today: '', blockers: '' });
 
-  useEffect(() => {
-    let start = 0;
-    const target = 89;
-    const duration = 1500;
-    const increment = target / (duration / 16);
+  if (loading) return <WorkspaceLoading />;
+  if (error) return <WorkspaceError message={error} onRetry={reload} />;
+  if (!data?.enrollment) return <EnrollmentRequired />;
 
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setScoreCount(target);
-        clearInterval(timer);
-      } else {
-        setScoreCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, []);
-  const handleGitSubmit = (e) => {
-    e.preventDefault();
-    if (!gitLink) {
-      alert('Please paste your GitHub repository URL first!');
-      return;
-    }
-    if (!gitLink.startsWith('https://github.com/')) {
-      alert('Please enter a valid GitHub repository URL!');
-      return;
-    }
-    setIsSubmitted(true);
+  const { enrollment, readiness, today, recent_submissions: recent } = data;
+  const handleSubmit = async (event) => {
+    event.preventDefault(); setSubmitting(true); setMessage('');
+    try { const result = await submitInternshipTask(today.day, githubUrl); setMessage(`Review complete: ${result.submission.total_score}/100 — ${result.submission.status.replace('_', ' ')}`); setGithubUrl(''); await reload(); }
+    catch (requestError) { setMessage(requestError.response?.data?.detail || 'Submission failed.'); }
+    finally { setSubmitting(false); }
+  };
+  const handleStandup = async (event) => {
+    event.preventDefault(); setSubmitting(true); setMessage('');
+    try { const result = await saveStandup(standup); setMessage(`Standup saved. Communication score: ${result.standup.communication_score}`); await reload(); }
+    catch (requestError) { setMessage(requestError.response?.data?.detail || 'Standup could not be saved.'); }
+    finally { setSubmitting(false); }
   };
 
-  return (
-    <div className="space-y-6 pb-12 font-sans">
-      {/* TOP BANNER / PROGRESS SECTION */}
-      <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 rounded-2xl shadow-[0_8px_30px_rgba(160,120,64,0.06)] relative overflow-hidden">
-        {/* Pills strip — subtle bg + bottom border */}
-        <div className="flex flex-wrap items-center gap-2 px-5 sm:px-7 pt-5 pb-0">
-          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 font-mono flex items-center gap-1.5">
-            <i className="fa-solid fa-microchip text-[10px]" /> AI / ML Internship
-          </span>
-          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-600 border border-blue-200 flex items-center gap-1.5">
-            ★ Top 2%
-          </span>
-          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-white text-[var(--cw-muted)] border border-[var(--cw-border)] flex items-center gap-1.5">
-            ✦ Top Rated
-          </span>
-        </div>
-
-        {/* Main body */}
-        <div className="px-5 sm:px-7 pt-4 pb-6">
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
-
-            {/* Left: Headline + subtitle */}
-            <div className="flex-1">
-              <div className="text-[26px] sm:text-[30px] font-bold text-[var(--cw-text)] tracking-tight leading-snug" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
-                Build Real Projects & Improve your skills.
-              </div>
-              <div className="mt-4 pl-3 border-l-[3px] border-emerald-500">
-                <p className="text-[12px] text-[var(--cw-muted)] font-medium leading-relaxed">
-                  Hands-on projects. Real-world impact.<br />Stand out with verified skills.
-                </p>
-              </div>
-            </div>
-
-            {/* Right: Score Card */}
-            <div className="flex-shrink-0 bg-[#fbf8f1] border border-[var(--cw-border)] rounded-2xl px-8 py-5 shadow-[0_4px_20px_rgba(160,120,64,0.06)] min-w-[240px]">
-              {/* Header label */}
-              <div className="text-[9px] font-black tracking-[0.22em] text-[var(--cw-muted)] uppercase font-mono mb-4 text-center">
-                Your Score
-              </div>
-              {/* Ring + divider + rank */}
-              <div className="flex items-center justify-center gap-6">
-                {/* Ring */}
-                <div className="relative w-[76px] h-[76px] flex-shrink-0">
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" stroke="currentColor" className="text-[var(--gold)] opacity-20" strokeWidth="9" fill="transparent" />
-                    <circle cx="50" cy="50" r="40" stroke="var(--gold)" strokeWidth="9" fill="transparent"
-                      strokeDasharray="251.3" strokeDashoffset={251.3 - (251.3 * scoreCount) / 100} strokeLinecap="round"
-                      style={{ transition: 'stroke-dashoffset 0.1s linear' }} />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center pt-0.5 pl-1.5">
-                    <span className="text-[32px] text-[var(--cw-text)] leading-none italic" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
-                      {scoreCount}<span className="text-[14px] text-[var(--cw-muted)] ml-0.5">%</span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Vertical divider */}
-                <div className="w-px h-12 bg-[var(--cw-border)]" />
-
-                {/* Rank */}
-                <div className="flex flex-col items-start gap-0.5">
-                  <div className="text-[9px] font-black tracking-[0.18em] text-[var(--cw-muted)] uppercase font-mono">Rank</div>
-                  <div className="text-[28px] text-[var(--cw-text)] leading-tight tracking-tight italic" style={{ fontFamily: '"Cormorant Garamond", serif' }}>#312</div>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold border border-emerald-200">
-                    ↑ Top 2%
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress bar section */}
-        <div className="px-5 sm:px-7 pb-6 border-t border-[var(--cw-border)]">
-          {/* Overall progress bar */}
-          <div className="mt-5">
-            <div className="flex justify-between items-center mb-2.5">
-              <span className="text-[10px] font-bold text-[var(--cw-muted)] uppercase tracking-[0.13em] font-mono">Overall progress</span>
-              <span className="text-[10px] font-black text-emerald-600 font-mono tracking-wide num-font">6 / 30 days — 20%</span>
-            </div>
-            <div className="w-full bg-[var(--cw-bg2)] h-[6px] rounded-full overflow-hidden border border-[var(--cw-border)]">
-              <div className="h-full bg-emerald-600 rounded-full transition-all duration-700" style={{ width: '20%' }} />
-            </div>
-
-            {/* Timeline Nodes */}
-            <div className="flex items-center gap-[6px] mt-4 overflow-x-auto pb-2 pt-1 scrollbar-none">
-              {[1, 2, 3, 4, 5].map(d => (
-                <div key={d} onClick={() => setSelectedDay(d)} className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center text-[11px] font-bold text-emerald-800 cursor-pointer hover:bg-emerald-200 transition-colors num-font">
-                  {d}
-                </div>
-              ))}
-              {/* Active day */}
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-600 border-2 border-emerald-700 flex items-center justify-center text-[11px] font-bold text-white cursor-pointer num-font shadow-md shadow-emerald-600/30 ring-2 ring-offset-1 ring-emerald-400/40">
-                6
-              </div>
-              {[7, 8].map(d => (
-                <div key={d} onClick={() => setSelectedDay(d)} className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-[11px] font-bold text-blue-700 cursor-pointer hover:bg-blue-100 transition-colors num-font">
-                  {d}
-                </div>
-              ))}
-              {[9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map(d => (
-                <div key={d} className="flex-shrink-0 w-8 h-8 rounded-lg bg-[var(--cw-bg2)] border border-[var(--cw-border)] flex items-center justify-center text-[11px] font-medium text-[var(--cw-muted)] opacity-40 cursor-not-allowed num-font">
-                  {d}
-                </div>
-              ))}
-            </div>
-
-            {/* Phase labels */}
-            <div className="flex justify-between items-center mt-2.5 text-[9px] font-mono tracking-widest font-bold text-[var(--cw-muted)] uppercase">
-              <span>Phase 1: Foundation</span>
-              <span className="text-blue-600 flex items-center gap-1 font-black">
-                Phase 2: Build <i className="fa-solid fa-caret-left text-[9px]" /> You Are Here
-              </span>
-              <span>Phase 3: Deploy</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 4 SUMMARY STATS TILES (Screenshot 2 bottom) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
-            <i className="fa-solid fa-clipboard-check" />
-          </div>
-          <div>
-            <div className="text-xl sm:text-2xl font-bold text-[var(--cw-text)] leading-tight num-font tracking-tight">5</div>
-            <div className="text-xs font-bold text-[var(--cw-muted)] mt-0.5">Tasks done</div>
-            <div className="text-[11px] font-bold text-[var(--gold)] mt-1 flex items-center gap-0.5 num-font opacity-90">↑ 1 today</div>
-          </div>
-        </div>
-
-        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
-            <i className="fa-solid fa-fire" />
-          </div>
-          <div>
-            <div className="text-xl sm:text-2xl font-bold text-[var(--cw-text)] leading-tight num-font tracking-tight">6</div>
-            <div className="text-xs font-bold text-[var(--cw-muted)] mt-0.5">Day streak</div>
-            <div className="text-[11px] font-bold text-amber-600 mt-1">Keep it up!</div>
-          </div>
-        </div>
-
-        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
-            <i className="fa-solid fa-calendar-day" />
-          </div>
-          <div>
-            <div className="text-xl sm:text-2xl font-bold text-[var(--cw-text)] leading-tight num-font tracking-tight">24</div>
-            <div className="text-xs font-bold text-[var(--cw-muted)] mt-0.5">Days remaining</div>
-            <div className="text-[11px] font-bold text-blue-600 mt-1">On schedule</div>
-          </div>
-        </div>
-
-        <div className="bg-[#fbf8f1] p-4 sm:p-5 rounded-2xl border border-[var(--gold)]/20 shadow-[0_4px_20px_rgba(160,120,64,0.05)] hover:shadow-[0_4px_20px_rgba(160,120,64,0.08)] transition flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-[#f2eee1] text-[var(--cw-text)] flex items-center justify-center text-lg flex-shrink-0 border border-[var(--cw-border)] shadow-sm">
-            <i className="fa-solid fa-trophy" />
-          </div>
-          <div>
-            <div className="text-xl sm:text-2xl font-bold text-[var(--cw-text)] leading-tight num-font tracking-tight">60%</div>
-            <div className="text-xs font-bold text-[var(--cw-muted)] mt-0.5">Pass threshold</div>
-            <div className="text-[11px] font-bold text-emerald-600 mt-1">You're at 89 ✓</div>
-          </div>
-        </div>
-      </div>
-
-      {/* MIDDLE SECTION — TODAY'S TASK & RESOURCES (Screenshot 3) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* LEFT COLUMN: ACTIVE TASK (7 COLS) */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 rounded-2xl p-5 sm:p-6 shadow-[0_8px_30px_rgba(160,120,64,0.06)]">
-            <div className="flex justify-between items-center mb-3.5">
-              <div className="text-[15px] font-extrabold text-[var(--cw-text)] flex items-center gap-2 uppercase tracking-wide" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 800 }}>
-                <i className="fa-solid fa-clipboard-list text-base text-[var(--cw-muted)]" />
-                <span>Today's task — Day {selectedDay}</span>
-              </div>
-              <button onClick={() => alert('Add Custom Project Modal Opening...')} className="px-3 py-1 rounded-xl border border-[var(--cw-border)] hover:bg-[var(--cw-bg2)] text-[var(--cw-text)] text-xs font-bold transition flex items-center gap-1">
-                + Add Own Project
-              </button>
-            </div>
-
-            <div className="mb-3.5">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 font-mono tracking-wide">
-                Phase 2 · Due 11:59 PM
-              </span>
-            </div>
-
-            <div className="text-[22px] sm:text-[26px] font-bold text-[var(--cw-text)] tracking-tight leading-snug mb-2.5" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
-              Build a REST API with JWT Authentication
-            </div>
-            <p className="text-xs sm:text-sm text-[var(--cw-text2)] leading-relaxed mb-5">
-              Extend your Phase 1 frontend — create a Node.js + Express backend with user registration, login, and protected routes. This task validates your understanding of modern security protocols and stateless system sessions.
-            </p>
-
-            {/* LEVEL SELECTOR TABS */}
-            <div className="flex items-center gap-2 mb-5 bg-[var(--cw-bg2)] p-1 rounded-xl w-fit border border-[var(--cw-border)]">
-              {['beginner', 'intermediate', 'advanced'].map((lvl) => (
-                <button
-                  key={lvl}
-                  onClick={() => setActiveLevel(lvl)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all capitalize flex items-center gap-1.5 ${activeLevel === lvl
-                    ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 font-extrabold'
-                    : 'text-[var(--cw-muted)] hover:text-[var(--cw-text)]'
-                    }`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${lvl === 'beginner' ? 'bg-emerald-400' : lvl === 'intermediate' ? 'bg-emerald-600' : 'bg-red-500'}`} />
-                  {lvl}
-                </button>
-              ))}
-            </div>
-
-            {/* REQUIREMENTS BOX */}
-            <div className="bg-[#f2eee1] rounded-r-xl p-4 border-l-[3px] border-l-red-600 mb-4">
-              <div className="text-[16px] font-extrabold text-[var(--cw-text)] flex items-center gap-2.5 mb-3.5 tracking-wide" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 800 }}>
-                <div className="relative flex items-center justify-center">
-                  <span className="w-3.5 h-3.5 rounded-full bg-red-500 shadow-sm" />
-                  <span className="absolute w-3.5 h-3.5 rounded-full bg-red-500 animate-ping opacity-30" />
-                </div>
-                Advanced requirements
-              </div>
-              <div className="space-y-3">
-                {[
-                  'Full auth system with RBAC + rate limiting',
-                  'Docker containerisation with docker-compose.yml',
-                  'Unit + integration tests using Jest + Supertest',
-                  'CI/CD pipeline via GitHub Actions (lint → test → deploy)',
-                  'Live deployment to Railway or Render with env config'
-                ].map((req, idx) => (
-                  <div key={idx} className="text-[13px] font-medium text-[var(--cw-text2)] flex items-start gap-2.5">
-                    <span className="text-[var(--cw-muted)] mt-0.5 text-sm">→</span>
-                    <span>{req}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* TECH STACK PILLS */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {['Node.js', 'Express', 'JWT', 'PostgreSQL', 'bcrypt'].map((tech) => (
-                <span key={tech} className="px-2.5 py-1 rounded-lg bg-[var(--cw-bg2)] text-[var(--cw-text)] border border-[var(--cw-border)] text-xs font-mono font-bold">
-                  {tech}
-                </span>
-              ))}
-            </div>
-
-            {/* GITHUB SUBMISSION BOX FIX (Screenshot 3) */}
-            <div className="bg-[#fbf8f1] border border-[var(--cw-border)] rounded-2xl p-4 sm:p-5 mb-6 shadow-sm">
-              <div className="text-[11px] font-mono font-bold text-[var(--cw-muted)] uppercase tracking-wider mb-2.5 flex items-center gap-2">
-                <i className="fa-brands fa-github text-sm text-[var(--cw-text)]" /> SUBMIT GITHUB REPOSITORY LINK
-              </div>
-              {isSubmitted ? (
-                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3">
-                  <i className="fa-solid fa-circle-check text-xl text-emerald-600 flex-shrink-0" />
-                  <div>
-                    <div className="text-xs font-bold">Repository Submitted Successfully!</div>
-                    <div className="text-[11px] opacity-80 mt-0.5">AI assessment is running. Results available in 2 min.</div>
-                  </div>
-                </div>
-              ) : (
-                <form onSubmit={handleGitSubmit} className="flex flex-col sm:flex-row gap-2 bg-transparent border border-[var(--gold)]/20 p-1 rounded-xl shadow-[0_2px_10px_rgba(160,120,64,0.04)]">
-                  <input
-                    type="url"
-                    className="flex-1 px-3 py-1.5 bg-transparent text-xs text-[var(--cw-text)] focus:outline-none font-mono"
-                    placeholder="https://github.com/username/repo-name"
-                    value={gitLink}
-                    onChange={(e) => setGitLink(e.target.value)}
-                  />
-                  <button type="submit" className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-200 shadow-sm shadow-emerald-600/20 flex-shrink-0">
-                    Submit →
-                  </button>
-                </form>
-              )}
-            </div>
-
-            {/* ACTION FOOTER */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-[var(--cw-border)]">
-              <button className="px-3.5 py-1.5 rounded-xl border border-[var(--cw-border)] hover:bg-[var(--cw-bg2)] text-xs font-bold text-[var(--cw-text)] flex items-center gap-1.5 transition" onClick={() => alert('AI Assistant loading... Ask any question about authentication or bcrypt.')}>
-                <i className="fa-solid fa-robot text-purple-600 text-sm" /> Ask AI
-              </button>
-              <button className="px-3.5 py-1.5 rounded-xl border border-[var(--cw-border)] hover:bg-[var(--cw-bg2)] text-xs font-bold text-[var(--cw-text)] flex items-center gap-1.5 transition" onClick={() => alert('Full Grading Rubric: Functionality (40%), Security (30%), Code Structure (20%), Documentation (10%)')}>
-                <i className="fa-solid fa-chart-column text-emerald-600 text-sm" /> Rubric
-              </button>
-              <button className="px-3.5 py-1.5 rounded-xl border border-[var(--cw-border)] hover:bg-[var(--cw-bg2)] text-xs font-bold text-[var(--cw-text)] flex items-center gap-1.5 transition" onClick={() => navigate('/internship/learning')}>
-                <i className="fa-solid fa-book-open-reader text-blue-600 text-sm" /> Learn
-              </button>
-              <button className="px-3.5 py-1.5 rounded-xl border border-[var(--cw-border)] hover:bg-[var(--cw-bg2)] text-xs font-bold text-[var(--cw-text)] flex items-center gap-1.5 transition" onClick={() => alert('Opening Discussion Forum...')}>
-                <i className="fa-solid fa-message text-amber-600 text-sm" /> Discuss
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT COLUMN: RESOURCES & CERTIFICATE (5 COLS) */}
-        <div className="lg:col-span-5 space-y-6">
-          {/* RESOURCES BOX */}
-          <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 p-5 sm:p-6 rounded-2xl shadow-[0_8px_30px_rgba(160,120,64,0.06)]">
-            <div className="text-xl font-bold text-[var(--cw-text)] flex items-center gap-2 mb-4" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
-              <i className="fa-solid fa-book-open text-[var(--cw-muted)]" /> Resources for today
-            </div>
-            <div className="space-y-2.5">
-              {[
-                { title: 'JWT Auth in Node.js — Full Tutorial', subtitle: 'YouTube · 28 min · Highly recommended', icon: 'fa-brands fa-youtube', bg: 'bg-red-50 text-red-600 border border-red-100', link: 'https://youtube.com' },
-                { title: 'Express.js Routing & Middleware', subtitle: 'Official Docs · Reference', icon: 'fa-solid fa-server', bg: 'bg-emerald-50 text-emerald-600 border border-emerald-100', link: 'https://expressjs.com' },
-                { title: 'Node Auth Starter Template', subtitle: 'GitHub · Clone ready', icon: 'fa-brands fa-github', bg: 'bg-blue-50 text-blue-600 border border-blue-100', link: 'https://github.com' },
-                { title: 'Download All Resources', subtitle: 'PDFs, Cheatsheets, Templates', icon: 'fa-solid fa-box-archive', bg: 'bg-purple-50 text-purple-600 border border-purple-100', link: '#' }
-              ].map((res, idx) => (
-                <a key={idx} href={res.link} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--cw-border)] bg-[#f2eee1] hover:bg-[#eae4d3] transition group shadow-xs">
-                  <div className="flex items-center gap-3.5">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${res.bg}`}>
-                      <i className={res.icon} />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-[var(--cw-text)] group-hover:text-emerald-600 transition font-sans">{res.title}</div>
-                      <div className="text-[11px] text-[var(--cw-muted)] mt-0.5 font-mono">{res.subtitle}</div>
-                    </div>
-                  </div>
-                  {res.title !== 'Download All Resources' && (
-                    <i className="fa-solid fa-arrow-up-right-from-square text-xs text-[var(--cw-muted)] group-hover:text-[var(--cw-text)] transition ml-2 flex-shrink-0" />
-                  )}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* CERTIFICATE PROGRESS BOX */}
-          <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-5 sm:p-6 shadow-sm relative overflow-hidden">
-            <div className="text-[15px] font-extrabold text-emerald-800 flex items-center gap-2 mb-2 uppercase tracking-wider" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 800 }}>
-              <i className="fa-solid fa-award text-base text-emerald-600" /> Certificate progress
-            </div>
-            <p className="text-xs text-emerald-900/80 leading-relaxed mb-5 font-medium">
-              Complete all tasks with 60%+ average to earn your blockchain-verified certificate.
-            </p>
-            <div className="space-y-3 mb-6 text-xs font-semibold">
-              <div className="flex justify-between items-center border-b border-emerald-200/50 pb-2">
-                <span className="text-emerald-900/70">Tasks completed</span>
-                <span className="font-bold text-emerald-800 font-mono num-font">6 / 15</span>
-              </div>
-              <div className="flex justify-between items-center border-b border-emerald-200/50 pb-2">
-                <span className="text-emerald-900/70">Average score</span>
-                <span className="font-bold text-emerald-800 font-mono num-font">89 / 100</span>
-              </div>
-              <div className="flex justify-between items-center pb-0.5">
-                <span className="text-emerald-900/70">Status</span>
-                <span className="font-bold text-emerald-700 flex items-center gap-1 font-mono"><i className="fa-solid fa-check" /> On track</span>
-              </div>
-            </div>
-            <button onClick={() => alert('Loading verified certificate preview...')} className="w-full py-2.5 px-4 rounded-xl border-2 border-emerald-600 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold text-xs flex items-center justify-center gap-2 transition duration-200 shadow-xs shadow-emerald-600/10">
-              <i className="fa-solid fa-eye text-xs" /> Preview certificate
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* BOTTOM SECTION — SUBMITTED TASKS TABLE (Screenshot 4) */}
-      <div className="space-y-3.5 pt-2">
-        <div className="text-[26px] font-bold text-[var(--cw-text)] px-1 tracking-tight" style={{ fontFamily: '"Cormorant Garamond", serif' }}>Submitted tasks</div>
-        <div className="bg-[#fbf8f1] border border-[var(--gold)]/20 rounded-2xl shadow-[0_8px_30px_rgba(160,120,64,0.06)] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[650px]">
-              <thead>
-                <tr className="border-b border-[var(--cw-border)] text-[10px] font-mono tracking-wider text-[var(--cw-muted)] uppercase bg-[var(--cw-bg2)]/60">
-                  <th className="py-3 pl-5 font-bold w-14">DAY</th>
-                  <th className="py-3 font-bold">TASK</th>
-                  <th className="py-3 font-bold text-center w-28">PHASE</th>
-                  <th className="py-3 font-bold text-center w-24">SCORE</th>
-                  <th className="py-3 font-bold text-center w-24">RESULT</th>
-                  <th className="py-3 font-bold text-right pr-5 w-20">REVIEW</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--cw-border)] text-xs">
-                {[
-                  { day: '01', title: 'HTML/CSS Responsive Landing Page', date: '5 days ago · github.com/het/day1', phase: 'Phase 1', score: 92 },
-                  { day: '02', title: 'JavaScript Fetch API + DOM Manipulation', date: '4 days ago · github.com/het/day2', phase: 'Phase 1', score: 88 },
-                  { day: '03', title: 'React Components + State Management', date: '3 days ago · github.com/het/day3', phase: 'Phase 1', score: 91 },
-                  { day: '04', title: 'PostgreSQL Schema + CRUD Operations', date: '2 days ago · github.com/het/day4', phase: 'Phase 1', score: 78, isAmber: true },
-                  { day: '05', title: 'Express Middleware + Error Handling', date: 'Yesterday · github.com/het/day5', phase: 'Phase 2', score: 94, isPurple: true }
-                ].map((sub, idx) => (
-                  <tr key={idx} className="hover:bg-[var(--cw-bg2)]/40 transition group">
-                    <td className="py-3.5 pl-5 font-bold text-base text-[var(--cw-text)] num-font">{sub.day}</td>
-                    <td className="py-3.5">
-                      <div className="font-bold text-[var(--cw-text)] text-xs group-hover:text-emerald-600 transition">{sub.title}</div>
-                      <div className="text-[11px] text-[var(--cw-muted)] font-mono mt-0.5">{sub.date}</div>
-                    </td>
-                    <td className="py-3.5 text-center">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold font-mono border ${sub.isPurple ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                        {sub.phase}
-                      </span>
-                    </td>
-                    <td className="py-3.5 text-center">
-                      <span className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono border shadow-xs num-font ${sub.isAmber ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
-                        {sub.score}
-                      </span>
-                    </td>
-                    <td className="py-3.5 text-center">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold font-mono border ${sub.isAmber ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200'}`}>
-                        PASS
-                      </span>
-                    </td>
-                    <td className="py-3.5 text-right pr-5">
-                      <button onClick={() => alert(`Opening repository and feedback for Day ${sub.day}...`)} className="text-blue-600 group-hover:text-blue-800 font-bold text-xs inline-flex items-center gap-1 transition">
-                        View →
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  return <div className="space-y-6 pb-12">
+    <section className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6 shadow-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6"><div><div className="flex gap-2 flex-wrap"><span className="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600">{enrollment.track.name}</span><span className="px-3 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 capitalize">{enrollment.difficulty_level}</span></div><h1 className="mt-4 text-3xl font-bold text-[var(--text-main)]">Work like you are already hired.</h1><p className="text-sm text-[var(--text-muted)] mt-2">{enrollment.plan.name} · Day {enrollment.current_day} of {enrollment.total_days}</p></div><div className="text-center min-w-40 p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10"><div className="text-4xl font-bold text-emerald-600">{readiness.career_readiness_score}</div><div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)]">Career readiness</div></div></div>
+      <div className="mt-6"><div className="flex justify-between text-xs mb-2"><span>Overall progress</span><span>{enrollment.progress_percent}%</span></div><div className="h-2 rounded-full bg-slate-500/10 overflow-hidden"><div className="h-full bg-emerald-600" style={{ width: `${enrollment.progress_percent}%` }} /></div></div>
+    </section>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><Stat icon="fa-clipboard-check" value={enrollment.completed_tasks} label="Projects approved" hint={`${enrollment.total_submission_days} evidence tasks`} /><Stat icon="fa-chart-line" value={enrollment.avg_score.toFixed(0)} label="Average review score" hint="Evidence-backed" /><Stat icon="fa-code-branch" value={readiness.verified_skills} label="Verified skills" hint={`${readiness.skills.length} demonstrated`} /><Stat icon="fa-calendar" value={enrollment.total_days - enrollment.current_day + 1} label="Days remaining" hint="Sprint timeline" /></div>
+    {message && <div className="p-3 rounded-xl bg-blue-500/10 text-blue-700 text-sm">{typeof message === 'string' ? message : JSON.stringify(message)}</div>}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <section className="lg:col-span-2 bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6"><div className="flex justify-between gap-3"><div><div className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold">Today · Phase {today?.phase || enrollment.current_phase}</div><h2 className="text-xl font-bold mt-1">{today?.title || 'No published brief for today'}</h2></div><button onClick={() => navigate('/internship/tasks')} className="text-xs text-emerald-600 font-bold">All tasks →</button></div>{today?.markdown && <div className="mt-5 max-h-80 overflow-y-auto pr-2"><MarkdownContent markdown={today.markdown} /></div>}{today && ['task', 'group'].includes(today.content_type) && today.status !== 'done' && <form onSubmit={handleSubmit} className="mt-6 pt-5 border-t border-[var(--border-color)]"><label className="text-xs font-bold">Submit public GitHub repository</label><div className="flex flex-col sm:flex-row gap-2 mt-2"><input required type="url" value={githubUrl} onChange={e => setGithubUrl(e.target.value)} placeholder="https://github.com/owner/repository" className="flex-1 px-4 py-2.5 rounded-xl bg-transparent border border-[var(--border-color)] text-sm" /><button disabled={submitting} className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold disabled:opacity-50">{submitting ? 'Reviewing…' : 'Submit & review'}</button></div><p className="text-[10px] text-[var(--text-muted)] mt-2">Repository structure, commits, tests, documentation and secret-file hygiene are checked. Viva/human review is required for final verification.</p></form>}</section>
+      <section className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6"><h2 className="font-bold">Daily async standup</h2>{data.today_standup ? <div className="mt-4 space-y-3 text-sm"><p><strong>Yesterday:</strong> {data.today_standup.yesterday}</p><p><strong>Today:</strong> {data.today_standup.today}</p><p><strong>Blockers:</strong> {data.today_standup.blockers || 'None'}</p><div className="text-emerald-600 font-bold">Communication {data.today_standup.communication_score}/100</div></div> : <form onSubmit={handleStandup} className="mt-4 space-y-3">{[['yesterday','Yesterday'],['today','Today'],['blockers','Blockers (write None if clear)']].map(([key,label]) => <textarea key={key} required={key !== 'blockers'} value={standup[key]} onChange={e => setStandup(prev => ({ ...prev, [key]: e.target.value }))} placeholder={label} className="w-full min-h-20 p-3 rounded-xl bg-transparent border border-[var(--border-color)] text-xs" />)}<button disabled={submitting} className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold">Save standup</button></form>}</section>
     </div>
-  );
+    <section className="bg-[var(--bg-sidebar)] border border-[var(--border-color)] rounded-2xl p-6"><h2 className="font-bold mb-4">Recent review history</h2>{recent.length ? <div className="space-y-3">{recent.map(item => <a key={item.id} href={item.github_url} target="_blank" rel="noreferrer" className="flex items-center justify-between gap-4 p-3 rounded-xl border border-[var(--border-color)]"><span className="text-sm">Day {item.day_number} · Attempt {item.attempt}</span><span className={`text-xs font-bold ${item.passed ? 'text-emerald-600' : 'text-amber-600'}`}>{item.total_score ?? 'Pending'} · {item.status}</span></a>)}</div> : <p className="text-sm text-[var(--text-muted)]">Your GitHub review trail will appear here.</p>}</section>
+  </div>;
 }

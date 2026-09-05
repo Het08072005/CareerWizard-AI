@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint
+from sqlalchemy import Column, Integer, String, DateTime, UniqueConstraint, SmallInteger
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 import uuid
 import datetime
@@ -19,6 +19,11 @@ class DayContent(Base):
     source = Column(JSONB, default=list)
     
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    refresh_interval_days = Column(SmallInteger, default=30, nullable=False)
+    next_review_at = Column(DateTime(timezone=True), nullable=True)
+    content_status = Column(String(20), default="published", nullable=False)
+    content_hash = Column(String(64), nullable=True)
 
     __table_args__ = (
         UniqueConstraint('domain', 'task_name', 'type', 'day', name='uix_day_content_domain_task_type_day'),

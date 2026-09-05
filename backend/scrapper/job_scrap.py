@@ -176,6 +176,7 @@ class Job:
     scrape_timestamp: str = ""
     career_page_url: str = ""
     ats_platform: str = ""
+    priority_score: float = 0.0
 
 # ─────────────────────────────────────────────────────────────────────────────
 # HELPERS
@@ -286,6 +287,26 @@ def is_recent(date_str: str) -> bool:
         return (datetime.now(timezone.utc) - d).days <= MAX_DAYS_OLD
     except Exception:
         return True
+
+
+def fresher_priority(job: Job) -> float:
+    """Rank recent entry-level roles first without silently deleting unknown roles."""
+    text = f"{job.title} {job.description} {job.experience_level} {job.experience_required}".lower()
+    junior_terms = ("fresher", "entry level", "entry-level", "graduate", "new grad", "junior", "trainee", "intern", "associate")
+    senior_terms = ("senior", "sr.", "staff", "principal", "lead", "manager", "director", "head of", "architect")
+    suitability = 100 if any(term in text for term in junior_terms) else 55
+    if any(term in text for term in senior_terms):
+        suitability = 5
+    freshness = 25
+    if job.posted_date:
+        try:
+            posted = datetime.strptime(job.posted_date[:10], "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            age = max(0, (datetime.now(timezone.utc) - posted).days)
+            freshness = 100 if age <= 1 else 90 if age <= 3 else 75 if age <= 7 else 50
+        except ValueError:
+            pass
+    completeness = min(100, len(job.skills) * 12 + (20 if job.description else 0) + (15 if job.job_url else 0))
+    return round(freshness * 0.5 + suitability * 0.4 + completeness * 0.1, 2)
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -1196,7 +1217,7 @@ async def run_all_scrapers() -> list[Job]:
     all_jobs: list[Job] = []
     sem = asyncio.Semaphore(CONCURRENCY)
 
-    connector = aiohttp.TCPConnector(ssl=False, limit=CONCURRENCY)
+    connector = aiohttp.TCPConnector(limit=CONCURRENCY)
     timeout   = aiohttp.ClientTimeout(total=60)
 
     async def safe(coro):
@@ -1311,8 +1332,9 @@ def main():
     recent = [j for j in deduped if is_recent(j.posted_date)]
     log.info(f"After recency filter: {len(recent)}")
 
-    # Sort by posted_date desc
-    recent.sort(key=lambda j: j.posted_date or "", reverse=True)
+    for job in recent:
+        job.priority_score = fresher_priority(job)
+    recent.sort(key=lambda job: (job.priority_score, job.posted_date or ""), reverse=True)
 
     save_output(recent)
 

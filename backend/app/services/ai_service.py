@@ -1,14 +1,11 @@
-import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 import mimetypes
 import json
 from app.utils.file_utils import extract_text_from_pdf, extract_text_from_docx
+from app.services.ai_gateway import get_ai_gateway
 
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
 def _resume_fallback(score: int = 65, improvements: list[str] | None = None):
     return {
@@ -149,23 +146,18 @@ def _parse_resume_result(result_text: str):
     }
 
 def _analyze_resume_text(content: str):
-    response = model.generate_content(
-        f"{_resume_prompt()}\n\nRESUME TEXT:\n{content[:12000]}"
+    result = get_ai_gateway().generate_text(
+        f"{_resume_prompt()}\n\nRESUME TEXT:\n{content[:12000]}", json_mode=True
     )
-    return _parse_resume_result(response.text)
+    return _parse_resume_result(result)
 
 def _analyze_resume_pdf(file_content: bytes, filename: str | None = None):
-    response = model.generate_content(
-        [
-            _resume_prompt(),
-            {
-                "mime_type": "application/pdf",
-                "data": file_content,
-            },
-            f"Filename: {filename or 'resume.pdf'}",
-        ]
+    result = get_ai_gateway().generate_with_bytes(
+        f"{_resume_prompt()}\nFilename: {filename or 'resume.pdf'}",
+        file_content,
+        "application/pdf",
     )
-    return _parse_resume_result(response.text)
+    return _parse_resume_result(result)
 
 async def improve_text(text: str, category: str):
     """
@@ -211,9 +203,9 @@ User Input:
     else:
         raise ValueError("Invalid category. Must be 'bio', 'experience', or 'skills'.")
 
-    result = model.generate_content(prompt)
+    result = get_ai_gateway().generate_text(prompt)
     # Take first 4 non-empty lines as final text
-    lines = [line.strip() for line in result.text.splitlines() if line.strip()]
+    lines = [line.strip() for line in result.splitlines() if line.strip()]
     return " ".join(lines[:4])  # single direct text
 
 
